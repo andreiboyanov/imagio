@@ -20,6 +20,7 @@ enum dock_draw_mode {
 
 class docker {
 
+	int sleep = 10;
 	std::vector<window *> windows;
 	dock_style style = dock_left;
 	ImVec2 size = ImVec2(0.0f, 0.0f);
@@ -31,7 +32,7 @@ public:
 	~docker();
 	void add_window(window *);
 	void remove_window(window *);
-	ImVec2 preferred_size();
+	ImVec2 preferred_size(float width = 0.0f, float height = 0.0f);
 	void draw(dock_draw_mode mode);
 	void adjust_size();
 

@@ -25,7 +25,11 @@ void workspace::add_dock(docker *dock)
 
 void workspace::draw()
 {
-	for (auto window: windows)
+	for (auto dock : this->docks)
+	{
+		dock->adjust_size();
+	}
+	for (auto window: this->windows)
 	{
 		window->draw_imgui();
 	}

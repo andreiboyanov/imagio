@@ -19,7 +19,6 @@ public:
 		show_scrollbar(true);
 		allow_collapse(true);
 		show_menu(false);
-		preferred_width(100.0f);
 	}
 
 	void draw() {
@@ -34,12 +33,11 @@ public:
 	{
 		show_title(false);
 		show_border(false);
-		allow_resize(false);
+		allow_resize(true);
 		allow_move(false);
 		show_scrollbar(false);
 		allow_collapse(false);
 		show_menu(false);
-		preferred_width(300.0f);
 	}
 
 	void draw() {

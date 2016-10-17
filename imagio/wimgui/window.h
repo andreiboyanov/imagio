@@ -50,6 +50,7 @@ public:
 	float preferred_height(float height = NULL);
 	float current_width();
 	float current_height();
+	bool collapsed();
 
 	docker *docked_to(docker *new_dock = nullptr);
 

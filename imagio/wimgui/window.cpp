@@ -195,7 +195,6 @@ void window::draw_imgui()
 	{
 		if (this->dock)
 		{
-			this->dock->adjust_size();
 			ImGui::SetNextWindowSize(this->preferred_size, ImGuiSetCond_Always);
 		}
 		ImGui::Begin(title, &visible, flags);
@@ -234,6 +233,12 @@ docker *window::docked_to(docker *new_dock)
 ImGuiWindow *window::imgui_window()
 {
 	return ImGui::FindWindowByName(this->title);
+}
+
+bool window::collapsed()
+{
+	ImGuiWindow *window = this->imgui_window();
+	return window ? this->imgui_window()->Collapsed : false;
 }
 
 }
