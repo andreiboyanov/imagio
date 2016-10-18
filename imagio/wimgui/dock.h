@@ -24,6 +24,7 @@ class docker {
 	std::vector<window *> windows;
 	dock_style style = dock_left;
 	ImVec2 size = ImVec2(0.0f, 0.0f);
+	ImVec2 position = ImVec2(0.0f, 0.0f);
 
 public:
 
@@ -32,9 +33,10 @@ public:
 	~docker();
 	void add_window(window *);
 	void remove_window(window *);
-	ImVec2 preferred_size(float width = 0.0f, float height = 0.0f);
+	ImVec2 preferred_size(float width = -1.0f, float height = -1.0f);
+	ImVec2 preferred_position(float x = -1.0f, float y = -1.0f);
 	void draw(dock_draw_mode mode);
-	void adjust_size();
+	void adjust();
 
 };
 

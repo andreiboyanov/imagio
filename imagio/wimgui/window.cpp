@@ -163,17 +163,27 @@ void window::set_flags(ImGuiWindowFlags _flags) {
 
 float window::preferred_width(float width)
 {
-	if (width != NULL)
-		this->preferred_size.x = width;
-	return this->preferred_size.x;
+	if (width >= 0.0f)
+		this->size.x = width;
+	return this->size.x;
 }
 
 float window::preferred_height(float height)
 {
-	if (height != NULL)
-		this->preferred_size.y = height;
-	return this->preferred_size.y;
+	if (height >= 0.0f)
+		this->size.y = height;
+	return this->size.y;
 }
+
+ImVec2 window::preferred_position(float x, float y)
+{
+	if (x >= 0.0f)
+		this->position.x = x;
+	if (y >= 0.0f)
+		this->position.y = y;
+	return this->position;
+}
+
 
 // FIXME: Replace the following two methods by current_size() -
 // no need to call imgui_window() every time twice
@@ -195,7 +205,8 @@ void window::draw_imgui()
 	{
 		if (this->dock)
 		{
-			ImGui::SetNextWindowSize(this->preferred_size, ImGuiSetCond_Always);
+			ImGui::SetNextWindowSize(this->size, ImGuiSetCond_Always);
+			ImGui::SetNextWindowPos(this->position, ImGuiSetCond_Always);
 		}
 		ImGui::Begin(title, &visible, flags);
 		draw();

@@ -27,7 +27,7 @@ void workspace::draw()
 {
 	for (auto dock : this->docks)
 	{
-		dock->adjust_size();
+		dock->adjust();
 	}
 	for (auto window: this->windows)
 	{

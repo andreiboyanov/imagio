@@ -23,7 +23,7 @@ void docker::add_window(window *window)
 {
 	windows.push_back(window);
 	window->docked_to(this);
-	this->adjust_size();
+	this->adjust();
 }
 
 void docker::remove_window(window *window)
@@ -33,11 +33,20 @@ void docker::remove_window(window *window)
 
 ImVec2 docker::preferred_size(float width, float height)
 {
-	if (width)
+	if (width > 0.0f)
 		this->size.x = width;
-	if (height)
+	if (height > 0.0f)
 		this->size.y = height;
 	return this->size;
+}
+
+ImVec2 docker::preferred_position(float x, float y)
+{
+	if (x >= 0.0f)
+		this->position.x = x;
+	if (y >= 0.0f)
+		this->position.y = y;
+	return this->position;
 }
 
 void docker::draw(dock_draw_mode mode)
@@ -45,7 +54,7 @@ void docker::draw(dock_draw_mode mode)
 	mode;
 }
 
-void docker::adjust_size()
+void docker::adjust()
 {
 	if (this->sleep > 0) {
 		this->sleep--;
@@ -61,15 +70,17 @@ void docker::adjust_size()
 			break;
 		}
 	}
+	float last_y = this->position.y;
 	for (auto window : this->windows)
 	{
 		window->preferred_width(this->size.x);
+		window->preferred_position(this->position.x, last_y);
 
+		float window_height = window->current_height();
 		if (!window->collapsed())
-		{
-			float window_height = window->current_height();
 			window->preferred_height(window_height);
-		}
+
+		last_y += window_height;
 	}
 }
 

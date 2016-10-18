@@ -14,7 +14,8 @@ class docker;
 class window {
 	bool visible = true;
 	char *title = nullptr;
-	ImVec2 preferred_size = ImVec2(0.0f, 0.0f);
+	ImVec2 size = ImVec2(0.0f, 0.0f);
+	ImVec2 position = ImVec2(0.0f, 0.0f);
 	docker *dock = nullptr;
 	ImGuiWindowFlags flags = 0;
 
@@ -46,8 +47,9 @@ public:
 	virtual void draw();
 	virtual void draw_imgui();
 	char *name(char *new_name = nullptr);
-	float preferred_width(float width = NULL);
-	float preferred_height(float height = NULL);
+	float preferred_width(float width = -1.0f);
+	float preferred_height(float height = -1.0f);
+	ImVec2 preferred_position(float x = -1.0f, float y = -1.0f);
 	float current_width();
 	float current_height();
 	bool collapsed();
