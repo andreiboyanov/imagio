@@ -1,25 +1,27 @@
-#include "../imgui/imgui.h"
 #include "window.h"
-#include"dock.h"
 
 
 namespace wimgui
 {
 
-window::window(char *title)
+#pragma region constructors
+
+window::window(const char *_title)
 {
-	name(title);
+	this->title = _title;
 }
 
 window::window()
 {
-	name("Debug");
+	this->title = "Debug";
 }
 
 window::~window()
 {
 
 }
+
+#pragma endregion
 
 #pragma region flags
 
@@ -161,41 +163,49 @@ void window::set_flags(ImGuiWindowFlags _flags) {
 
 #pragma endregion flags
 
-float window::preferred_width(float width)
+float window::get_preferred_width()
 {
-	if (width >= 0.0f)
-		this->size.x = width;
 	return this->size.x;
 }
 
-float window::preferred_height(float height)
+void window::set_preferred_width(float width)
 {
-	if (height >= 0.0f)
-		this->size.y = height;
+	this->size.x = width;
+}
+
+float window::get_preferred_height()
+{
 	return this->size.y;
 }
 
-ImVec2 window::preferred_position(float x, float y)
+void window::set_preferred_height(float height)
 {
-	if (x >= 0.0f)
-		this->position.x = x;
-	if (y >= 0.0f)
-		this->position.y = y;
+	this->size.y = height;
+}
+
+ImVec2 window::get_preferred_position()
+{
 	return this->position;
+}
+
+void window::set_preferred_position(float x, float y)
+{
+	this->position.x = x;
+	this->position.y = y;
 }
 
 
 // FIXME: Replace the following two methods by current_size() -
-// no need to call imgui_window() every time twice
-float window::current_width()
+// no need to call get_imgui_window() every time twice
+float window::get_current_width()
 {
-	ImGuiWindow *window = this->imgui_window();
+	ImGuiWindow *window = this->get_imgui_window();
 	return window ? window->Size.x : NULL;
 }
 
-float window::current_height()
+float window::get_current_height()
 {
-	ImGuiWindow *window = this->imgui_window();
+	ImGuiWindow *window = this->get_imgui_window();
 	return window ? window->Size.y : NULL;
 }
 
@@ -203,11 +213,8 @@ void window::draw_imgui()
 {
 	if (this->visible)
 	{
-		if (this->dock)
-		{
-			ImGui::SetNextWindowSize(this->size, ImGuiSetCond_Always);
-			ImGui::SetNextWindowPos(this->position, ImGuiSetCond_Always);
-		}
+		ImGui::SetNextWindowSize(this->size, ImGuiSetCond_Always);
+		ImGui::SetNextWindowPos(this->position, ImGuiSetCond_Always);
 		ImGui::Begin(title, &visible, flags);
 		draw();
 		ImGui::End();
@@ -225,31 +232,31 @@ void window::draw()
 		"Please implement your own draw() method");
 }
 
-char *window::name(char *new_name)
+docker *window::docked_to()
 {
-	if (new_name)
-		this->title = new_name;
-	return this->title;
-
-}
-
-docker *window::docked_to(docker *new_dock)
-{
-	if (new_dock)
-		this->dock = new_dock;
 	return this->dock;
+}
+
+void window::dock_to(docker *new_dock)
+{
+	this->dock = new_dock;
 
 }
 
-ImGuiWindow *window::imgui_window()
+bool window::is_docked()
+{
+	return this->dock != nullptr;
+}
+
+ImGuiWindow* window::get_imgui_window()
 {
 	return ImGui::FindWindowByName(this->title);
 }
 
-bool window::collapsed()
+bool window::is_collapsed()
 {
-	ImGuiWindow *window = this->imgui_window();
-	return window ? this->imgui_window()->Collapsed : false;
+	ImGuiWindow *window = this->get_imgui_window();
+	return window ? this->get_imgui_window()->Collapsed : false;
 }
 
 }

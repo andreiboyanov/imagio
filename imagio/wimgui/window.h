@@ -13,14 +13,14 @@ class docker;
 
 class window {
 	bool visible = true;
-	char *title = nullptr;
+	const char *title = nullptr;
 	ImVec2 size = ImVec2(0.0f, 0.0f);
 	ImVec2 position = ImVec2(0.0f, 0.0f);
 	docker *dock = nullptr;
 	ImGuiWindowFlags flags = 0;
 
 public:
-	window(char *name);
+	window(const char* name);
 	window();
 	~window();
 
@@ -44,20 +44,25 @@ public:
 	void set_flags(ImGuiWindowFlags _flags);
 
 	virtual void show(bool _visible);
+
 	virtual void draw();
 	virtual void draw_imgui();
-	char *name(char *new_name = nullptr);
-	float preferred_width(float width = -1.0f);
-	float preferred_height(float height = -1.0f);
-	ImVec2 preferred_position(float x = -1.0f, float y = -1.0f);
-	float current_width();
-	float current_height();
-	bool collapsed();
 
-	docker *docked_to(docker *new_dock = nullptr);
+	float get_preferred_width();
+	void set_preferred_width(float width = -1.0f);
+	float get_preferred_height();
+	void set_preferred_height(float height = -1.0f);
+	ImVec2 get_preferred_position();
+	void set_preferred_position(float x = -1.0f, float y = -1.0f);
+	float get_current_width();
+	float get_current_height();
+	bool is_collapsed();
 
-protected:
-	ImGuiWindow *imgui_window();
+	docker *docked_to();
+	void dock_to(docker *new_dock = nullptr);
+	bool is_docked();
+
+	ImGuiWindow *get_imgui_window();
 };
 
 }

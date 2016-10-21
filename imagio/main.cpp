@@ -23,7 +23,10 @@ int main(int, char**)
 #if __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "ImGui OpenGL3 example", NULL, NULL);
+
+	const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+	GLFWwindow* window = glfwCreateWindow(min(1280, mode->width), min(720, mode->height), "Imagio all-rounder", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	gl3wInit();
 

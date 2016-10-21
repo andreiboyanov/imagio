@@ -42,14 +42,13 @@ public:
 
 	void draw() {
 		ImGui::Text("Hello, second world!");
-		ImGui::ShowMetricsWindow();
 	}
 };
 
 static wimgui::workspace workspace;
 window_one window1("First window");
 window_two window2("Second window");
-wimgui::docker dock_left(wimgui::dock_left);
+wimgui::docker dock_left((wimgui::window *) &workspace, wimgui::dock_left);
 
 
 void init()
@@ -64,7 +63,7 @@ void init()
 int draw()
 {
 	draw_main_menu();
-	workspace.draw();
+	workspace.draw_workspace();
 	return 0;
 }
 
