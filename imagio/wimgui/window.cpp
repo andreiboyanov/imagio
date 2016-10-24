@@ -163,32 +163,32 @@ void window::set_flags(ImGuiWindowFlags _flags) {
 
 #pragma endregion flags
 
-float window::get_preferred_width()
+float window::get_width()
 {
 	return this->size.x;
 }
 
-void window::set_preferred_width(float width)
+void window::set_width(float width)
 {
 	this->size.x = width;
 }
 
-float window::get_preferred_height()
+float window::get_height()
 {
 	return this->size.y;
 }
 
-void window::set_preferred_height(float height)
+void window::set_height(float height)
 {
 	this->size.y = height;
 }
 
-ImVec2 window::get_preferred_position()
+ImVec2 window::get_position()
 {
 	return this->position;
 }
 
-void window::set_preferred_position(float x, float y)
+void window::set_position(float x, float y)
 {
 	this->position.x = x;
 	this->position.y = y;
@@ -213,10 +213,12 @@ void window::draw_imgui()
 {
 	if (this->visible)
 	{
+		this->init_draw();
 		ImGui::SetNextWindowSize(this->size, ImGuiSetCond_Always);
 		ImGui::SetNextWindowPos(this->position, ImGuiSetCond_Always);
 		ImGui::Begin(title, &visible, flags);
 		draw();
+		this->finish_draw();
 		ImGui::End();
 	}
 }
@@ -226,10 +228,20 @@ void window::show(bool _visible)
 	this->visible = _visible;
 }
 
+void window::init_draw()
+{
+
+}
+
 void window::draw()
 {
 	ImGui::Text("This is an empty window. "
 		"Please implement your own draw() method");
+}
+
+void window::finish_draw()
+{
+
 }
 
 docker *window::docked_to()
@@ -258,5 +270,66 @@ bool window::is_collapsed()
 	ImGuiWindow *window = this->get_imgui_window();
 	return window ? this->get_imgui_window()->Collapsed : false;
 }
+
+background_window::background_window(const char* title) : window(title)
+{
+	this->allow_inputs(false);
+	this->allow_mouse_scroll(false);
+	this->allow_resize(false);
+	this->allow_move(false);
+	this->always_horizontal_scrollbar(false);
+	this->always_vertical_scrollbar(false);
+	this->save_settings(false);
+	this->auto_resize(false);
+	this->focus_on_appearing(false);
+	this->horizontal_scrollbar(false);
+	this->show(true);
+	this->show_border(false);
+	this->show_menu(false);
+	this->show_scrollbar(false);
+	this->show_title(false);
+	this->to_front_on_focus(false);
+	this->use_window_padding(false);
+}
+
+background_window::~background_window()
+{
+
+}
+
+void background_window::init_draw()
+{
+	ImGuiStyle &style = ImGui::GetStyle();
+	ImVec4 color(0.0f, 0.0f, 0.0f, 0.0f);
+	
+	this->save_style(style);
+	style.Colors[ImGuiCol_WindowBg] = color;
+	style.WindowPadding.x = 0.0f;
+	style.WindowPadding.y = 0.0f;
+}
+
+void background_window::finish_draw()
+{
+	ImGuiStyle &style = ImGui::GetStyle();
+	this->restore_style(style);
+}
+
+#pragma region private methods
+
+void background_window::save_style(ImGuiStyle& style)
+{
+	this->normal_window_background = style.Colors[ImGuiCol_WindowBg];
+	this->normal_window_padding.x = style.WindowPadding.x;
+	this->normal_window_padding.y = style.WindowPadding.y;
+}
+
+void background_window::restore_style(ImGuiStyle& style)
+{
+	style.Colors[ImGuiCol_WindowBg] = this->normal_window_background;
+	style.WindowPadding.x = this->normal_window_padding.x;
+	style.WindowPadding.y = this->normal_window_padding.y;
+}
+
+#pragma endregion
 
 }

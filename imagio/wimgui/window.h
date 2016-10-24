@@ -46,14 +46,16 @@ public:
 	virtual void show(bool _visible);
 
 	virtual void draw();
+	virtual void init_draw();
+	virtual void finish_draw();
 	virtual void draw_imgui();
 
-	float get_preferred_width();
-	void set_preferred_width(float width = -1.0f);
-	float get_preferred_height();
-	void set_preferred_height(float height = -1.0f);
-	ImVec2 get_preferred_position();
-	void set_preferred_position(float x = -1.0f, float y = -1.0f);
+	float get_width();
+	void set_width(float width);
+	float get_height();
+	void set_height(float height);
+	ImVec2 get_position();
+	void set_position(float x, float y);
 	float get_current_width();
 	float get_current_height();
 	bool is_collapsed();
@@ -63,6 +65,21 @@ public:
 	bool is_docked();
 
 	ImGuiWindow *get_imgui_window();
+};
+
+
+class background_window : public window
+{
+	ImVec4 normal_window_background;
+	ImVec2 normal_window_padding;
+public:
+	background_window(const char* title);
+	~background_window();
+	virtual void init_draw();
+	virtual void finish_draw();
+private:
+	void save_style(ImGuiStyle& style);
+	void restore_style(ImGuiStyle& style);
 };
 
 }

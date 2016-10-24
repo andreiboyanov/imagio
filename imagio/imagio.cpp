@@ -31,12 +31,12 @@ class window_two : public wimgui::window {
 public:
 	window_two(char *title) : window(title) 
 	{
-		show_title(false);
+		show_title(true);
 		show_border(false);
 		allow_resize(true);
 		allow_move(false);
 		show_scrollbar(false);
-		allow_collapse(false);
+		allow_collapse(true);
 		show_menu(false);
 	}
 
@@ -45,10 +45,29 @@ public:
 	}
 };
 
+class window_three : public wimgui::window {
+public:
+	window_three(char *title) : window(title) 
+	{
+		show_title(true);
+		show_border(false);
+		allow_resize(true);
+		allow_move(false);
+		show_scrollbar(false);
+		allow_collapse(true);
+		show_menu(false);
+	}
+
+	void draw() {
+		ImGui::Text("Hello, third world!");
+	}
+};
+
 static wimgui::workspace workspace;
 window_one window1("First window");
 window_two window2("Second window");
-wimgui::docker dock_left((wimgui::window *) &workspace, wimgui::dock_left);
+window_three window3("Third window");
+wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
 
 
 void init()
@@ -56,8 +75,10 @@ void init()
 	workspace.add_dock(&dock_left);
 	dock_left.add_window(&window1);
 	dock_left.add_window(&window2);
+	dock_left.add_window(&window3);
 	workspace.add_window(&window1);
 	workspace.add_window(&window2);
+	workspace.add_window(&window3);
 }
 
 int draw()

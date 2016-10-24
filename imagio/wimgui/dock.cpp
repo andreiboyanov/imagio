@@ -6,15 +6,13 @@
 namespace wimgui
 {
 
-docker::docker(window* parent_window)
+docker::docker(const char* title) : background_window(title)
 {
-	this->parent = parent_window;
 	this->style = dock_left;
 }
 
-docker::docker(window* parent_window, dock_style style)
+docker::docker(const char* title, dock_style style) : background_window(title)
 {
-	this->parent = parent_window;
 	this->style = style;
 }
 
@@ -35,22 +33,38 @@ void docker::remove_window(window *window)
 	window;
 }
 
-ImVec2 docker::preferred_size(float width, float height)
+float docker::get_inner_width()
 {
-	if (width > 0.0f)
-		this->size.x = width;
-	if (height > 0.0f)
-		this->size.y = height;
-	return this->size;
+	return this->get_width() - window_extra_area;
 }
 
-ImVec2 docker::preferred_position(float x, float y)
+float docker::get_inner_height()
 {
-	if (x >= 0.0f)
-		this->position.x = x;
-	if (y >= 0.0f)
-		this->position.y = y;
-	return this->position;
+	return this->get_height() - window_extra_area;
+}
+
+void docker::draw_imgui()
+{
+	background_window::draw_imgui();
+	for (auto window : this->windows)
+	{
+		window->draw_imgui();
+	}
+}
+
+void docker::draw()
+{
+	ImGuiContext& context = *GImGui;
+	const ImGuiIO& io = context.IO;
+	if (this->get_inner_width() - hoover_delta <= io.MousePos.x &&
+		io.MousePos.x <= this->get_inner_width() + hoover_delta)
+	{
+		this->draw(draw_resizing);
+	}
+	else
+	{
+		this->draw(draw_normal);
+	}
 }
 
 void docker::draw(dock_draw_mode mode)
@@ -64,7 +78,7 @@ void docker::draw(dock_draw_mode mode)
 	}
 	case draw_resizing:
 	{
-		this->draw_border(ImColor(255, 0, 0));
+		this->draw_border(ImColor(1.0f, 0.0f, 0.0f, 0.3f), (float)window_extra_area);
 		break;
 	}
 	case draw_none:
@@ -75,31 +89,11 @@ void docker::draw(dock_draw_mode mode)
 	}
 }
 
-void docker::draw()
-{
-	ImGuiContext& context = *GImGui;
-	const ImGuiIO& io = context.IO;
-	if (this->size.x - hoover_delta <= io.MousePos.x &&
-		io.MousePos.x <= this->size.x + hoover_delta)
-	{
-		this->draw(draw_resizing);
-	}
-	else
-	{
-		this->draw(draw_normal);
-	}
-	for (auto window : this->windows)
-	{
-		window->draw_imgui();
-	}
-}
-
 void docker::adjust(window_area* client_window)
 {
-	this->position.x = client_window->left;
-	this->position.y = client_window->top;
-	this->size.x = client_window->width;
-	this->size.y = client_window->height;
+	this->set_position(client_window->left, client_window->top);
+	this->set_width(client_window->width + window_extra_area);
+	this->set_height(client_window->height);
 	this->adjust();
 }
 
@@ -114,41 +108,42 @@ void docker::adjust()
 	for (auto window : this->windows)
 	{
 		float window_width = window->get_current_width();
-		if (window_width != this->size.x) {
-			this->size.x = window_width;
+		if (window_width != this->get_inner_width()) {
+			this->set_width(window_width + window_extra_area);
 			break;
 		}
 	}
-	float last_y = this->position.y;
+	float last_y = this->get_position().y;
 	for (auto window : this->windows)
 	{
-		window->set_preferred_width(this->size.x);
-		window->set_preferred_position(this->position.x, last_y);
+		window->set_width(this->get_inner_width());
+		window->set_position(this->get_position().x, last_y);
 
 		float window_height = window->get_current_height();
 		if (!window->is_collapsed())
-			window->set_preferred_height(window_height);
+			window->set_height(window_height);
 
 		last_y += window_height;
 	}
-	this->size.y = last_y;
+	this->set_height(last_y + window_extra_area - this->get_position().y);
 }
 
 
 #pragma region protected methods
 
-void docker::draw_border(ImColor color)
+void docker::draw_border(ImColor color, float line_width)
 {
-	ImGuiWindow* window = parent->get_imgui_window();
+	ImGuiWindow* window = this->get_imgui_window();
 	if (window)
 	{
-		ImVec2 from(this->size.x, this->position.y);
-		ImVec2 to(this->size.x, this->size.y);
-		window->DrawList->AddLine(from, to, color);
+		float width = this->get_inner_width();
+		ImVec2 from(width + (line_width / 2), this->get_position().y);
+		ImVec2 to(width + (line_width / 2), this->get_inner_height() + this->get_position().y);
+		window->DrawList->AddLine(from, to, color, line_width);
 
-		from.x = 0; from.y = this->size.y;
-		to.x = this->size.x; to.y = this->size.y;
-		window->DrawList->AddLine(from, to, color);
+		from.x = 0; from.y = to.y + (line_width / 2);
+		to.x = width + line_width; to.y += (line_width / 2);
+		window->DrawList->AddLine(from, to, color, line_width);
 	}
 }
 

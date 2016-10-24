@@ -6,11 +6,10 @@ namespace wimgui
 
 #pragma region constructors
 
-workspace::workspace() : window(background_window_name)
+workspace::workspace() : background_window(background_window_name)
 {
 	ImGuiStyle &style = ImGui::GetStyle();
 	style.WindowRounding = 0.0f;
-	this->set_background_window();
 }
 
 workspace::~workspace() {}
@@ -50,21 +49,18 @@ void workspace::draw()
 	{
 		window_area* client = this->get_client_area();
 		dock->adjust(client);
-		dock->draw();
+		dock->draw_imgui();
 	}
 }
 
 void workspace::draw_workspace()
 {
 	window_area* client = this->get_client_area();
-	this->set_preferred_position(client->left, client->top);
-	this->set_preferred_width(client->width);
-	this->set_preferred_height(client->height);
+	this->set_position(client->left, client->top);
+	this->set_width(client->width);
+	this->set_height(client->height);
 
-	ImVec4 color = ImColor(114, 144, 154);
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, color);
-	this->draw_imgui();
-	ImGui::PopStyleColor();
+	this->draw();
 
 	for (auto window: this->windows)
 	{
@@ -79,28 +75,6 @@ void workspace::draw_workspace()
 
 #pragma region private methods
 
-void workspace::set_background_window()
-{
-	this->allow_collapse(false);
-	this->allow_inputs(false);
-	this->allow_mouse_scroll(false);
-	this->allow_resize(false);
-	this->allow_move(false);
-	this->always_horizontal_scrollbar(false);
-	this->always_vertical_scrollbar(false);
-	this->save_settings(false);
-	this->auto_resize(false);
-	this->focus_on_appearing(false);
-	this->horizontal_scrollbar(false);
-	this->show(true);
-	this->show_border(false);
-	this->show_menu(false);
-	this->show_scrollbar(false);
-	this->show_title(false);
-	this->to_front_on_focus(false);
-	this->use_window_padding(false);
-
-}
 
 #pragma endregion
 
