@@ -35,11 +35,12 @@ window_area* workspace::get_client_area()
 	static window_area client;
 
 	ImGuiWindow* main_menu_window = ImGui::FindWindowByName("##MainMenuBar");
+	ImGuiContext& context = *GImGui;
 
 	client.top = main_menu_window ? main_menu_window->Size.y : 50.0f;
 	client.left = 0.0f;
-	client.width = 800.0f;
-	client.height = 600.0f;
+	client.width = context.IO.DisplaySize.x;
+	client.height = context.IO.DisplaySize.y - client.top;
 	return &client;
 }
 
@@ -67,8 +68,6 @@ void workspace::draw_workspace()
 		if (!window->is_docked())
 			window->draw_imgui();
 	}
-
-	ImGui::ShowMetricsWindow();
 }
 
 #pragma endregion

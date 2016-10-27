@@ -8,12 +8,14 @@ namespace wimgui
 
 docker::docker(const char* title) : background_window(title)
 {
-	this->style = dock_left;
+	this->set_dock_style(dock_left);
+	this->set_min_width();
 }
 
 docker::docker(const char* title, dock_style style) : background_window(title)
 {
-	this->style = style;
+	this->set_dock_style(style);
+	this->set_min_width();
 }
 
 docker::~docker()
@@ -21,16 +23,29 @@ docker::~docker()
 
 }
 
+void docker::set_dock_style(dock_style style)
+{
+	this->style = style;
+	if (this->painter)
+		delete this->painter;
+	switch (style)
+	{
+	case dock_left:
+		this->painter = new dock_left_painter(this);
+		break;
+	}
+}
+
 void docker::add_window(window *window)
 {
 	windows.push_back(window);
 	window->dock_to(this);
-	this->adjust();
+	this->painter->adjust();
 }
 
 void docker::remove_window(window *window)
 {
-	window;
+	window->dock_to(nullptr);
 }
 
 float docker::get_inner_width()
@@ -40,7 +55,7 @@ float docker::get_inner_width()
 
 float docker::get_inner_height()
 {
-	return this->get_height() - window_extra_area;
+	return this->get_height();
 }
 
 void docker::draw_imgui()
@@ -55,11 +70,25 @@ void docker::draw_imgui()
 void docker::draw()
 {
 	ImGuiContext& context = *GImGui;
-	const ImGuiIO& io = context.IO;
-	if (this->get_inner_width() - hoover_delta <= io.MousePos.x &&
-		io.MousePos.x <= this->get_inner_width() + hoover_delta)
+	bool hovered, held;
+	const ImRect border = painter->get_border_rectangle();
+	ImGui::ButtonBehavior(border,
+		  					this->get_imgui_window()->GetID("#RESIZE"),
+							&hovered, &held,
+							ImGuiButtonFlags_FlattenChilds);
+
+	if (hovered)
 	{
+		context.MouseCursor = ImGuiMouseCursor_ResizeNWSE;
+		this->draw(draw_hovered);
+	}
+	else if (held)
+	{
+		context.MouseCursor = ImGuiMouseCursor_ResizeNWSE;
 		this->draw(draw_resizing);
+		this->set_width(context.IO.MousePos.x +
+					    (hover_delta - context.ActiveIdClickOffset.x) +
+						window_extra_area);
 	}
 	else
 	{
@@ -73,12 +102,17 @@ void docker::draw(dock_draw_mode mode)
 	{
 	case draw_normal:
 	{
-		this->draw_border(ImGui::GetColorU32(ImGuiCol_Text));
+		this->draw_border(ImGui::GetColorU32(ImGuiCol_ResizeGrip));
+		break;
+	}
+	case draw_hovered:
+	{
+		this->draw_border(ImGui::GetColorU32(ImGuiCol_ResizeGripHovered), hover_delta);
 		break;
 	}
 	case draw_resizing:
 	{
-		this->draw_border(ImColor(1.0f, 0.0f, 0.0f, 0.3f), (float)window_extra_area);
+		this->draw_border(ImGui::GetColorU32(ImGuiCol_ResizeGripActive), hover_delta);
 		break;
 	}
 	case draw_none:
@@ -91,41 +125,7 @@ void docker::draw(dock_draw_mode mode)
 
 void docker::adjust(window_area* client_window)
 {
-	this->set_position(client_window->left, client_window->top);
-	this->set_width(client_window->width + window_extra_area);
-	this->set_height(client_window->height);
-	this->adjust();
-}
-
-void docker::adjust()
-{
-	if (this->sleep > 0) {
-		this->sleep--;
-		return;
-	}
-	if (!this->windows.size())
-		return;
-	for (auto window : this->windows)
-	{
-		float window_width = window->get_current_width();
-		if (window_width != this->get_inner_width()) {
-			this->set_width(window_width + window_extra_area);
-			break;
-		}
-	}
-	float last_y = this->get_position().y;
-	for (auto window : this->windows)
-	{
-		window->set_width(this->get_inner_width());
-		window->set_position(this->get_position().x, last_y);
-
-		float window_height = window->get_current_height();
-		if (!window->is_collapsed())
-			window->set_height(window_height);
-
-		last_y += window_height;
-	}
-	this->set_height(last_y + window_extra_area - this->get_position().y);
+	this->painter->adjust(client_window);
 }
 
 
@@ -147,6 +147,64 @@ void docker::draw_border(ImColor color, float line_width)
 	}
 }
 
+void docker::set_min_width()
+{
+	if (this->get_width() < 100.0f)
+		this->set_width(250.0f);
+}
+
 #pragma endregion
+
+
+
+dock_painter::dock_painter(docker* _dock)
+{
+	this->dock = _dock;
+}
+
+dock_left_painter::dock_left_painter(docker* _dock) : dock_painter(_dock)
+{
+
+}
+
+ImRect dock_left_painter::get_border_rectangle()
+{
+	ImVec2 position = dock->get_position();
+	ImVec2 size = dock->get_size();
+	return ImRect(position.x + size.x - window_extra_area,
+				  position.y,
+				  position.x + size.x - window_extra_area + hover_delta,
+				  position.y + size.y);
+}
+
+void dock_left_painter::adjust(window_area* client_window)
+{
+	dock->set_position(client_window->left, client_window->top);
+	dock->set_height(client_window->height);
+	this->adjust();
+}
+
+void dock_left_painter::adjust()
+{
+	if (this->sleep > 0) {
+		this->sleep--;
+		return;
+	}
+	if (!dock->windows.size())
+		return;
+	float last_y = dock->get_position().y;
+	for (auto window : dock->windows)
+	{
+		window->set_width(dock->get_inner_width());
+		window->set_position(dock->get_position().x, last_y);
+
+		float window_height = window->get_current_height();
+		if (!window->is_collapsed())
+			window->set_height(window_height);
+
+		last_y += window_height;
+	}
+}
+
 
 }

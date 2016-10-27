@@ -183,6 +183,18 @@ void window::set_height(float height)
 	this->size.y = height;
 }
 
+ImVec2 window::get_size()
+{
+	return this->size;
+}
+
+void window::set_size(float x, float y)
+{
+	this->size.x = x;
+	this->size.y = y;
+}
+
+
 ImVec2 window::get_position()
 {
 	return this->position;
@@ -217,7 +229,7 @@ void window::draw_imgui()
 		ImGui::SetNextWindowSize(this->size, ImGuiSetCond_Always);
 		ImGui::SetNextWindowPos(this->position, ImGuiSetCond_Always);
 		ImGui::Begin(title, &visible, flags);
-		draw();
+		this->draw();
 		this->finish_draw();
 		ImGui::End();
 	}
@@ -273,13 +285,13 @@ bool window::is_collapsed()
 
 background_window::background_window(const char* title) : window(title)
 {
-	this->allow_inputs(false);
+	this->allow_inputs(true);
 	this->allow_mouse_scroll(false);
 	this->allow_resize(false);
 	this->allow_move(false);
 	this->always_horizontal_scrollbar(false);
 	this->always_vertical_scrollbar(false);
-	this->save_settings(false);
+	this->save_settings(true);
 	this->auto_resize(false);
 	this->focus_on_appearing(false);
 	this->horizontal_scrollbar(false);

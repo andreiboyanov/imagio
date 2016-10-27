@@ -14,10 +14,12 @@ class docker;
 class window {
 	bool visible = true;
 	const char *title = nullptr;
-	ImVec2 size = ImVec2(0.0f, 0.0f);
-	ImVec2 position = ImVec2(0.0f, 0.0f);
 	docker *dock = nullptr;
 	ImGuiWindowFlags flags = 0;
+
+protected:
+	ImVec2 size = ImVec2(0.0f, 0.0f);
+	ImVec2 position = ImVec2(0.0f, 0.0f);
 
 public:
 	window(const char* name);
@@ -54,6 +56,8 @@ public:
 	void set_width(float width);
 	float get_height();
 	void set_height(float height);
+	ImVec2 get_size();
+	void set_size(float x, float y);
 	ImVec2 get_position();
 	void set_position(float x, float y);
 	float get_current_width();
