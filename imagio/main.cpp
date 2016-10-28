@@ -1,8 +1,14 @@
 #include "imgui/imgui.h"
 #include "imgui_opengl3/imgui_impl_glfw_gl3.h"
 #include <stdio.h>
-#include <GL/gl3w.h>
-#include <GLFW/glfw3.h>
+#include <algorithm>
+
+// #include <GL/gl3w.h>
+// #include <GLFW/glfw3.h>
+#include <GL/freeglut.h>
+#include <GL/gl.h>
+#include <GL/glfw.h>
+
 
 #include "imagio.h"
 
@@ -26,7 +32,9 @@ int main(int, char**)
 
 	const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-	GLFWwindow* window = glfwCreateWindow(min(1280, mode->width), min(720, mode->height), "Imagio all-rounder", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(std::min(1280, mode->width),
+                                          std::min(720, mode->height),
+                                          "Imagio all-rounder", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	gl3wInit();
 

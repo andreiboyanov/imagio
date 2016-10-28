@@ -12,6 +12,7 @@
 namespace wimgui
 {
 
+class dock_painter;
 
 enum dock_style {
 	dock_left, dock_right, dock_up, dock_down, dock_fill

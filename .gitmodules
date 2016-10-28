@@ -1,0 +1,3 @@
+[submodule "imagio/libs/glfw3"]
+	path = imagio/libs/glfw3
+	url = https://github.com/glfw/glfw.git
