@@ -12,8 +12,6 @@
 
 namespace wimgui {
 
-static const char* background_window_name = "##WORKSPACE_WINDOW";
-
 class workspace: public background_window {
 
 	std::vector<window *> windows;

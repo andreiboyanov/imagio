@@ -14,26 +14,34 @@ EXES                  = imagio.exe
 
 ### Common settings
 
-CEXTRA                = 
-CXXEXTRA              = -std=c++11
+WARNINGS			  = -Wall -Wshadow -Wpointer-arith \
+						-Wwrite-strings -Wno-unknown-pragmas -Werror
+CEXTRA                = $(WARNINGS) -Wbad-function-cast
+CXXEXTRA              = -std=c++11 $(WARNINGS)
 RCEXTRA               =
 DEFINES               =
-INCLUDE_PATH          = # -Iimagio/libs/gl3w -Iimagio/libs/glfw/include
+INCLUDE_PATH          = -I/usr/local/include -Iimagio/libs/gl3w
 DLL_PATH              =
 DLL_IMPORTS           =
 LIBRARY_PATH          =
-LIBRARIES             = -lglut -lGL -lGLEW -lGLU
+LIBRARIES             = -lglut -lGL -lGLEW -lGLU -lglfw3 -lX11 -ldl \
+						-lXxf86vm -lXrandr -lpthread -lXi -lm -lrt \
+						-lXcursor -lXinerama
 
 
 ### imagio.exe sources and settings
 
 imagio_exe_MODULE     = imagio.exe
-imagio_exe_C_SRCS     = # imagio/libs/gl3w/gl/gl3w.c
+imagio_exe_C_SRCS     = imagio/libs/gl3w/GL/gl3w.c
 imagio_exe_CXX_SRCS   = imagio/imagio.cpp \
+							imagio/imgui_opengl3/imgui_impl_glfw_gl3.cpp \
 							imagio/imagio_menu.cpp \
 							imagio/main.cpp \
 							imagio/imgui/imgui_draw.cpp \
-							imagio/imgui/imgui.cpp
+							imagio/imgui/imgui.cpp \
+							imagio/wimgui/window.cpp \
+							imagio/wimgui/dock.cpp \
+							imagio/wimgui/workspace.cpp
 imagio_exe_RC_SRCS    = # imagio/imagio.rc
 imagio_exe_LDFLAGS    = 
 imagio_exe_ARFLAGS    =

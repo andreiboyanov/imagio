@@ -12,7 +12,7 @@ namespace imagio {
 
 class window_one : public wimgui::window {
 public:
-	window_one(const char *title) : window(title)
+	window_one(const char* _title) : window(_title)
 	{
 		show_title(true);
 		show_border(true);
@@ -31,7 +31,7 @@ public:
 
 class window_two : public wimgui::window {
 public:
-	window_two(const char *title) : window(title)
+	window_two(const char *_title) : window(_title)
 	{
 		show_title(true);
 		show_border(false);
@@ -49,7 +49,7 @@ public:
 
 class window_three : public wimgui::window {
 public:
-	window_three(const char *title) : window(title)
+	window_three(const char *_title) : window(_title)
 	{
 	}
 

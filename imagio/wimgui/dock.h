@@ -66,9 +66,10 @@ protected:
 
 public:
 	dock_painter(docker* dock);
+    virtual ~dock_painter();
 	virtual ImRect get_border_rectangle() { return ImRect();  }
 	virtual void adjust() {}
-	virtual void adjust(window_area* client_window) { client_window; }
+	virtual void adjust(window_area*) { }
 };
 
 

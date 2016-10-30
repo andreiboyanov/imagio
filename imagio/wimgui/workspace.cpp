@@ -4,6 +4,8 @@
 namespace wimgui
 {
 
+static const char* background_window_name = "##WORKSPACE_WINDOW";
+
 #pragma region constructors
 
 workspace::workspace() : background_window(background_window_name)
@@ -18,15 +20,15 @@ workspace::~workspace() {}
 
 #pragma region public methods
 
-void workspace::add_window(wimgui::window *window)
+void workspace::add_window(wimgui::window *_window)
 {
-	windows.push_back(window);
+	windows.push_back(_window);
 }
 
 
-void workspace::add_dock(docker *dock)
+void workspace::add_dock(docker *_dock)
 {
-	docks.push_back(dock);
+	docks.push_back(_dock);
 }
 
 // FIXME: Get size and position from ImGui
@@ -46,11 +48,11 @@ window_area* workspace::get_client_area()
 
 void workspace::draw()
 {
-	for (auto dock : this->docks)
+	for (auto _dock : this->docks)
 	{
 		window_area* client = this->get_client_area();
-		dock->adjust(client);
-		dock->draw_imgui();
+		_dock->adjust(client);
+		_dock->draw_imgui();
 	}
 }
 
@@ -63,10 +65,10 @@ void workspace::draw_workspace()
 
 	this->draw();
 
-	for (auto window: this->windows)
+	for (auto _window: this->windows)
 	{
-		if (!window->is_docked())
-			window->draw_imgui();
+		if (!_window->is_docked())
+			_window->draw_imgui();
 	}
 }
 

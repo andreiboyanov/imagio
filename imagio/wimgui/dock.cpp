@@ -6,15 +6,15 @@
 namespace wimgui
 {
 
-docker::docker(const char* title) : background_window(title)
+docker::docker(const char* _title) : background_window(_title)
 {
 	this->set_dock_style(dock_left);
 	this->set_min_width();
 }
 
-docker::docker(const char* title, dock_style style) : background_window(title)
+docker::docker(const char* _title, dock_style _style) : background_window(_title)
 {
-	this->set_dock_style(style);
+	this->set_dock_style(_style);
 	this->set_min_width();
 }
 
@@ -23,9 +23,9 @@ docker::~docker()
 
 }
 
-void docker::set_dock_style(dock_style style)
+void docker::set_dock_style(dock_style _style)
 {
-	this->style = style;
+	this->style = _style;
 	if (this->painter)
 		delete this->painter;
 	switch (style)
@@ -33,19 +33,27 @@ void docker::set_dock_style(dock_style style)
 	case dock_left:
 		this->painter = new dock_left_painter(this);
 		break;
+    case dock_up:
+        break;
+    case dock_down:
+        break;
+    case dock_fill:
+        break;
+    case dock_right:
+        break;
 	}
 }
 
-void docker::add_window(window *window)
+void docker::add_window(window *_window)
 {
-	windows.push_back(window);
-	window->dock_to(this);
+	windows.push_back(_window);
+	_window->dock_to(this);
 	this->painter->adjust();
 }
 
-void docker::remove_window(window *window)
+void docker::remove_window(window *_window)
 {
-	window->dock_to(nullptr);
+	_window->dock_to(nullptr);
 }
 
 float docker::get_inner_width()
@@ -61,9 +69,9 @@ float docker::get_inner_height()
 void docker::draw_imgui()
 {
 	background_window::draw_imgui();
-	for (auto window : this->windows)
+	for (auto _window : this->windows)
 	{
-		window->draw_imgui();
+		_window->draw_imgui();
 	}
 }
 
@@ -133,17 +141,17 @@ void docker::adjust(window_area* client_window)
 
 void docker::draw_border(ImColor color, float line_width)
 {
-	ImGuiWindow* window = this->get_imgui_window();
-	if (window)
+	ImGuiWindow* imgui_window = this->get_imgui_window();
+	if (imgui_window)
 	{
 		float width = this->get_inner_width();
 		ImVec2 from(width + (line_width / 2), this->get_position().y);
 		ImVec2 to(width + (line_width / 2), this->get_inner_height() + this->get_position().y);
-		window->DrawList->AddLine(from, to, color, line_width);
+		imgui_window->DrawList->AddLine(from, to, color, line_width);
 
 		from.x = 0; from.y = to.y + (line_width / 2);
 		to.x = width + line_width; to.y += (line_width / 2);
-		window->DrawList->AddLine(from, to, color, line_width);
+		imgui_window->DrawList->AddLine(from, to, color, line_width);
 	}
 }
 
@@ -160,6 +168,11 @@ void docker::set_min_width()
 dock_painter::dock_painter(docker* _dock)
 {
 	this->dock = _dock;
+}
+
+dock_painter::~dock_painter()
+{
+
 }
 
 dock_left_painter::dock_left_painter(docker* _dock) : dock_painter(_dock)

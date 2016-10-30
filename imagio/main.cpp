@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <algorithm>
 
-// #include <GL/gl3w.h>
-// #include <GLFW/glfw3.h>
+#include <GL/gl3w.h>
+#include <GLFW/glfw3.h>
 #include <GL/freeglut.h>
 #include <GL/gl.h>
-#include <GL/glfw.h>
+// #include <GL/glfw.h>
 
 
 #include "imagio.h"

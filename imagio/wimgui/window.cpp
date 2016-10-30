@@ -25,15 +25,15 @@ window::~window()
 
 #pragma region flags
 
-void window::show_title(bool show) {
-	if (!show)
+void window::show_title(bool _show) {
+	if (!_show)
 		flags |= ImGuiWindowFlags_NoTitleBar;
 	else
 		flags &= ~ImGuiWindowFlags_NoTitleBar;
 }
 
-void window::show_border(bool show) {
-	if (show)
+void window::show_border(bool _show) {
+	if (_show)
 		flags |= ImGuiWindowFlags_ShowBorders;
 	else
 		flags &= ~ImGuiWindowFlags_ShowBorders;
@@ -53,8 +53,8 @@ void window::allow_move(bool allow) {
 		flags &= ~ImGuiWindowFlags_NoMove;
 }
 
-void window::show_scrollbar(bool show) {
-	if (!show)
+void window::show_scrollbar(bool _show) {
+	if (!_show)
 		flags |= ImGuiWindowFlags_NoScrollbar;
 	else
 		flags &= ~ImGuiWindowFlags_NoScrollbar;
@@ -67,8 +67,8 @@ void window::allow_collapse(bool allow) {
 		flags &= ~ImGuiWindowFlags_NoCollapse;
 }
 
-void window::show_menu(bool show) {
-	if (show)
+void window::show_menu(bool _show) {
+	if (_show)
 		flags |= ImGuiWindowFlags_MenuBar;
 	else
 		flags &= ~ImGuiWindowFlags_MenuBar;
@@ -211,14 +211,14 @@ void window::set_position(float x, float y)
 // no need to call get_imgui_window() every time twice
 float window::get_current_width()
 {
-	ImGuiWindow *window = this->get_imgui_window();
-	return window ? window->Size.x : NULL;
+	ImGuiWindow *imgui_window = this->get_imgui_window();
+	return imgui_window ? imgui_window->Size.x : -1.0f;
 }
 
 float window::get_current_height()
 {
-	ImGuiWindow *window = this->get_imgui_window();
-	return window ? window->Size.y : NULL;
+	ImGuiWindow *imgui_window = this->get_imgui_window();
+	return imgui_window ? imgui_window->Size.y : -1.0f;
 }
 
 void window::draw_imgui()
@@ -279,11 +279,11 @@ ImGuiWindow* window::get_imgui_window()
 
 bool window::is_collapsed()
 {
-	ImGuiWindow *window = this->get_imgui_window();
-	return window ? this->get_imgui_window()->Collapsed : false;
+	ImGuiWindow *imgui_window = this->get_imgui_window();
+	return imgui_window ? imgui_window->Collapsed : false;
 }
 
-background_window::background_window(const char* title) : window(title)
+background_window::background_window(const char* _title) : window(_title)
 {
 	this->allow_inputs(true);
 	this->allow_mouse_scroll(false);
