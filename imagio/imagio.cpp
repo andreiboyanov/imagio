@@ -34,7 +34,7 @@ public:
 	window_two(const char *_title) : window(_title)
 	{
 		show_title(true);
-		show_border(false);
+		show_border(true);
 		allow_resize(true);
 		allow_move(false);
 		show_scrollbar(false);
@@ -51,6 +51,7 @@ class window_three : public wimgui::window {
 public:
 	window_three(const char *_title) : window(_title)
 	{
+		show_border(true);
 	}
 
 	void draw() {
@@ -62,7 +63,7 @@ static wimgui::workspace workspace;
 window_one window1("First window");
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
-wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
+wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_bottom);
 
 
 void init()
