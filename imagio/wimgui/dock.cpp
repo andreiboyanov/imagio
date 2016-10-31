@@ -170,10 +170,7 @@ void dock_painter::draw_border2(ImColor color, ImRect border_rectangle)
 
 float dock_painter::border_width()
 {
-	float border_width = (dock->border_hovered || dock->border_held) ?
-							hover_delta :
-							2.0f;
-	return border_width;
+	return (dock->border_hovered || dock->border_held) ?  hover_delta : 2.0f;
 }
 
 #pragma endregion

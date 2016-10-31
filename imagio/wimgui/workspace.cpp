@@ -14,7 +14,7 @@ workspace::workspace() : background_window(background_window_name)
 	style.WindowRounding = 0.0f;
 }
 
-workspace::workspace(const char* title) : background_window(title)
+workspace::workspace(const char* _title) : background_window(_title)
 {
 	ImGuiStyle &style = ImGui::GetStyle();
 	style.WindowRounding = 0.0f;

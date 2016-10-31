@@ -89,7 +89,7 @@ class dock_left_painter : public dock_painter
 {
 
 public:
-	dock_left_painter(docker* dock) : dock_painter(dock) {};
+	dock_left_painter(docker* _dock) : dock_painter(_dock) {};
 	virtual ImRect get_border_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	virtual void adjust();
@@ -103,7 +103,7 @@ class dock_bottom_painter : public dock_painter
 {
 
 public:
-	dock_bottom_painter(docker* dock) : dock_painter(dock) {};
+	dock_bottom_painter(docker* _dock) : dock_painter(_dock) {};
 	virtual ImRect get_border_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	virtual void adjust();
@@ -117,7 +117,7 @@ class dock_top_painter : public dock_painter
 {
 
 public:
-	dock_top_painter(docker* dock) : dock_painter(dock) {};
+	dock_top_painter(docker* _dock) : dock_painter(_dock) {};
 	virtual ImRect get_border_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	virtual void adjust();
