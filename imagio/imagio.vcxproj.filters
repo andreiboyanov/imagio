@@ -89,9 +89,6 @@
     <ClInclude Include="wimgui\dock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wimgui\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imagio.rc">

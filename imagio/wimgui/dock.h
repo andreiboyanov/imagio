@@ -6,7 +6,6 @@
 #include <vector>
 #include "../imgui/imgui.h"
 #include "window.h"
-#include "common.h"
 #include "workspace.h"
 
 
@@ -31,6 +30,7 @@ class docker: public background_window {
 	friend class dock_painter;
 	friend class dock_left_painter;
 	friend class dock_bottom_painter;
+	friend class dock_top_painter;
 
 	std::vector<window *> windows;
 	dock_style style = dock_left;
@@ -81,6 +81,7 @@ public:
 	virtual void draw_border(dock_draw_mode mode) = 0;
 	virtual void draw_border2(ImColor color, ImVec2 from, ImVec2 to, float line_width);
 	virtual void draw_border2(ImColor color, ImRect border_rectangle);
+	virtual float border_width();
 };
 
 
@@ -103,6 +104,20 @@ class dock_bottom_painter : public dock_painter
 
 public:
 	dock_bottom_painter(docker* dock) : dock_painter(dock) {};
+	virtual ImRect get_border_rectangle();
+	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
+	virtual void adjust();
+	virtual void adjust(ImRect* client_window);
+	virtual float get_inner_width();
+	virtual float get_inner_height();
+	virtual void  draw_border(dock_draw_mode mode);
+};
+
+class dock_top_painter : public dock_painter
+{
+
+public:
+	dock_top_painter(docker* dock) : dock_painter(dock) {};
 	virtual ImRect get_border_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	virtual void adjust();

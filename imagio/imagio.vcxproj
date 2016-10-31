@@ -107,7 +107,6 @@
     <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="imgui_opengl3\imgui_impl_glfw_gl3.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="wimgui\common.h" />
     <ClInclude Include="wimgui\dock.h" />
     <ClInclude Include="wimgui\workspace.h" />
     <ClInclude Include="wimgui\window.h" />

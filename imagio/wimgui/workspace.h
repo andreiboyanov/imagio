@@ -8,7 +8,6 @@
 #include "../imgui/imgui.h"
 #include "window.h"
 #include "dock.h"
-#include "common.h"
 
 namespace wimgui {
 
