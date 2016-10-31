@@ -63,15 +63,17 @@ static wimgui::workspace workspace;
 window_one window1("First window");
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
-wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_bottom);
+wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
+wimgui::docker dock_bottom("##DOCK BOTTOM", wimgui::dock_bottom);
 
 
 void init()
 {
 	workspace.add_dock(&dock_left);
+	workspace.add_dock(&dock_bottom);
 	dock_left.add_window(&window1);
-	dock_left.add_window(&window2);
 	dock_left.add_window(&window3);
+	dock_bottom.add_window(&window2);
 	workspace.add_window(&window1);
 	workspace.add_window(&window2);
 	workspace.add_window(&window3);

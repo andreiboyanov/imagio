@@ -14,6 +14,12 @@ workspace::workspace() : background_window(background_window_name)
 	style.WindowRounding = 0.0f;
 }
 
+workspace::workspace(const char* title) : background_window(title)
+{
+	ImGuiStyle &style = ImGui::GetStyle();
+	style.WindowRounding = 0.0f;
+}
+
 workspace::~workspace() {}
 
 #pragma endregion
@@ -32,25 +38,26 @@ void workspace::add_dock(docker *_dock)
 }
 
 // FIXME: Get size and position from ImGui
-window_area* workspace::get_client_area()
+ImRect* workspace::get_client_area()
 {
-	static window_area client;
 
 	ImGuiWindow* main_menu_window = ImGui::FindWindowByName("##MainMenuBar");
 	ImGuiContext& context = *GImGui;
 
-	client.top = main_menu_window ? main_menu_window->Size.y : 50.0f;
-	client.left = 0.0f;
-	client.width = context.IO.DisplaySize.x;
-	client.height = context.IO.DisplaySize.y - client.top;
-	return &client;
+	static ImRect* client = new ImRect();
+	float top = main_menu_window ? main_menu_window->Size.y : 50.0f;
+	client->Min.x = 0.0f;
+	client->Min.y = top;
+	client->Max.x = context.IO.DisplaySize.x;
+	client->Max.y =	context.IO.DisplaySize.y;
+	return client;
 }
 
 void workspace::draw()
 {
+	ImRect* client = this->get_client_area();
 	for (auto _dock : this->docks)
 	{
-		window_area* client = this->get_client_area();
 		_dock->adjust(client);
 		_dock->draw_imgui();
 	}
@@ -58,10 +65,10 @@ void workspace::draw()
 
 void workspace::draw_workspace()
 {
-	window_area* client = this->get_client_area();
-	this->set_position(client->left, client->top);
-	this->set_width(client->width);
-	this->set_height(client->height);
+	ImRect* client = this->get_client_area();
+	this->set_position(client->Min.x, client->Min.y);
+	this->set_width(client->GetWidth());
+	this->set_height(client->GetHeight());
 
 	this->draw();
 

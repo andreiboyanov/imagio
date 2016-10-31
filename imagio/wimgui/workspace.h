@@ -12,6 +12,8 @@
 
 namespace wimgui {
 
+class docker;
+
 class workspace: public background_window {
 
 	std::vector<window *> windows;
@@ -19,11 +21,12 @@ class workspace: public background_window {
 
 public:
 	workspace();
+	workspace(const char* title);
 	~workspace();
 
 	void add_window(window *window);
 	void add_dock(docker *dock);
-	window_area* get_client_area();
+	ImRect* get_client_area();
 	void draw();
 	void draw_workspace();
 

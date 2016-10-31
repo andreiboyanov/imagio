@@ -7,6 +7,7 @@
 #include "../imgui/imgui.h"
 #include "window.h"
 #include "common.h"
+#include "workspace.h"
 
 
 namespace wimgui
@@ -34,6 +35,8 @@ class docker: public background_window {
 	std::vector<window *> windows;
 	dock_style style = dock_left;
 	dock_painter* painter;
+	bool border_hovered = false;
+	bool border_held = false;
 
 public:
 
@@ -48,7 +51,7 @@ public:
 	float get_inner_height();
 
 	void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
-	void adjust(window_area* client_window);
+	void adjust(ImRect* client_window);
 	void draw(dock_draw_mode mode);
 	virtual void draw();
 	virtual void draw_imgui();
@@ -72,7 +75,7 @@ public:
 	virtual ImRect get_border_rectangle() = 0;
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position) = 0;
 	virtual void adjust() = 0;
-	virtual void adjust(window_area* window_area) = 0;
+	virtual void adjust(ImRect* window_area) = 0;
 	virtual float get_inner_width() = 0;
 	virtual float get_inner_height() = 0;
 	virtual void draw_border(dock_draw_mode mode) = 0;
@@ -89,7 +92,7 @@ public:
 	virtual ImRect get_border_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	virtual void adjust();
-	virtual void adjust(window_area* client_window);
+	virtual void adjust(ImRect* client_window);
 	virtual float get_inner_width();
 	virtual float get_inner_height();
 	virtual void  draw_border(dock_draw_mode mode);
@@ -103,7 +106,7 @@ public:
 	virtual ImRect get_border_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	virtual void adjust();
-	virtual void adjust(window_area* client_window);
+	virtual void adjust(ImRect* client_window);
 	virtual float get_inner_width();
 	virtual float get_inner_height();
 	virtual void  draw_border(dock_draw_mode mode);

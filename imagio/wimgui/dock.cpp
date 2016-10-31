@@ -86,19 +86,18 @@ void docker::draw_imgui()
 void docker::draw()
 {
 	ImGuiContext& context = *GImGui;
-	bool hovered, held;
 	const ImRect border = painter->get_border_rectangle();
 	ImGui::ButtonBehavior(border,
 		  					this->get_imgui_window()->GetID("#RESIZE"),
-							&hovered, &held,
+							&(this->border_hovered), &(this->border_held),
 							ImGuiButtonFlags_FlattenChilds);
 
-	if (hovered)
+	if (this->border_hovered)
 	{
 		context.MouseCursor = ImGuiMouseCursor_ResizeNWSE;
 		this->draw(draw_hovered);
 	}
-	else if (held)
+	else if (this->border_held)
 	{
 		context.MouseCursor = ImGuiMouseCursor_ResizeNWSE;
 		this->draw(draw_resizing);
@@ -115,7 +114,7 @@ void docker::draw(dock_draw_mode mode)
 	this->painter->draw_border(mode);
 }
 
-void docker::adjust(window_area* client_window)
+void docker::adjust(ImRect* client_window)
 {
 	this->painter->adjust(client_window);
 }
@@ -171,7 +170,7 @@ void dock_painter::draw_border2(ImColor color, ImRect border_rectangle)
 void dock_left_painter::resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position)
 {
 	this->dock->set_width(mouse_position.x +
-							(hover_delta - mouse_clicked_position.x) +
+							- mouse_clicked_position.x +
 							window_extra_area);
 }
 
@@ -219,11 +218,17 @@ void dock_left_painter::draw_border(dock_draw_mode mode)
 	}
 }
 
-void dock_left_painter::adjust(window_area* client_window)
+void dock_left_painter::adjust(ImRect* client_window)
 {
-	dock->set_position(client_window->left, client_window->top);
-	dock->set_height(client_window->height);
+	dock->set_position(client_window->Min.x, client_window->Min.y);
+	dock->set_height(client_window->GetHeight());
 	this->adjust();
+	float border_width = (dock->border_hovered || dock->border_held) ?
+							hover_delta :
+							2.0f;
+		client_window->Min.x = this->dock->get_width() +
+									this->dock->get_position().x -
+									window_extra_area + border_width;
 }
 
 void dock_left_painter::adjust()
@@ -311,11 +316,11 @@ void dock_bottom_painter::draw_border(dock_draw_mode mode)
 	}
 }
 
-void dock_bottom_painter::adjust(window_area* client_window)
+void dock_bottom_painter::adjust(ImRect* client_window)
 {
-	dock->set_position(client_window->left, client_window->top + client_window->height
+	dock->set_position(client_window->Min.x, client_window->Max.y
 						- this->dock->get_height());
-	dock->set_width(client_window->width);
+	dock->set_width(client_window->Max.x);
 	this->adjust();
 }
 
