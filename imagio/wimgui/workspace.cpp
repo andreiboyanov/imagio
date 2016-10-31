@@ -55,8 +55,8 @@ ImRect* workspace::get_client_area()
 
 void workspace::draw()
 {
-	ImRect* client = get_client_area();
-	for (auto _dock : docks)
+	ImRect* client = this->get_client_area();
+	for (auto _dock : this->docks)
 	{
 		_dock->adjust(client);
 		_dock->draw_imgui();
@@ -65,14 +65,14 @@ void workspace::draw()
 
 void workspace::draw_workspace()
 {
-	ImRect* client = get_client_area();
-	set_position(client->Min.x, client->Min.y);
-	set_width(client->GetWidth());
-	set_height(client->GetHeight());
+	ImRect* client = this->get_client_area();
+	this->set_position(client->Min.x, client->Min.y);
+	this->set_width(client->GetWidth());
+	this->set_height(client->GetHeight());
 
-	draw();
+	this->draw();
 
-	for (auto _window: windows)
+	for (auto _window: this->windows)
 	{
 		if (!_window->is_docked())
 			_window->draw_imgui();
