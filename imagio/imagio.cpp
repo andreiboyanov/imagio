@@ -77,15 +77,39 @@ public:
 	}
 };
 
+class window_five : public wimgui::window {
+public:
+	window_five(const char *_title) : window(_title)
+	{
+		show_title(true);
+		show_border(true);
+		allow_resize(true);
+		allow_move(true);
+		show_scrollbar(false);
+		allow_collapse(true);
+		show_menu(false);
+		position.x = 100.0f;
+		position.y = 100.0f;
+		size.x = 100.0f;
+		size.y = 100.0f;
+	}
+
+	void draw() {
+		ImGui::Text("Hello, fifth world!");
+	}
+};
+
 static wimgui::workspace workspace;
 window_one window1("First window");
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
+window_five window5("Fifth window");
 wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
 wimgui::docker dock_bottom("##DOCK BOTTOM", wimgui::dock_bottom);
 wimgui::docker dock_top("##DOCK TOP", wimgui::dock_top);
 wimgui::docker dock_right("##DOCK RIGHT", wimgui::dock_right);
+wimgui::docker dock_fill("##DOCK_FILL", wimgui::dock_fill);
 
 
 void init()
@@ -94,16 +118,19 @@ void init()
 	workspace.add_dock(&dock_left);
 	workspace.add_dock(&dock_top);
 	workspace.add_dock(&dock_right);
+	workspace.add_dock(&dock_fill);
 
 	dock_left.add_window(&window1);
 	dock_top.add_window(&window3);
 	dock_bottom.add_window(&window2);
 	dock_right.add_window(&window4);
+	dock_fill.add_window(&window5);
 
 	workspace.add_window(&window1);
 	workspace.add_window(&window2);
 	workspace.add_window(&window3);
 	workspace.add_window(&window4);
+	workspace.add_window(&window5);
 }
 
 int draw()

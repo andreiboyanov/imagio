@@ -63,6 +63,7 @@ public:
 	float get_current_width();
 	float get_current_height();
 	bool is_collapsed();
+	bool is_moving();
 
 	docker *docked_to();
 	void dock_to(docker *new_dock = nullptr);

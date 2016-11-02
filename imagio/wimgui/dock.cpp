@@ -42,6 +42,7 @@ void docker::set_dock_style(dock_style _style)
 		painter = new dock_bottom_painter(this);
 		break;
 	case dock_fill:
+		painter = new dock_fill_painter(this);
 		break;
 	case dock_right:
 		painter = new dock_right_painter(this);
@@ -53,7 +54,27 @@ void docker::add_window(window *_window)
 {
 	windows.push_back(_window);
 	_window->dock_to(this);
-	painter->adjust();
+	// fit_window(_window);
+}
+
+void docker::fit_window(window* _window)
+{
+	bool need_repositioning = false;
+	ImVec2 window_position = _window->get_position();
+	float x = window_position.x, y = window_position.y;
+	
+	if (x < position.x)
+	{
+		x = position.x;
+		need_repositioning = true;
+	}
+	if (y < position.y)
+	{
+		y = position.y;
+		need_repositioning = true;
+	}
+	if (need_repositioning)
+		_window->set_position(x, y);
 }
 
 void docker::remove_window(window *_window)
@@ -432,10 +453,11 @@ void dock_right_painter::adjust(ImRect* client_window)
 						client_window->Min.y);
 	dock->set_height(client_window->GetHeight());
 	adjust();
-	client_window->Max.x = dock->position.x;
+	client_window->Max.x = dock->position.x + window_extra_area -
+							get_border_width();
 }
 
-// FIXME: Needs intermediate class horizontal_dock
+// FIXME: Needs intermediate class vertical_dock
 void dock_right_painter::adjust()
 {
 	if (sleep > 0) {
@@ -468,6 +490,82 @@ float dock_right_painter::get_inner_height()
 	return dock->get_height();
 }
 
+#pragma endregion
+
+#pragma region dock_fill_painter
+
+ImRect dock_fill_painter::get_border_rectangle(dock_draw_mode)
+{
+	return ImRect();
+}
+
+void dock_fill_painter::adjust(ImRect* client_window)
+{
+	dock->set_position(client_window->Min.x, client_window->Min.y);
+	dock->set_height(client_window->GetHeight());
+	dock->set_width(client_window->GetWidth());
+	adjust();
+}
+
+void dock_fill_painter::adjust()
+{
+	if (sleep > 0)
+	{
+		sleep--;
+		return;
+	}
+	if (!dock->windows.size())
+		return;
+	for (auto window : dock->windows)
+	{
+		
+		if (!window->is_collapsed())
+			window->set_height(window->get_current_height());
+		window->set_width(window->get_current_width());
+
+		if (window->get_position().x < 1.0f)
+			window->set_position(20.0f, 20.0f);
+
+		ImVec2 position = window->get_position();
+		float new_x = position.x, new_y = position.y;
+		bool need_reposition = false;
+		if (position.x < dock->position.x)
+		{
+			new_x = dock->position.x;
+			need_reposition = true;
+		}
+		if (position.y < dock->position.y)
+		{
+			new_y = dock->position.y;
+			need_reposition = true;
+		}
+		if (need_reposition)
+			window->set_position(new_x, new_y);
+
+		position = window->get_position();
+		if (position.x + window->get_width() > dock->position.x + dock->size.x)
+			window->set_width(dock->position.x + dock->size.x -
+								position.x);
+		if (position.y + window->get_height() > dock->position.y + dock->size.y)
+			window->set_height(dock->position.y + dock->size.y -
+								position.y);
+	}
+}
+
+float dock_fill_painter::get_inner_width()
+{
+	return dock->get_width();
+}
+
+float dock_fill_painter::get_inner_height()
+{
+	return dock->get_height();
+}
+
+void dock_fill_painter::resize(ImVec2, ImVec2)
+{
+
+}
 #pragma endregion
 
 }

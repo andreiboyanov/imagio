@@ -36,3 +36,9 @@
 
 
 imgui.ini
+*Debug/
+*.log
+*.suo
+*sdf
+*.aps
+

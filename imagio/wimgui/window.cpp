@@ -226,8 +226,9 @@ void window::draw_imgui()
 	if (visible)
 	{
 		init_draw();
+		if (!is_moving())
+			ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
 		ImGui::SetNextWindowSize(size, ImGuiSetCond_Always);
-		ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
 		ImGui::Begin(title, &visible, flags);
 		draw();
 		finish_draw();
@@ -281,6 +282,13 @@ bool window::is_collapsed()
 {
 	ImGuiWindow *imgui_window = get_imgui_window();
 	return imgui_window ? imgui_window->Collapsed : false;
+}
+
+bool window::is_moving()
+{
+	ImGuiWindow* imgui_window = get_imgui_window();
+	ImGuiContext& context = *GImGui;
+	return (context.MovedWindow == imgui_window);
 }
 
 background_window::background_window(const char* _title) : window(_title)
