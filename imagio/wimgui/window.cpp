@@ -8,12 +8,12 @@ namespace wimgui
 
 window::window(const char *_title)
 {
-	this->title = _title;
+	title = _title;
 }
 
 window::window()
 {
-	this->title = "Debug";
+	title = "Debug";
 }
 
 window::~window()
@@ -165,45 +165,45 @@ void window::set_flags(ImGuiWindowFlags _flags) {
 
 float window::get_width()
 {
-	return this->size.x;
+	return size.x;
 }
 
 void window::set_width(float width)
 {
-	this->size.x = width;
+	size.x = width;
 }
 
 float window::get_height()
 {
-	return this->size.y;
+	return size.y;
 }
 
 void window::set_height(float height)
 {
-	this->size.y = height;
+	size.y = height;
 }
 
 ImVec2 window::get_size()
 {
-	return this->size;
+	return size;
 }
 
 void window::set_size(float x, float y)
 {
-	this->size.x = x;
-	this->size.y = y;
+	size.x = x;
+	size.y = y;
 }
 
 
 ImVec2 window::get_position()
 {
-	return this->position;
+	return position;
 }
 
 void window::set_position(float x, float y)
 {
-	this->position.x = x;
-	this->position.y = y;
+	position.x = x;
+	position.y = y;
 }
 
 
@@ -211,33 +211,33 @@ void window::set_position(float x, float y)
 // no need to call get_imgui_window() every time twice
 float window::get_current_width()
 {
-	ImGuiWindow *imgui_window = this->get_imgui_window();
+	ImGuiWindow *imgui_window = get_imgui_window();
 	return imgui_window ? imgui_window->Size.x : -1.0f;
 }
 
 float window::get_current_height()
 {
-	ImGuiWindow *imgui_window = this->get_imgui_window();
+	ImGuiWindow *imgui_window = get_imgui_window();
 	return imgui_window ? imgui_window->Size.y : -1.0f;
 }
 
 void window::draw_imgui()
 {
-	if (this->visible)
+	if (visible)
 	{
-		this->init_draw();
-		ImGui::SetNextWindowSize(this->size, ImGuiSetCond_Always);
-		ImGui::SetNextWindowPos(this->position, ImGuiSetCond_Always);
+		init_draw();
+		ImGui::SetNextWindowSize(size, ImGuiSetCond_Always);
+		ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
 		ImGui::Begin(title, &visible, flags);
-		this->draw();
-		this->finish_draw();
+		draw();
+		finish_draw();
 		ImGui::End();
 	}
 }
 
 void window::show(bool _visible)
 {
-	this->visible = _visible;
+	visible = _visible;
 }
 
 void window::init_draw()
@@ -258,50 +258,50 @@ void window::finish_draw()
 
 docker *window::docked_to()
 {
-	return this->dock;
+	return dock;
 }
 
 void window::dock_to(docker *new_dock)
 {
-	this->dock = new_dock;
+	dock = new_dock;
 
 }
 
 bool window::is_docked()
 {
-	return this->dock != nullptr;
+	return dock != nullptr;
 }
 
 ImGuiWindow* window::get_imgui_window()
 {
-	return ImGui::FindWindowByName(this->title);
+	return ImGui::FindWindowByName(title);
 }
 
 bool window::is_collapsed()
 {
-	ImGuiWindow *imgui_window = this->get_imgui_window();
+	ImGuiWindow *imgui_window = get_imgui_window();
 	return imgui_window ? imgui_window->Collapsed : false;
 }
 
 background_window::background_window(const char* _title) : window(_title)
 {
-	this->allow_inputs(true);
-	this->allow_mouse_scroll(false);
-	this->allow_resize(false);
-	this->allow_move(false);
-	this->always_horizontal_scrollbar(false);
-	this->always_vertical_scrollbar(false);
-	this->save_settings(true);
-	this->auto_resize(false);
-	this->focus_on_appearing(false);
-	this->horizontal_scrollbar(false);
-	this->show(true);
-	this->show_border(false);
-	this->show_menu(false);
-	this->show_scrollbar(false);
-	this->show_title(false);
-	this->to_front_on_focus(false);
-	this->use_window_padding(false);
+	allow_inputs(true);
+	allow_mouse_scroll(false);
+	allow_resize(false);
+	allow_move(false);
+	always_horizontal_scrollbar(false);
+	always_vertical_scrollbar(false);
+	save_settings(true);
+	auto_resize(false);
+	focus_on_appearing(false);
+	horizontal_scrollbar(false);
+	show(true);
+	show_border(false);
+	show_menu(false);
+	show_scrollbar(false);
+	show_title(false);
+	to_front_on_focus(false);
+	use_window_padding(false);
 }
 
 background_window::~background_window()
@@ -314,7 +314,7 @@ void background_window::init_draw()
 	ImGuiStyle &style = ImGui::GetStyle();
 	ImVec4 color(0.0f, 0.0f, 0.0f, 0.0f);
 	
-	this->save_style(style);
+	save_style(style);
 	style.Colors[ImGuiCol_WindowBg] = color;
 	style.WindowPadding.x = 0.0f;
 	style.WindowPadding.y = 0.0f;
@@ -323,23 +323,23 @@ void background_window::init_draw()
 void background_window::finish_draw()
 {
 	ImGuiStyle &style = ImGui::GetStyle();
-	this->restore_style(style);
+	restore_style(style);
 }
 
 #pragma region private methods
 
 void background_window::save_style(ImGuiStyle& style)
 {
-	this->normal_window_background = style.Colors[ImGuiCol_WindowBg];
-	this->normal_window_padding.x = style.WindowPadding.x;
-	this->normal_window_padding.y = style.WindowPadding.y;
+	normal_window_background = style.Colors[ImGuiCol_WindowBg];
+	normal_window_padding.x = style.WindowPadding.x;
+	normal_window_padding.y = style.WindowPadding.y;
 }
 
 void background_window::restore_style(ImGuiStyle& style)
 {
-	style.Colors[ImGuiCol_WindowBg] = this->normal_window_background;
-	style.WindowPadding.x = this->normal_window_padding.x;
-	style.WindowPadding.y = this->normal_window_padding.y;
+	style.Colors[ImGuiCol_WindowBg] = normal_window_background;
+	style.WindowPadding.x = normal_window_padding.x;
+	style.WindowPadding.y = normal_window_padding.y;
 }
 
 #pragma endregion
