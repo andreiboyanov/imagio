@@ -39,6 +39,8 @@ class docker: public background_window {
 	dock_painter* painter;
 	bool border_hovered = false;
 	bool border_held = false;
+	bool fill = true;
+
 	void fit_window(window* _window);
 
 public:
@@ -56,8 +58,10 @@ public:
 	void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	void adjust(ImRect* client_window);
 	void draw(dock_draw_mode mode);
+	void fill_free_space(bool _fill);
 	virtual void draw();
 	virtual void draw_imgui();
+	
 
 protected:
 	void set_min_width();

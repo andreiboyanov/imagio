@@ -88,10 +88,6 @@ public:
 		show_scrollbar(false);
 		allow_collapse(true);
 		show_menu(false);
-		position.x = 100.0f;
-		position.y = 100.0f;
-		size.x = 100.0f;
-		size.y = 100.0f;
 	}
 
 	void draw() {
@@ -121,10 +117,10 @@ void init()
 	workspace.add_dock(&dock_fill);
 
 	dock_left.add_window(&window1);
-	dock_top.add_window(&window3);
+	dock_bottom.add_window(&window3);
 	dock_bottom.add_window(&window2);
 	dock_right.add_window(&window4);
-	dock_fill.add_window(&window5);
+	dock_left.add_window(&window5);
 
 	workspace.add_window(&window1);
 	workspace.add_window(&window2);

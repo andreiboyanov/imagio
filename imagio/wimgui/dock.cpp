@@ -57,6 +57,11 @@ void docker::add_window(window *_window)
 	// fit_window(_window);
 }
 
+void docker::fill_free_space(bool _fill)
+{
+	fill = _fill;
+}
+
 void docker::fit_window(window* _window)
 {
 	bool need_repositioning = false;
@@ -282,6 +287,13 @@ void dock_left_painter::adjust()
 
 		last_y += window_height;
 	}
+
+	if (dock->fill)
+	{
+		window* last_window = dock->windows[dock->windows.size() - 1];
+		last_window->set_height(dock->position.y + dock->size.y -
+									last_window->get_position().y);
+	}
 }
 
 float dock_left_painter::get_inner_width()
@@ -347,6 +359,13 @@ void dock_bottom_painter::adjust()
 
 		last_x += window_width;
 	}
+
+	if (dock->fill)
+	{
+		window* last_window = dock->windows[dock->windows.size() - 1];
+		last_window->set_width(dock->position.x + dock->size.x -
+									last_window->get_position().x);
+	}
 }
 
 float dock_bottom_painter::get_inner_width()
@@ -410,6 +429,13 @@ void dock_top_painter::adjust()
 			window->set_width(window_width);
 
 		last_x += window_width;
+	}
+
+	if (dock->fill)
+	{
+		window* last_window = dock->windows[dock->windows.size() - 1];
+		last_window->set_width(dock->position.x + dock->size.x -
+									last_window->get_position().x);
 	}
 }
 
@@ -477,6 +503,12 @@ void dock_right_painter::adjust()
 			window->set_height(window_height);
 
 		last_y += window_height;
+	}
+	if (dock->fill)
+	{
+		window* last_window = dock->windows[dock->windows.size() - 1];
+		last_window->set_height(dock->position.y + dock->size.y -
+									last_window->get_position().y);
 	}
 }
 
