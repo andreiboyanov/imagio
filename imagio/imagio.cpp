@@ -73,7 +73,7 @@ public:
 	}
 
 	void draw() {
-		ImGui::Text("Hello, forth world!");
+		ImGui::Text("Hello, fourth world!");
 	}
 };
 
