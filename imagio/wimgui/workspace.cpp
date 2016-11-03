@@ -49,7 +49,7 @@ ImRect* workspace::get_client_area()
 	client->Min.x = 0.0f;
 	client->Min.y = top;
 	client->Max.x = context.IO.DisplaySize.x;
-	client->Max.y =	context.IO.DisplaySize.y;
+	client->Max.y = context.IO.DisplaySize.y;
 	return client;
 }
 
@@ -72,10 +72,57 @@ void workspace::draw_workspace()
 
 	draw();
 
-	for (auto _window: windows)
+	for (auto _window : windows)
 	{
-		if (!_window->is_docked())
+		if (_window->is_docked())
+		{
+			check_undocking(_window);
+		}
+		else
+		{
+			check_docking(_window);
 			_window->draw_imgui();
+		}
+	}
+}
+
+void workspace::check_undocking(window* _window)
+{
+	docker* dock = _window->docked_to();
+	if (!dock)
+		return;
+	ImGuiWindow* imgui_dock = dock->get_imgui_window();
+	ImGuiWindow* imgui_window = _window->get_imgui_window();
+
+	if (imgui_dock && imgui_window && _window->is_moving())
+	{
+		if (!(imgui_dock->Rect().Overlaps(imgui_window->Rect())))
+		{
+			dock->remove_window(_window);
+		}
+	}
+}
+
+void workspace::check_docking(window* _window)
+{
+	if (_window->is_moving())
+	{
+		for (auto dock : docks)
+		{
+			ImGuiWindow* imgui_dock = dock->get_imgui_window();
+			ImGuiWindow* imgui_window = _window->get_imgui_window();
+
+			if (imgui_dock && imgui_window && _window->is_moving())
+			{
+				ImGuiContext& context = *GImGui;
+				if (imgui_dock->Rect().Contains(context.IO.MousePos))
+				{
+					dock->add_window(_window);
+					break;
+				}
+			}
+
+		}
 	}
 }
 

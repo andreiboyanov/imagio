@@ -67,7 +67,7 @@ void docker::fit_window(window* _window)
 	bool need_repositioning = false;
 	ImVec2 window_position = _window->get_position();
 	float x = window_position.x, y = window_position.y;
-	
+
 	if (x < position.x)
 	{
 		x = position.x;
@@ -85,6 +85,7 @@ void docker::fit_window(window* _window)
 void docker::remove_window(window *_window)
 {
 	_window->dock_to(nullptr);
+	windows.remove(_window);
 }
 
 float docker::get_inner_width()
@@ -225,12 +226,12 @@ void dock_painter::draw_border2(ImColor color, ImRect border_rectangle)
 
 float dock_painter::get_border_width()
 {
-	return (dock->border_hovered || dock->border_held) ?  hover_delta : 2.0f;
+	return (dock->border_hovered || dock->border_held) ? hover_delta : 2.0f;
 }
 
 float dock_painter::get_border_width(dock_draw_mode mode)
 {
-	return (mode == draw_hovered || mode == draw_resizing) ?  hover_delta : 2.0f;
+	return (mode == draw_hovered || mode == draw_resizing) ? hover_delta : 2.0f;
 }
 
 
@@ -275,6 +276,7 @@ void dock_left_painter::adjust()
 	}
 	if (!dock->windows.size())
 		return;
+
 	float last_y = dock->get_position().y;
 	for (auto window : dock->windows)
 	{
@@ -290,9 +292,9 @@ void dock_left_painter::adjust()
 
 	if (dock->fill)
 	{
-		window* last_window = dock->windows[dock->windows.size() - 1];
+		window* last_window = dock->windows.back();
 		last_window->set_height(dock->position.y + dock->size.y -
-									last_window->get_position().y);
+			last_window->get_position().y);
 	}
 }
 
@@ -347,6 +349,7 @@ void dock_bottom_painter::adjust()
 	}
 	if (!dock->windows.size())
 		return;
+
 	float last_x = dock->get_position().x;
 	for (auto window : dock->windows)
 	{
@@ -362,7 +365,7 @@ void dock_bottom_painter::adjust()
 
 	if (dock->fill)
 	{
-		window* last_window = dock->windows[dock->windows.size() - 1];
+		window* last_window = dock->windows.back();
 		last_window->set_width(dock->position.x + dock->size.x -
 									last_window->get_position().x);
 	}
@@ -394,9 +397,9 @@ ImRect dock_top_painter::get_border_rectangle(dock_draw_mode mode)
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
 	return ImRect(position.x,
-					position.y + size.y - window_extra_area,
-					position.x + size.x,
-					position.y + size.y - window_extra_area + line_width);
+		position.y + size.y - window_extra_area,
+		position.x + size.x,
+		position.y + size.y - window_extra_area + line_width);
 }
 
 void dock_top_painter::adjust(ImRect* client_window)
@@ -405,7 +408,7 @@ void dock_top_painter::adjust(ImRect* client_window)
 	dock->set_width(client_window->Max.x - dock->position.x);
 	adjust();
 	client_window->Min.y = dock->position.y + dock->size.y -
-					window_extra_area + get_border_width();
+		window_extra_area + get_border_width();
 }
 
 // FIXME: Need intermediate dock_horizontal_painter
@@ -418,6 +421,7 @@ void dock_top_painter::adjust()
 	}
 	if (!dock->windows.size())
 		return;
+
 	float last_x = dock->position.x;
 	for (auto window : dock->windows)
 	{
@@ -433,7 +437,7 @@ void dock_top_painter::adjust()
 
 	if (dock->fill)
 	{
-		window* last_window = dock->windows[dock->windows.size() - 1];
+		window* last_window = dock->windows.back();
 		last_window->set_width(dock->position.x + dock->size.x -
 									last_window->get_position().x);
 	}
@@ -468,19 +472,19 @@ ImRect dock_right_painter::get_border_rectangle(dock_draw_mode mode)
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
 	return ImRect(position.x + window_extra_area - line_width,
-			position.y,
-			position.x + window_extra_area,
-			position.y + size.y);
+		position.y,
+		position.x + window_extra_area,
+		position.y + size.y);
 }
 
 void dock_right_painter::adjust(ImRect* client_window)
 {
 	dock->set_position(client_window->Max.x - dock->size.x,
-						client_window->Min.y);
+		client_window->Min.y);
 	dock->set_height(client_window->GetHeight());
 	adjust();
 	client_window->Max.x = dock->position.x + window_extra_area -
-							get_border_width();
+		get_border_width();
 }
 
 // FIXME: Needs intermediate class vertical_dock
@@ -490,8 +494,10 @@ void dock_right_painter::adjust()
 		sleep--;
 		return;
 	}
+
 	if (!dock->windows.size())
 		return;
+
 	float last_y = dock->position.y;
 	for (auto window : dock->windows)
 	{
@@ -506,9 +512,9 @@ void dock_right_painter::adjust()
 	}
 	if (dock->fill)
 	{
-		window* last_window = dock->windows[dock->windows.size() - 1];
+		window* last_window = dock->windows.back();
 		last_window->set_height(dock->position.y + dock->size.y -
-									last_window->get_position().y);
+			last_window->get_position().y);
 	}
 }
 
@@ -548,9 +554,9 @@ void dock_fill_painter::adjust()
 	}
 	if (!dock->windows.size())
 		return;
+
 	for (auto window : dock->windows)
 	{
-		
 		if (!window->is_collapsed())
 			window->set_height(window->get_current_height());
 		window->set_width(window->get_current_width());
@@ -577,10 +583,10 @@ void dock_fill_painter::adjust()
 		position = window->get_position();
 		if (position.x + window->get_width() > dock->position.x + dock->size.x)
 			window->set_width(dock->position.x + dock->size.x -
-								position.x);
+			position.x);
 		if (position.y + window->get_height() > dock->position.y + dock->size.y)
 			window->set_height(dock->position.y + dock->size.y -
-								position.y);
+			position.y);
 	}
 }
 

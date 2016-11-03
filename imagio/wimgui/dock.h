@@ -3,7 +3,7 @@
 #ifndef WIMGUI_DOCK_H
 #define WIMGUI_DOCK_H
 
-#include <vector>
+#include <list>
 #include "../imgui/imgui.h"
 #include "window.h"
 #include "workspace.h"
@@ -34,7 +34,7 @@ class docker: public background_window {
 	friend class dock_right_painter;
 	friend class dock_fill_painter;
 
-	std::vector<window *> windows;
+	std::list<window *> windows;
 	dock_style style = dock_left;
 	dock_painter* painter;
 	bool border_hovered = false;

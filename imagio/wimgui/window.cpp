@@ -228,6 +228,15 @@ void window::draw_imgui()
 		init_draw();
 		if (!is_moving())
 			ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
+		else
+		{
+			ImGuiWindow* imgui_window = get_imgui_window();
+			if (imgui_window)
+			{
+				ImVec2 imgui_position = get_imgui_window()->Pos;
+				set_position(imgui_position.x, imgui_position.y);
+			}
+		}
 		ImGui::SetNextWindowSize(size, ImGuiSetCond_Always);
 		ImGui::Begin(title, &visible, flags);
 		draw();
