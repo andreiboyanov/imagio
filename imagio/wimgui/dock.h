@@ -28,10 +28,12 @@ const float window_extra_area = 20.0f;
 class docker: public background_window {
 
 	friend class dock_painter;
+	friend class dock_vertical_painter;
 	friend class dock_left_painter;
-	friend class dock_bottom_painter;
-	friend class dock_top_painter;
 	friend class dock_right_painter;
+	friend class dock_horizontal_painter;
+	friend class dock_top_painter;
+	friend class dock_bottom_painter;
 	friend class dock_fill_painter;
 
 	std::list<window *> windows;
@@ -40,8 +42,6 @@ class docker: public background_window {
 	bool border_hovered = false;
 	bool border_held = false;
 	bool fill = true;
-
-	void fit_window(window* _window);
 
 public:
 
@@ -80,6 +80,7 @@ public:
 	dock_painter(docker* dock);
     virtual ~dock_painter();
 	virtual ImRect get_border_rectangle(dock_draw_mode mode) = 0;
+	virtual ImRect get_inner_rectangle() = 0;
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position) = 0;
 	virtual void adjust() = 0;
 	virtual void adjust(ImRect* window_area) = 0;
@@ -90,72 +91,86 @@ public:
 	virtual void draw_border2(ImColor color, ImRect border_rectangle);
 	virtual float get_border_width(dock_draw_mode mode);
 	virtual float get_border_width();
+	virtual void make_space(window* new_window) = 0;
 };
 
 
-class dock_left_painter : public dock_painter
+class dock_vertical_painter: public dock_painter
 {
-
 public:
-	dock_left_painter(docker* _dock) : dock_painter(_dock) {};
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
-	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
+	dock_vertical_painter(docker* _dock) : dock_painter(_dock) {};
 	virtual void adjust();
-	virtual void adjust(ImRect* client_window);
 	virtual float get_inner_width();
 	virtual float get_inner_height();
+	virtual void make_space(window* new_window);
 };
 
-class dock_bottom_painter : public dock_painter
-{
 
+class dock_left_painter : public dock_vertical_painter
+{
 public:
-	dock_bottom_painter(docker* _dock) : dock_painter(_dock) {};
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
-	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
-	virtual void adjust();
+	dock_left_painter(docker* _dock) : dock_vertical_painter(_dock) {};
 	virtual void adjust(ImRect* client_window);
-	virtual float get_inner_width();
-	virtual float get_inner_height();
+	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_inner_rectangle();
+	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 };
 
-class dock_top_painter : public dock_painter
-{
 
+class dock_right_painter : public dock_vertical_painter
+{
 public:
-	dock_top_painter(docker* _dock) : dock_painter(_dock) {};
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
-	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
-	virtual void adjust();
+	dock_right_painter(docker* _dock) : dock_vertical_painter(_dock) {};
 	virtual void adjust(ImRect* client_window);
-	virtual float get_inner_width();
-	virtual float get_inner_height();
+	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_inner_rectangle();
+	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 };
 
-class dock_right_painter : public dock_painter
-{
 
+class dock_horizontal_painter: public dock_painter
+{
 public:
-	dock_right_painter(docker* _dock) : dock_painter(_dock) {};
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
-	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
+	dock_horizontal_painter(docker* _dock) : dock_painter(_dock) {};
 	virtual void adjust();
-	virtual void adjust(ImRect* client_window);
 	virtual float get_inner_width();
 	virtual float get_inner_height();
+	virtual void make_space(window* new_window);
+};
+
+
+class dock_bottom_painter : public dock_horizontal_painter
+{
+public:
+	dock_bottom_painter(docker* _dock) : dock_horizontal_painter(_dock) {};
+	virtual void adjust(ImRect* client_window);
+	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_inner_rectangle();
+	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
+};
+
+class dock_top_painter : public dock_horizontal_painter
+{
+public:
+	dock_top_painter(docker* _dock) : dock_horizontal_painter(_dock) {};
+	virtual void adjust(ImRect* client_window);
+	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_inner_rectangle();
+	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 };
 
 class dock_fill_painter : public dock_painter
 {
-
 public:
 	dock_fill_painter(docker* _dock) : dock_painter(_dock) {};
 	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_inner_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	virtual void adjust();
 	virtual void adjust(ImRect* client_window);
 	virtual float get_inner_width();
 	virtual float get_inner_height();
+	virtual void make_space(window* new_window);
 };
 
 }

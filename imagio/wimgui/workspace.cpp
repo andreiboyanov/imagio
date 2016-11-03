@@ -96,9 +96,14 @@ void workspace::check_undocking(window* _window)
 
 	if (imgui_dock && imgui_window && _window->is_moving())
 	{
-		if (!(imgui_dock->Rect().Overlaps(imgui_window->Rect())))
+		ImGuiContext& context = *GImGui;
+		ImVec2 mouse_position = context.IO.MousePos;
+		if (!(imgui_dock->Rect().Contains(mouse_position)))
 		{
 			dock->remove_window(_window);
+			ImVec2 position = _window->get_position();
+			_window->set_size((mouse_position.x - position.x) * 2,
+								(mouse_position.y - position.y) * 2);
 		}
 	}
 }

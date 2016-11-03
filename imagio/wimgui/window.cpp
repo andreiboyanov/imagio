@@ -226,9 +226,8 @@ void window::draw_imgui()
 	if (visible)
 	{
 		init_draw();
-		if (!is_moving())
-			ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
-		else
+
+		if (is_moving())
 		{
 			ImGuiWindow* imgui_window = get_imgui_window();
 			if (imgui_window)
@@ -237,7 +236,12 @@ void window::draw_imgui()
 				set_position(imgui_position.x, imgui_position.y);
 			}
 		}
+		else
+		{
+			ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
+		}
 		ImGui::SetNextWindowSize(size, ImGuiSetCond_Always);
+
 		ImGui::Begin(title, &visible, flags);
 		draw();
 		finish_draw();
@@ -298,6 +302,14 @@ bool window::is_moving()
 	ImGuiWindow* imgui_window = get_imgui_window();
 	ImGuiContext& context = *GImGui;
 	return (context.MovedWindow == imgui_window);
+}
+
+// FIXME: Not good this method
+bool window::is_resizing()
+{
+	ImGuiContext& context = *GImGui;
+    return (context.MouseCursor == ImGuiMouseCursor_ResizeNWSE);
+
 }
 
 background_window::background_window(const char* _title) : window(_title)
