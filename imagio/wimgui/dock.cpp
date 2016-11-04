@@ -277,6 +277,7 @@ void dock_vertical_painter::make_space(window* new_window)
 		last_window->set_height(50.0f);
 		new_window->set_height(last_height - 50.0f);
 	}
+	sleep += 2;
 }
 
 #pragma endregion
@@ -411,9 +412,23 @@ float dock_horizontal_painter::get_inner_height()
 	return dock->get_height() - window_extra_area;
 }
 
-void dock_horizontal_painter::make_space(window*)
+void dock_horizontal_painter::make_space(window* new_window)
 {
-
+	if (!dock->windows.size())
+		return;
+	float new_width = new_window->get_width();
+	window* last_window = dock->windows.back();
+	float last_width = last_window->get_width();
+	if (last_width > new_width + 50.0f)
+	{
+		last_window->set_width(last_width - new_width);
+	}
+	else
+	{
+		last_window->set_width(50.0f);
+		new_window->set_height(last_width - 50.0f);
+	}
+	sleep += 2;
 }
 
 #pragma endregion
