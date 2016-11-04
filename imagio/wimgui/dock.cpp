@@ -286,9 +286,9 @@ void dock_vertical_painter::make_space(window* new_window)
 
 void dock_left_painter::resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position)
 {
-	dock->set_width(mouse_position.x +
-		-mouse_clicked_position.x +
-		window_extra_area);
+	dock->set_width(mouse_position.x -
+		mouse_clicked_position.x +
+		window_extra_area - dock->position.x);
 }
 
 ImRect dock_left_painter::get_border_rectangle(dock_draw_mode mode)
