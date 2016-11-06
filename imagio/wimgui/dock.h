@@ -86,6 +86,7 @@ public:
 	virtual void adjust(ImRect* window_area) = 0;
 	virtual float get_inner_width() = 0;
 	virtual float get_inner_height() = 0;
+    virtual void draw_window_collapsed(window* _window) = 0;
 	virtual void draw_border(dock_draw_mode mode);
 	virtual void draw_border2(ImColor color, ImVec2 from, ImVec2 to, float line_width);
 	virtual void draw_border2(ImColor color, ImRect border_rectangle);
@@ -103,6 +104,7 @@ public:
 	virtual float get_inner_width();
 	virtual float get_inner_height();
 	virtual void make_space(window* new_window);
+    virtual void draw_window_collapsed(window* _window);
 };
 
 
@@ -136,6 +138,7 @@ public:
 	virtual float get_inner_width();
 	virtual float get_inner_height();
 	virtual void make_space(window* new_window);
+    virtual void draw_window_collapsed(window* _window);
 };
 
 
@@ -171,6 +174,7 @@ public:
 	virtual float get_inner_width();
 	virtual float get_inner_height();
 	virtual void make_space(window* new_window);
+    virtual void draw_window_collapsed(window* _window);
 };
 
 }

@@ -88,7 +88,10 @@ void docker::draw_imgui()
 	background_window::draw_imgui();
 	for (auto _window : windows)
 	{
-		_window->draw_imgui();
+        if(_window->is_collapsed())
+            painter->draw_window_collapsed(_window);
+        else
+		    _window->draw_imgui();
 	}
 }
 
@@ -97,7 +100,7 @@ void docker::draw()
 	ImGuiContext& context = *GImGui;
 	const ImRect border = painter->get_border_rectangle(draw_hovered);
 	ImGui::ButtonBehavior(border,
-		get_imgui_window()->GetID("#DOCK_RESIZE"),
+		get_imgui_window()->GetID("#RESIZE"),
 		&(border_hovered), &(border_held),
 		ImGuiButtonFlags_FlattenChilds);
 
@@ -280,6 +283,11 @@ void dock_vertical_painter::make_space(window* new_window)
 	sleep += 2;
 }
 
+void dock_vertical_painter::draw_window_collapsed(window* _window)
+{
+
+}
+
 #pragma endregion
 
 
@@ -429,6 +437,11 @@ void dock_horizontal_painter::make_space(window* new_window)
 		new_window->set_height(last_width - 50.0f);
 	}
 	sleep += 2;
+}
+
+void dock_horizontal_painter::draw_window_collapsed(window* _window)
+{
+
 }
 
 #pragma endregion
@@ -607,6 +620,12 @@ void dock_fill_painter::resize(ImVec2, ImVec2)
 {
 
 }
+
+void dock_fill_painter::draw_window_collapsed(window* _window)
+{
+
+}
+
 #pragma endregion
 
 }

@@ -236,14 +236,11 @@ void window::draw_imgui()
 				set_position(imgui_position.x, imgui_position.y);
 			}
 		}
-        else if (!is_docked() && is_resizing())
-        {
-            // set_size(get_current_width(), get_current_height());
-        }
 		else
 		{
 			ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
 		}
+
 		ImGui::SetNextWindowSize(size, ImGuiSetCond_Always);
 
 		ImGui::Begin(title, &visible, flags);
@@ -308,9 +305,12 @@ bool window::is_moving()
 	return (context.MovedWindow == imgui_window);
 }
 
+// FIXME: Isn't working properly...
 bool window::is_resizing()
 {
     ImGuiWindow* imgui_window = get_imgui_window();
+    if (!imgui_window)
+        return false;
 	ImGuiContext& context = *GImGui;
     const float window_rounding = context.Style.WindowRounding;
     const float resize_corner_size = ImMax(context.FontSize * 1.35f,
@@ -321,7 +321,7 @@ bool window::is_resizing()
     const ImRect resize_rectangle(corner.x - resize_corner_size * 0.75f,
                                   corner.y - resize_corner_size * 0.75f,
                                   corner.x, corner.y);
-    const ImGuiID resize_id = imgui_window->GetID("#CHECK_RESIZE");
+    const ImGuiID resize_id = imgui_window->GetID("#CHECK");
     bool hovered, held;
     ImGui::ButtonBehavior(resize_rectangle, resize_id, &hovered, &held,
                           ImGuiButtonFlags_FlattenChilds);
