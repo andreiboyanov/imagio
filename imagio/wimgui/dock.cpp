@@ -97,7 +97,7 @@ void docker::draw()
 	ImGuiContext& context = *GImGui;
 	const ImRect border = painter->get_border_rectangle(draw_hovered);
 	ImGui::ButtonBehavior(border,
-		get_imgui_window()->GetID("#RESIZE"),
+		get_imgui_window()->GetID("#DOCK_RESIZE"),
 		&(border_hovered), &(border_held),
 		ImGuiButtonFlags_FlattenChilds);
 

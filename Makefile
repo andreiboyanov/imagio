@@ -17,7 +17,7 @@ EXES                  = imagio.exe
 WARNINGS			  = -Wall -Wshadow -Wpointer-arith \
 						-Wwrite-strings -Wno-unknown-pragmas -Werror
 CEXTRA                = $(WARNINGS) -Wbad-function-cast
-CXXEXTRA              = -std=c++11 $(WARNINGS)
+CXXEXTRA              = -std=c++11 $(WARNINGS) -ggdb -g3
 RCEXTRA               =
 DEFINES               =
 INCLUDE_PATH          = -I/usr/local/include -Iimagio/libs/gl3w

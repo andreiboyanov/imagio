@@ -104,7 +104,7 @@ window_five window5("Fifth window");
 wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
 wimgui::docker dock_bottom("##DOCK BOTTOM", wimgui::dock_bottom);
 wimgui::docker dock_top("##DOCK TOP", wimgui::dock_top);
-wimgui::docker dock_right("##DOCK RIGHT", wimgui::dock_top);
+wimgui::docker dock_right("##DOCK RIGHT", wimgui::dock_right);
 wimgui::docker dock_fill("##DOCK_FILL", wimgui::dock_fill);
 
 
@@ -114,7 +114,7 @@ void init()
 	workspace.add_dock(&dock_left);
 	workspace.add_dock(&dock_top);
 	workspace.add_dock(&dock_right);
-	workspace.add_dock(&dock_fill);
+	workspace.add_dock(&dock_top);
 
 	dock_left.add_window(&window1);
 	dock_bottom.add_window(&window3);

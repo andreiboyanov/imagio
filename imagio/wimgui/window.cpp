@@ -236,6 +236,10 @@ void window::draw_imgui()
 				set_position(imgui_position.x, imgui_position.y);
 			}
 		}
+        else if (!is_docked() && is_resizing())
+        {
+            // set_size(get_current_width(), get_current_height());
+        }
 		else
 		{
 			ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
@@ -304,12 +308,24 @@ bool window::is_moving()
 	return (context.MovedWindow == imgui_window);
 }
 
-// FIXME: Not good this method
 bool window::is_resizing()
 {
+    ImGuiWindow* imgui_window = get_imgui_window();
 	ImGuiContext& context = *GImGui;
-    return (context.MouseCursor == ImGuiMouseCursor_ResizeNWSE);
-
+    const float window_rounding = context.Style.WindowRounding;
+    const float resize_corner_size = ImMax(context.FontSize * 1.35f,
+                                           window_rounding +
+                                                1.0f +
+                                                context.FontSize * 0.2f);
+    ImVec2 corner = imgui_window->Rect().GetBR();
+    const ImRect resize_rectangle(corner.x - resize_corner_size * 0.75f,
+                                  corner.y - resize_corner_size * 0.75f,
+                                  corner.x, corner.y);
+    const ImGuiID resize_id = imgui_window->GetID("#CHECK_RESIZE");
+    bool hovered, held;
+    ImGui::ButtonBehavior(resize_rectangle, resize_id, &hovered, &held,
+                          ImGuiButtonFlags_FlattenChilds);
+    return held;
 }
 
 background_window::background_window(const char* _title) : window(_title)
