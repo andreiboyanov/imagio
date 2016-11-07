@@ -88,17 +88,17 @@ void docker::draw_imgui()
 	background_window::draw_imgui();
 	for (auto _window : windows)
 	{
-        if(_window->is_collapsed())
-            painter->draw_window_collapsed(_window);
-        else
-		    _window->draw_imgui();
+		if (_window->is_collapsed())
+			painter->draw_window_collapsed(_window);
+		else
+			_window->draw_imgui();
 	}
 }
 
 void docker::draw()
 {
 	ImGuiContext& context = *GImGui;
-	const ImRect border = painter->get_border_rectangle(draw_hovered);
+	const ImRect border = painter->get_border_rectangle();
 	ImGui::ButtonBehavior(border,
 		get_imgui_window()->GetID("#RESIZE"),
 		&(border_hovered), &(border_held),
@@ -123,7 +123,8 @@ void docker::draw()
 
 void docker::draw(dock_draw_mode mode)
 {
-	painter->draw_border(mode);
+	current_draw_mode = mode;
+	painter->draw_border();
 }
 
 void docker::adjust(ImRect* client_window)
@@ -161,23 +162,24 @@ dock_painter::~dock_painter()
 
 }
 
-void dock_painter::draw_border(dock_draw_mode mode)
+void dock_painter::draw_border()
 {
+	dock_draw_mode mode = dock->current_draw_mode;
 	switch (mode)
 	{
 	case draw_normal:
 	{
-		draw_border2(ImGui::GetColorU32(ImGuiCol_ResizeGrip), get_border_rectangle(mode));
+		draw_border2(ImGui::GetColorU32(ImGuiCol_ResizeGrip), get_border_rectangle());
 		break;
 	}
 	case draw_hovered:
 	{
-		draw_border2(ImGui::GetColorU32(ImGuiCol_ResizeGripHovered), get_border_rectangle(mode));
+		draw_border2(ImGui::GetColorU32(ImGuiCol_ResizeGripHovered), get_border_rectangle());
 		break;
 	}
 	case draw_resizing:
 	{
-		draw_border2(ImGui::GetColorU32(ImGuiCol_ResizeGripActive), get_border_rectangle(mode));
+		draw_border2(ImGui::GetColorU32(ImGuiCol_ResizeGripActive), get_border_rectangle());
 		break;
 	}
 	case draw_none:
@@ -209,14 +211,24 @@ void dock_painter::draw_border2(ImColor color, ImRect border_rectangle)
 
 float dock_painter::get_border_width()
 {
-	return (dock->border_hovered || dock->border_held) ? hover_delta : 2.0f;
-}
-
-float dock_painter::get_border_width(dock_draw_mode mode)
-{
+	dock_draw_mode mode = dock->current_draw_mode;
 	return (mode == draw_hovered || mode == draw_resizing) ? hover_delta : 2.0f;
 }
 
+float dock_painter::get_tabbar_height()
+{
+	ImGuiWindow* imgui_window = dock->get_imgui_window();
+	if (!imgui_window)
+		return 0.0f;
+	float height = imgui_window->CalcFontSize()
+		+ GImGui->Style.FramePadding.y * 2.0f;
+	return height;
+}
+
+ImRect dock_painter::get_outer_rectangle()
+{
+	return dock->get_imgui_window()->Rect();
+}
 
 #pragma endregion
 
@@ -256,7 +268,7 @@ void dock_vertical_painter::adjust()
 
 float dock_vertical_painter::get_inner_width()
 {
-	return dock->get_width() - window_extra_area;
+	return dock->get_width() - get_tabbar_height();
 }
 
 float dock_vertical_painter::get_inner_height()
@@ -283,7 +295,7 @@ void dock_vertical_painter::make_space(window* new_window)
 	sleep += 2;
 }
 
-void dock_vertical_painter::draw_window_collapsed(window* _window)
+void dock_vertical_painter::draw_window_collapsed(window*)
 {
 
 }
@@ -295,19 +307,19 @@ void dock_vertical_painter::draw_window_collapsed(window* _window)
 
 void dock_left_painter::resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position)
 {
-	dock->set_width(mouse_position.x -
-		mouse_clicked_position.x +
-		window_extra_area - dock->position.x);
+	dock->set_width(mouse_position.x +
+		mouse_clicked_position.x -
+		dock->position.x);
 }
 
-ImRect dock_left_painter::get_border_rectangle(dock_draw_mode mode)
+ImRect dock_left_painter::get_border_rectangle()
 {
-	float line_width = get_border_width(mode);
+	float border_width = get_border_width();
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
-	return ImRect(position.x + size.x - window_extra_area,
+	return ImRect(position.x + size.x - border_width,
 		position.y,
-		position.x + size.x - window_extra_area + line_width,
+		position.x + size.x,
 		position.y + size.y);
 }
 
@@ -315,9 +327,19 @@ ImRect dock_left_painter::get_inner_rectangle()
 {
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
-	return ImRect(position.x, position.y,
-		position.x + size.x - window_extra_area,
+	float tabbar_width = get_tabbar_height();
+	return ImRect(position.x + tabbar_width, position.y,
+		position.x + size.x - get_border_width(),
 		position.y + size.y);
+}
+
+ImRect dock_left_painter::get_tabbar_rectangle()
+{
+	ImVec2 position = dock->position;
+	return ImRect(position.x, position.y,
+		position.x + get_tabbar_height(),
+		position.y + dock->size.y);
+
 }
 
 void dock_left_painter::adjust(ImRect* client_window)
@@ -325,9 +347,7 @@ void dock_left_painter::adjust(ImRect* client_window)
 	dock->set_position(client_window->Min.x, client_window->Min.y);
 	dock->set_height(client_window->GetHeight());
 	dock_vertical_painter::adjust();
-	client_window->Min.x = dock->get_width() +
-		dock->get_position().x -
-		window_extra_area + get_border_width();
+	client_window->Min.x = dock->position.x + dock->size.x;
 }
 
 #pragma endregion
@@ -338,31 +358,39 @@ void dock_left_painter::adjust(ImRect* client_window)
 void dock_right_painter::resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position)
 {
 	float initial_x = dock->position.x;
-	dock->position.x = mouse_position.x +
-		mouse_clicked_position.x -
-		window_extra_area;
+	dock->position.x = mouse_position.x - mouse_clicked_position.x;
 	dock->size.x += initial_x - dock->position.x;
 }
 
-ImRect dock_right_painter::get_border_rectangle(dock_draw_mode mode)
+ImRect dock_right_painter::get_border_rectangle()
 {
-	float line_width = get_border_width(mode);
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
-	return ImRect(position.x + window_extra_area - line_width,
-		position.y,
-		position.x + window_extra_area,
-		position.y + size.y);
+	return ImRect(position.x, position.y,
+					position.x + get_border_width(),
+					position.y + size.y);
 }
 
 ImRect dock_right_painter::get_inner_rectangle()
 {
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
-	return ImRect(position.x + window_extra_area, position.y,
-		position.x + size.x,
-		position.y + size.y);
+	return ImRect(position.x + get_border_width(), position.y,
+					position.x + size.x - get_tabbar_height(),
+					position.y + size.y);
 }
+
+ImRect dock_right_painter::get_tabbar_rectangle()
+{
+	ImVec2 position = dock->position;
+	ImVec2 size = dock->size;
+	return ImRect(position.x + size.x - get_tabbar_height(),
+					position.y,
+					position.x + size.x,
+					position.y + dock->size.y);
+
+}
+
 
 void dock_right_painter::adjust(ImRect* client_window)
 {
@@ -370,8 +398,7 @@ void dock_right_painter::adjust(ImRect* client_window)
 					   client_window->Min.y);
 	dock->set_height(client_window->GetHeight());
 	dock_vertical_painter::adjust();
-	client_window->Max.x = dock->position.x +
-		window_extra_area - get_border_width();
+	client_window->Max.x = dock->position.x;
 }
 
 #pragma endregion
@@ -417,7 +444,7 @@ float dock_horizontal_painter::get_inner_width()
 
 float dock_horizontal_painter::get_inner_height()
 {
-	return dock->get_height() - window_extra_area;
+	return dock->get_height() - get_tabbar_height();
 }
 
 void dock_horizontal_painter::make_space(window* new_window)
@@ -439,7 +466,7 @@ void dock_horizontal_painter::make_space(window* new_window)
 	sleep += 2;
 }
 
-void dock_horizontal_painter::draw_window_collapsed(window* _window)
+void dock_horizontal_painter::draw_window_collapsed(window*)
 {
 
 }
@@ -451,28 +478,39 @@ void dock_horizontal_painter::draw_window_collapsed(window* _window)
 
 void dock_top_painter::resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position)
 {
-	dock->size.y = mouse_position.y + mouse_clicked_position.y +
-		window_extra_area - dock->position.y;
+	dock->size.y = mouse_position.y + mouse_clicked_position.y -
+		dock->position.y;
 }
 
-ImRect dock_top_painter::get_border_rectangle(dock_draw_mode mode)
+ImRect dock_top_painter::get_border_rectangle()
 {
-	float line_width = get_border_width(mode);
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
 	return ImRect(position.x,
-		position.y + size.y - window_extra_area,
+		position.y + size.y - get_border_width(),
 		position.x + size.x,
-		position.y + size.y - window_extra_area + line_width);
+		position.y + size.y);
 }
 
 ImRect dock_top_painter::get_inner_rectangle()
 {
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
-	return ImRect(position.x, position.y,
+	return ImRect(position.x, position.y + get_tabbar_height(),
+					position.x + size.x,
+					position.y + size.y - get_border_width());
+}
+
+ImRect dock_top_painter::get_tabbar_rectangle()
+{
+	ImVec2 position = dock->position;
+	ImVec2 size = dock->size;
+	float border_width = get_border_width();
+	return ImRect(position.x,
+		position.y + size.y -
+		border_width - get_tabbar_height(),
 		position.x + size.x,
-		position.y + size.y - window_extra_area);
+		position.y + size.y - border_width);
 }
 
 void dock_top_painter::adjust(ImRect* client_window)
@@ -480,8 +518,7 @@ void dock_top_painter::adjust(ImRect* client_window)
 	dock->set_position(client_window->Min.x, client_window->Min.y);
 	dock->set_width(client_window->Max.x - dock->position.x);
 	dock_horizontal_painter::adjust();
-	client_window->Min.y = dock->position.y + dock->size.y -
-		window_extra_area + get_border_width();
+	client_window->Min.y = dock->position.y + dock->size.y;
 }
 
 #pragma endregion
@@ -491,31 +528,42 @@ void dock_top_painter::adjust(ImRect* client_window)
 
 void dock_bottom_painter::resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position)
 {
-	float parent_height = dock->position.y + dock->size.y;
-	dock->position.y = mouse_position.y + mouse_clicked_position.y -
-		window_extra_area;
-	dock->size.y = parent_height - dock->position.y;
+	float current_bottom = dock->position.y + dock->size.y;
+	dock->position.y = mouse_position.y - mouse_clicked_position.y;
+	dock->size.y = current_bottom - dock->position.y;
 }
 
-ImRect dock_bottom_painter::get_border_rectangle(dock_draw_mode mode)
+ImRect dock_bottom_painter::get_border_rectangle()
 {
-	float line_width = get_border_width(mode);
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
 	return ImRect(position.x,
-		position.y + window_extra_area - line_width,
+		position.y,
 		position.x + size.x,
-		position.y + window_extra_area);
+		position.y + get_border_width());
 }
 
 ImRect dock_bottom_painter::get_inner_rectangle()
 {
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
-	return ImRect(position.x, position.y + window_extra_area,
+	return ImRect(position.x,
+		position.y + get_border_width() + get_tabbar_height(),
 		position.x + size.x,
 		position.y + size.y);
 }
+
+ImRect dock_bottom_painter::get_tabbar_rectangle()
+{
+	ImVec2 position = dock->position;
+	ImVec2 size = dock->size;
+	float border_width = get_border_width();
+	return ImRect(position.x,
+		position.y + border_width,
+		position.x + size.x,
+		position.y + border_width + get_tabbar_height());
+}
+
 
 void dock_bottom_painter::adjust(ImRect* client_window)
 {
@@ -523,7 +571,7 @@ void dock_bottom_painter::adjust(ImRect* client_window)
 		- dock->size.y);
 	dock->set_width(client_window->Max.x);
 	dock_horizontal_painter::adjust();
-	client_window->Max.y -= dock->size.y - window_extra_area + get_border_width();
+	client_window->Max.y = dock->position.y;
 }
 
 #pragma endregion
@@ -531,7 +579,7 @@ void dock_bottom_painter::adjust(ImRect* client_window)
 
 #pragma region dock_fill_painter
 
-ImRect dock_fill_painter::get_border_rectangle(dock_draw_mode)
+ImRect dock_fill_painter::get_border_rectangle()
 {
 	return ImRect();
 }
@@ -621,9 +669,14 @@ void dock_fill_painter::resize(ImVec2, ImVec2)
 
 }
 
-void dock_fill_painter::draw_window_collapsed(window* _window)
+void dock_fill_painter::draw_window_collapsed(window*)
 {
 
+}
+
+ImRect dock_fill_painter::get_tabbar_rectangle()
+{
+	return ImRect();
 }
 
 #pragma endregion

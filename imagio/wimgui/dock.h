@@ -23,7 +23,6 @@ enum dock_draw_mode {
 };
 
 const float hover_delta = 5.0f;
-const float window_extra_area = 20.0f;
 
 class docker: public background_window {
 
@@ -42,6 +41,7 @@ class docker: public background_window {
 	bool border_hovered = false;
 	bool border_held = false;
 	bool fill = true;
+	dock_draw_mode current_draw_mode = draw_normal;
 
 public:
 
@@ -79,18 +79,20 @@ protected:
 public:
 	dock_painter(docker* dock);
     virtual ~dock_painter();
-	virtual ImRect get_border_rectangle(dock_draw_mode mode) = 0;
+	virtual ImRect get_outer_rectangle();
+	virtual ImRect get_tabbar_rectangle() = 0;
+	virtual ImRect get_border_rectangle() = 0;
 	virtual ImRect get_inner_rectangle() = 0;
+	virtual float get_tabbar_height();
+	virtual float get_inner_width() = 0;
+	virtual float get_inner_height() = 0;
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position) = 0;
 	virtual void adjust() = 0;
 	virtual void adjust(ImRect* window_area) = 0;
-	virtual float get_inner_width() = 0;
-	virtual float get_inner_height() = 0;
     virtual void draw_window_collapsed(window* _window) = 0;
-	virtual void draw_border(dock_draw_mode mode);
+	virtual void draw_border();
 	virtual void draw_border2(ImColor color, ImVec2 from, ImVec2 to, float line_width);
 	virtual void draw_border2(ImColor color, ImRect border_rectangle);
-	virtual float get_border_width(dock_draw_mode mode);
 	virtual float get_border_width();
 	virtual void make_space(window* new_window) = 0;
 };
@@ -113,7 +115,8 @@ class dock_left_painter : public dock_vertical_painter
 public:
 	dock_left_painter(docker* _dock) : dock_vertical_painter(_dock) {};
 	virtual void adjust(ImRect* client_window);
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_tabbar_rectangle();
+	virtual ImRect get_border_rectangle();
 	virtual ImRect get_inner_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 };
@@ -124,7 +127,8 @@ class dock_right_painter : public dock_vertical_painter
 public:
 	dock_right_painter(docker* _dock) : dock_vertical_painter(_dock) {};
 	virtual void adjust(ImRect* client_window);
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_tabbar_rectangle();
+	virtual ImRect get_border_rectangle();
 	virtual ImRect get_inner_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 };
@@ -147,7 +151,8 @@ class dock_bottom_painter : public dock_horizontal_painter
 public:
 	dock_bottom_painter(docker* _dock) : dock_horizontal_painter(_dock) {};
 	virtual void adjust(ImRect* client_window);
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_tabbar_rectangle();
+	virtual ImRect get_border_rectangle();
 	virtual ImRect get_inner_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 };
@@ -157,7 +162,8 @@ class dock_top_painter : public dock_horizontal_painter
 public:
 	dock_top_painter(docker* _dock) : dock_horizontal_painter(_dock) {};
 	virtual void adjust(ImRect* client_window);
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_tabbar_rectangle();
+	virtual ImRect get_border_rectangle();
 	virtual ImRect get_inner_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 };
@@ -166,8 +172,9 @@ class dock_fill_painter : public dock_painter
 {
 public:
 	dock_fill_painter(docker* _dock) : dock_painter(_dock) {};
-	virtual ImRect get_border_rectangle(dock_draw_mode mode);
+	virtual ImRect get_border_rectangle();
 	virtual ImRect get_inner_rectangle();
+	virtual ImRect get_tabbar_rectangle();
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	virtual void adjust();
 	virtual void adjust(ImRect* client_window);
