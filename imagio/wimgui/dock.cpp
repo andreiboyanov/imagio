@@ -295,9 +295,21 @@ void dock_vertical_painter::make_space(window* new_window)
 	sleep += 2;
 }
 
-void dock_vertical_painter::draw_window_collapsed(window*)
+void dock_vertical_painter::draw_window_collapsed(window* _window)
 {
-
+	ImGuiStyle &style = ImGui::GetStyle();
+    ImRect tabbar = get_tabbar_rectangle();
+    float offset = current_tabtitle_offset;
+    const float title_width = tabtitle_width;
+    ImRect rectangle(tabbar.Min.x, tabbar.Min.y + offset,
+                     tabbar.Max.x, tabbar.Min.y + offset + title_width);
+    const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
+                                                    NULL, true);
+    ImGui::RenderTextClipped(rectangle.Min, rectangle.Max,
+                                _window->get_title(), NULL,
+                                &text_size, style.WindowTitleAlign,
+                                &rectangle);
+    
 }
 
 #pragma endregion

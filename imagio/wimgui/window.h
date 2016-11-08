@@ -52,6 +52,7 @@ public:
 	virtual void finish_draw();
 	virtual void draw_imgui();
 
+    const char* get_title() { return title; };
 	float get_width();
 	void set_width(float width);
 	float get_height();

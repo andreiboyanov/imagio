@@ -23,6 +23,7 @@ enum dock_draw_mode {
 };
 
 const float hover_delta = 5.0f;
+const float tabtitle_width = 50.0f;
 
 class docker: public background_window {
 
@@ -75,6 +76,7 @@ class dock_painter
 protected:
 	docker* dock;
 	int sleep = 10;
+    float current_tabtitle_offset = 0.0f;
 
 public:
 	dock_painter(docker* dock);
