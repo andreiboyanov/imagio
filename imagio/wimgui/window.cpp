@@ -232,7 +232,7 @@ void window::draw_imgui()
 			ImGuiWindow* imgui_window = get_imgui_window();
 			if (imgui_window)
 			{
-				ImVec2 imgui_position = get_imgui_window()->Pos;
+				ImVec2 imgui_position = imgui_window->Pos;
 				set_position(imgui_position.x, imgui_position.y);
 			}
 		}
@@ -298,6 +298,12 @@ bool window::is_collapsed()
 	return imgui_window ? imgui_window->Collapsed : false;
 }
 
+void window::set_collapsed(bool collapsed)
+{
+	ImGuiWindow *imgui_window = get_imgui_window();
+	imgui_window->Collapsed = collapsed;
+}
+
 bool window::is_moving()
 {
 	ImGuiWindow* imgui_window = get_imgui_window();
@@ -327,6 +333,55 @@ bool window::is_resizing()
                           ImGuiButtonFlags_FlattenChilds);
     return held;
 }
+
+// Copy/Paste from
+// https://github.com/guillaumechereau/goxel/blob/master/src/imgui_user.inl
+bool window::draw_vertical_tab(const char *text, bool active)
+{
+	ImFont *font = GImGui->Font;
+	const ImFont::Glyph *glyph;
+	char c;
+	bool result;
+	ImGuiContext& g = *GImGui;
+	const ImGuiStyle& style = g.Style;
+	float padding = style.FramePadding.x;
+	ImVec4 color;
+	ImVec2 text_size = ImGui::CalcTextSize(text);
+	ImGuiWindow* imgui_window = get_imgui_window();
+	ImVec2 _position = imgui_window->DC.CursorPos +
+						ImVec2(padding, text_size.x + padding);
+
+	const  ImU32 text_color = 
+		ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]);
+	color = style.Colors[ImGuiCol_Button];
+	if (active) color = style.Colors[ImGuiCol_ButtonActive];
+	ImGui::PushStyleColor(ImGuiCol_Button, color);
+	ImGui::PushID(text);
+	result = ImGui::Button("", ImVec2(text_size.y + padding * 2,
+							text_size.x + padding * 2));
+	ImGui::PopStyleColor();
+	while ((c = *text++)) {
+		glyph = font->FindGlyph(c);
+		if (!glyph) continue;
+
+		imgui_window->DrawList->PrimReserve(6, 4);
+		imgui_window->DrawList->PrimQuadUV(
+			_position + ImVec2(glyph->Y0, -glyph->X0),
+			_position + ImVec2(glyph->Y0, -glyph->X1),
+			_position + ImVec2(glyph->Y1, -glyph->X1),
+			_position + ImVec2(glyph->Y1, -glyph->X0),
+
+			ImVec2(glyph->U0, glyph->V0),
+			ImVec2(glyph->U1, glyph->V0),
+			ImVec2(glyph->U1, glyph->V1),
+			ImVec2(glyph->U0, glyph->V1),
+			text_color);
+		_position.y -= glyph->XAdvance;
+	}
+	ImGui::PopID();
+	return result;
+}
+
 
 background_window::background_window(const char* _title) : window(_title)
 {

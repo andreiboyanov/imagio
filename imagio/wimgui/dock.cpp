@@ -88,9 +88,7 @@ void docker::draw_imgui()
 	background_window::draw_imgui();
 	for (auto _window : windows)
 	{
-		if (_window->is_collapsed())
-			painter->draw_window_collapsed(_window);
-		else
+		if (!_window->is_collapsed())
 			_window->draw_imgui();
 	}
 }
@@ -118,6 +116,11 @@ void docker::draw()
 	else
 	{
 		draw(draw_normal);
+	}
+	for (auto _window : windows)
+	{
+		if (_window->is_collapsed())
+			painter->draw_window_collapsed(_window);
 	}
 }
 
@@ -297,7 +300,7 @@ void dock_vertical_painter::make_space(window* new_window)
 
 void dock_vertical_painter::draw_window_collapsed(window* _window)
 {
-	ImGuiStyle &style = ImGui::GetStyle();
+	// ImGuiStyle &style = ImGui::GetStyle();
     ImRect tabbar = get_tabbar_rectangle();
     float offset = current_tabtitle_offset;
     const float title_width = tabtitle_width;
@@ -305,10 +308,14 @@ void dock_vertical_painter::draw_window_collapsed(window* _window)
                      tabbar.Max.x, tabbar.Min.y + offset + title_width);
     const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
                                                     NULL, true);
-    ImGui::RenderTextClipped(rectangle.Min, rectangle.Max,
-                                _window->get_title(), NULL,
-                                &text_size, style.WindowTitleAlign,
-                                &rectangle);
+    //ImGui::RenderTextClipped(rectangle.Min, rectangle.Max,
+    //                            _window->get_title(), NULL,
+    //                            &text_size, style.WindowTitleAlign,
+    //                            &rectangle);
+	if (dock->draw_vertical_tab(_window->get_title(), false))
+	{
+		_window->set_collapsed(false);
+	}
     
 }
 

@@ -4,6 +4,8 @@
 #define WIMGUI_WINDOW_H
 
 #include <stddef.h>
+
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
 
@@ -64,8 +66,10 @@ public:
 	float get_current_width();
 	float get_current_height();
 	bool is_collapsed();
+	void set_collapsed(bool collapsed);
 	bool is_moving();
 	bool is_resizing();
+	bool draw_vertical_tab(const char* text, bool active);
 
 	docker *docked_to();
 	void dock_to(docker *new_dock = nullptr);
