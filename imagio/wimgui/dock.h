@@ -43,6 +43,7 @@ class docker: public background_window {
 	bool border_held = false;
 	bool fill = true;
 	dock_draw_mode current_draw_mode = draw_normal;
+	int collapsed_windows = 0;
 
 public:
 
@@ -62,6 +63,7 @@ public:
 	void fill_free_space(bool _fill);
 	virtual void draw();
 	virtual void draw_imgui();
+	window* last_visible_window();
 	
 
 protected:

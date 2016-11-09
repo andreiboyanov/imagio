@@ -117,10 +117,14 @@ void docker::draw()
 	{
 		draw(draw_normal);
 	}
+	collapsed_windows = 0;
 	for (auto _window : windows)
 	{
 		if (_window->is_collapsed())
+		{
+			collapsed_windows++;
 			painter->draw_window_collapsed(_window);
+		}
 	}
 }
 
@@ -135,6 +139,17 @@ void docker::adjust(ImRect* client_window)
 	painter->adjust(client_window);
 }
 
+
+window* docker::last_visible_window()
+{
+	for (std::list<window*>::reverse_iterator window = windows.rbegin();
+		window != windows.rend(); ++window)
+	{
+		if (!(*window)->is_collapsed())
+			return *window;
+	}
+	return nullptr;
+}
 
 #pragma region protected methods
 
@@ -221,7 +236,7 @@ float dock_painter::get_border_width()
 float dock_painter::get_tabbar_height()
 {
 	ImGuiWindow* imgui_window = dock->get_imgui_window();
-	if (!imgui_window)
+	if (!imgui_window || dock->collapsed_windows == 0)
 		return 0.0f;
 	float height = imgui_window->CalcFontSize()
 		+ GImGui->Style.FramePadding.y * 2.0f;
@@ -250,6 +265,8 @@ void dock_vertical_painter::adjust()
 	float last_y = rectangle.Min.y;
 	for (auto window : dock->windows)
 	{
+		if (window->is_collapsed())
+			continue;
 		window->set_width(rectangle.GetWidth());
 		window->set_position(rectangle.Min.x, last_y);
 
@@ -263,9 +280,10 @@ void dock_vertical_painter::adjust()
 
 	if (dock->fill)
 	{
-		window* last_window = dock->windows.back();
-		last_window->set_height(rectangle.Max.y -
-			last_window->get_position().y);
+		window* last_window = dock->last_visible_window();
+		if (last_window)
+			last_window->set_height(rectangle.Max.y -
+				last_window->get_position().y);
 	}
 }
 
@@ -438,6 +456,8 @@ void dock_horizontal_painter::adjust()
 	float last_x = rectangle.Min.x;
 	for (auto window : dock->windows)
 	{
+		if (window->is_collapsed())
+			continue;
 		window->set_height(rectangle.GetHeight());
 		window->set_position(last_x, rectangle.Min.y);
 
@@ -450,7 +470,8 @@ void dock_horizontal_painter::adjust()
 
 	if (dock->fill)
 	{
-		window* last_window = dock->windows.back();
+		window* last_window = dock->last_visible_window();
+		if (last_window)
 		last_window->set_width(rectangle.Max.x -
 									last_window->get_position().x);
 	}
@@ -633,7 +654,7 @@ void dock_fill_painter::adjust()
 
 	for (auto window : dock->windows)
 	{
-		if (window->is_moving())
+		if (window->is_moving() || window->is_collapsed())
 			continue;
 		if (!window->is_collapsed())
 			window->set_height(window->get_current_height());
