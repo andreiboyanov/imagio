@@ -69,7 +69,7 @@ public:
 	void set_collapsed(bool collapsed);
 	bool is_moving();
 	bool is_resizing();
-	bool draw_vertical_tab(const char* text, bool active);
+	bool draw_vertical_text(const char* text, ImVec2 _position);
 
 	docker *docked_to();
 	void dock_to(docker *new_dock = nullptr);

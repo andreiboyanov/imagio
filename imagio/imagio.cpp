@@ -36,7 +36,7 @@ public:
 		show_title(true);
 		show_border(true);
 		allow_resize(true);
-		allow_move(false);
+		allow_move(true);
 		show_scrollbar(false);
 		allow_collapse(true);
 		show_menu(false);

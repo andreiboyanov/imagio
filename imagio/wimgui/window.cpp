@@ -336,30 +336,25 @@ bool window::is_resizing()
 
 // Copy/Paste from
 // https://github.com/guillaumechereau/goxel/blob/master/src/imgui_user.inl
-bool window::draw_vertical_tab(const char *text, bool active)
+bool window::draw_vertical_text(const char *text, ImVec2 _position)
 {
-	ImFont *font = GImGui->Font;
+	ImGuiWindow* imgui_window = get_imgui_window();
+	if (!imgui_window)
+		return false;
+
+	ImGuiContext& context = *GImGui;
+	const ImGuiStyle& style = context.Style;
+	ImFont *font = context.Font;
+
 	const ImFont::Glyph *glyph;
 	char c;
 	bool result;
-	ImGuiContext& g = *GImGui;
-	const ImGuiStyle& style = g.Style;
 	float padding = style.FramePadding.x;
-	ImVec4 color;
 	ImVec2 text_size = ImGui::CalcTextSize(text);
-	ImGuiWindow* imgui_window = get_imgui_window();
-	ImVec2 _position = imgui_window->DC.CursorPos +
-						ImVec2(padding, text_size.x + padding);
 
+	_position += ImVec2(padding, text_size.x + padding);
 	const  ImU32 text_color = 
 		ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]);
-	color = style.Colors[ImGuiCol_Button];
-	if (active) color = style.Colors[ImGuiCol_ButtonActive];
-	ImGui::PushStyleColor(ImGuiCol_Button, color);
-	ImGui::PushID(text);
-	result = ImGui::Button("", ImVec2(text_size.y + padding * 2,
-							text_size.x + padding * 2));
-	ImGui::PopStyleColor();
 	while ((c = *text++)) {
 		glyph = font->FindGlyph(c);
 		if (!glyph) continue;

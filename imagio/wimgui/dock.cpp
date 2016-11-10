@@ -302,7 +302,9 @@ void dock_vertical_painter::make_space(window* new_window)
 	if (!dock->windows.size())
 		return;
 	float new_height = new_window->get_height();
-	window* last_window = dock->windows.back();
+	window* last_window = dock->last_visible_window();
+	if (!last_window)
+		return;
 	float last_height = last_window->get_height();
 	if (last_height > new_height + 50.0f)
 	{
@@ -318,7 +320,8 @@ void dock_vertical_painter::make_space(window* new_window)
 
 void dock_vertical_painter::draw_window_collapsed(window* _window)
 {
-	// ImGuiStyle &style = ImGui::GetStyle();
+	ImGuiStyle &style = ImGui::GetStyle();
+
     ImRect tabbar = get_tabbar_rectangle();
     float offset = current_tabtitle_offset;
     const float title_width = tabtitle_width;
@@ -326,12 +329,15 @@ void dock_vertical_painter::draw_window_collapsed(window* _window)
                      tabbar.Max.x, tabbar.Min.y + offset + title_width);
     const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
                                                     NULL, true);
-    //ImGui::RenderTextClipped(rectangle.Min, rectangle.Max,
-    //                            _window->get_title(), NULL,
-    //                            &text_size, style.WindowTitleAlign,
-    //                            &rectangle);
-	if (dock->draw_vertical_tab(_window->get_title(), false))
+	ImU32 color = ImGui::GetColorU32(style.Colors[ImGuiCol_Button]);
+	// if (active) color = style.Colors[ImGuiCol_ButtonActive];
+	ImGui::PushStyleColor(ImGuiCol_Button, color);
+	ImGui::PushID(_window->get_title());
+	ImGui::RenderFrame(rectangle.Min, rectangle.Max, color);
+	ImGui::PopStyleColor();
+	if (dock->draw_vertical_text(_window->get_title(), rectangle.Min))
 	{
+		make_space(_window);
 		_window->set_collapsed(false);
 	}
     
