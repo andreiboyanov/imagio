@@ -142,11 +142,11 @@ void docker::adjust(ImRect* client_window)
 
 window* docker::last_visible_window()
 {
-	for (std::list<window*>::reverse_iterator window = windows.rbegin();
-		window != windows.rend(); ++window)
+	for (std::list<window*>::reverse_iterator _window = windows.rbegin();
+		_window != windows.rend(); ++_window)
 	{
-		if (!(*window)->is_collapsed())
-			return *window;
+		if (!(*_window)->is_collapsed())
+			return *_window;
 	}
 	return nullptr;
 }
@@ -320,25 +320,27 @@ void dock_vertical_painter::make_space(window* new_window)
 
 void dock_vertical_painter::draw_window_collapsed(window* _window)
 {
-	ImGuiStyle &style = ImGui::GetStyle();
-
     ImRect tabbar = get_tabbar_rectangle();
     float offset = current_tabtitle_offset;
     const float title_width = tabtitle_width;
     ImRect rectangle(tabbar.Min.x, tabbar.Min.y + offset,
                      tabbar.Max.x, tabbar.Min.y + offset + title_width);
-    const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
-                                                    NULL, true);
-	ImU32 color = ImGui::GetColorU32(style.Colors[ImGuiCol_Button]);
+    // const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
+    //                                                 NULL, true);
+	ImU32 color = ImGui::GetColorU32(ImGuiCol_Button);
 	// if (active) color = style.Colors[ImGuiCol_ButtonActive];
-	ImGui::PushStyleColor(ImGuiCol_Button, color);
-	ImGui::PushID(_window->get_title());
 	ImGui::RenderFrame(rectangle.Min, rectangle.Max, color);
-	ImGui::PopStyleColor();
-	if (dock->draw_vertical_text(_window->get_title(), rectangle.Min))
+	dock->draw_vertical_text(_window->get_title(), rectangle.Min);
+
+    bool hovered, held;
+	bool clicked = ImGui::ButtonBehavior(rectangle,
+		_window->get_imgui_window()->GetID("#TABTITLE"),
+		&hovered, &held,
+		ImGuiButtonFlags_FlattenChilds);
+    if (clicked)
 	{
-		make_space(_window);
-		_window->set_collapsed(false);
+	    make_space(_window);
+	    _window->set_collapsed(false);
 	}
     
 }

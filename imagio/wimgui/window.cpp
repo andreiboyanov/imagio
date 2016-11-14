@@ -336,11 +336,11 @@ bool window::is_resizing()
 
 // Copy/Paste from
 // https://github.com/guillaumechereau/goxel/blob/master/src/imgui_user.inl
-bool window::draw_vertical_text(const char *text, ImVec2 _position)
+void window::draw_vertical_text(const char *text, ImVec2 _position)
 {
 	ImGuiWindow* imgui_window = get_imgui_window();
 	if (!imgui_window)
-		return false;
+		return;
 
 	ImGuiContext& context = *GImGui;
 	const ImGuiStyle& style = context.Style;
@@ -348,7 +348,6 @@ bool window::draw_vertical_text(const char *text, ImVec2 _position)
 
 	const ImFont::Glyph *glyph;
 	char c;
-	bool result;
 	float padding = style.FramePadding.x;
 	ImVec2 text_size = ImGui::CalcTextSize(text);
 
@@ -373,8 +372,6 @@ bool window::draw_vertical_text(const char *text, ImVec2 _position)
 			text_color);
 		_position.y -= glyph->XAdvance;
 	}
-	ImGui::PopID();
-	return result;
 }
 
 
