@@ -348,10 +348,8 @@ void window::draw_vertical_text(const char *text, ImVec2 _position)
 
 	const ImFont::Glyph *glyph;
 	char c;
-	float padding = style.FramePadding.x;
 	ImVec2 text_size = ImGui::CalcTextSize(text);
 
-	_position += ImVec2(padding, text_size.x + padding);
 	const  ImU32 text_color = 
 		ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]);
 	while ((c = *text++)) {

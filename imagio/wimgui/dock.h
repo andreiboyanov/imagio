@@ -99,6 +99,7 @@ public:
 	virtual void draw_border2(ImColor color, ImRect border_rectangle);
 	virtual float get_border_width();
 	virtual void make_space(window* new_window) = 0;
+	void reset_tabtitle_offset() { current_tabtitle_offset = 0.0f;  }
 };
 
 

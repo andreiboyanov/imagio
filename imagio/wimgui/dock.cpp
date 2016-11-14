@@ -118,6 +118,7 @@ void docker::draw()
 		draw(draw_normal);
 	}
 	collapsed_windows = 0;
+	painter->reset_tabtitle_offset();
 	for (auto _window : windows)
 	{
 		if (_window->is_collapsed())
@@ -283,7 +284,7 @@ void dock_vertical_painter::adjust()
 		window* last_window = dock->last_visible_window();
 		if (last_window)
 			last_window->set_height(rectangle.Max.y -
-				last_window->get_position().y);
+			last_window->get_position().y);
 	}
 }
 
@@ -320,29 +321,35 @@ void dock_vertical_painter::make_space(window* new_window)
 
 void dock_vertical_painter::draw_window_collapsed(window* _window)
 {
-    ImRect tabbar = get_tabbar_rectangle();
-    float offset = current_tabtitle_offset;
-    const float title_width = tabtitle_width;
-    ImRect rectangle(tabbar.Min.x, tabbar.Min.y + offset,
-                     tabbar.Max.x, tabbar.Min.y + offset + title_width);
-    // const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
-    //                                                 NULL, true);
+	const ImGuiStyle& style = GImGui->Style;
+
+	ImRect tabbar = get_tabbar_rectangle();
+	const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
+												 NULL, true);
+	ImRect rectangle(tabbar.Min.x,
+		tabbar.Min.y + current_tabtitle_offset,
+		tabbar.Max.x,
+		tabbar.Min.y + current_tabtitle_offset + text_size.x
+		+ 2 * style.FramePadding.x);
 	ImU32 color = ImGui::GetColorU32(ImGuiCol_Button);
 	// if (active) color = style.Colors[ImGuiCol_ButtonActive];
-	ImGui::RenderFrame(rectangle.Min, rectangle.Max, color);
-	dock->draw_vertical_text(_window->get_title(), rectangle.Min);
 
-    bool hovered, held;
+	ImGui::RenderFrame(rectangle.Min, rectangle.Max, color);
+	dock->draw_vertical_text(_window->get_title(),
+		ImVec2(rectangle.Min.x + style.FramePadding.y,
+		rectangle.Max.y - style.FramePadding.x));
+	current_tabtitle_offset = rectangle.Max.y;
+
+	bool hovered, held;
 	bool clicked = ImGui::ButtonBehavior(rectangle,
 		_window->get_imgui_window()->GetID("#TABTITLE"),
 		&hovered, &held,
 		ImGuiButtonFlags_FlattenChilds);
-    if (clicked)
+	if (clicked)
 	{
-	    make_space(_window);
-	    _window->set_collapsed(false);
+		make_space(_window);
+		_window->set_collapsed(false);
 	}
-    
 }
 
 #pragma endregion
@@ -412,8 +419,8 @@ ImRect dock_right_painter::get_border_rectangle()
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
 	return ImRect(position.x, position.y,
-					position.x + get_border_width(),
-					position.y + size.y);
+		position.x + get_border_width(),
+		position.y + size.y);
 }
 
 ImRect dock_right_painter::get_inner_rectangle()
@@ -421,8 +428,8 @@ ImRect dock_right_painter::get_inner_rectangle()
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
 	return ImRect(position.x + get_border_width(), position.y,
-					position.x + size.x - get_tabbar_height(),
-					position.y + size.y);
+		position.x + size.x - get_tabbar_height(),
+		position.y + size.y);
 }
 
 ImRect dock_right_painter::get_tabbar_rectangle()
@@ -430,9 +437,9 @@ ImRect dock_right_painter::get_tabbar_rectangle()
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
 	return ImRect(position.x + size.x - get_tabbar_height(),
-					position.y,
-					position.x + size.x,
-					position.y + dock->size.y);
+		position.y,
+		position.x + size.x,
+		position.y + dock->size.y);
 
 }
 
@@ -440,7 +447,7 @@ ImRect dock_right_painter::get_tabbar_rectangle()
 void dock_right_painter::adjust(ImRect* client_window)
 {
 	dock->set_position(client_window->Max.x - dock->size.x,
-					   client_window->Min.y);
+		client_window->Min.y);
 	dock->set_height(client_window->GetHeight());
 	dock_vertical_painter::adjust();
 	client_window->Max.x = dock->position.x;
@@ -480,8 +487,8 @@ void dock_horizontal_painter::adjust()
 	{
 		window* last_window = dock->last_visible_window();
 		if (last_window)
-		last_window->set_width(rectangle.Max.x -
-									last_window->get_position().x);
+			last_window->set_width(rectangle.Max.x -
+			last_window->get_position().x);
 	}
 }
 
@@ -514,9 +521,38 @@ void dock_horizontal_painter::make_space(window* new_window)
 	sleep += 2;
 }
 
-void dock_horizontal_painter::draw_window_collapsed(window*)
+void dock_horizontal_painter::draw_window_collapsed(window* _window)
 {
+	const ImGuiStyle& style = GImGui->Style;
 
+	ImRect tabbar = get_tabbar_rectangle();
+	const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
+												 NULL, true);
+	ImRect rectangle(tabbar.Min.x + current_tabtitle_offset,
+		tabbar.Min.y,
+		tabbar.Min.x + current_tabtitle_offset + text_size.x
+		+ 2 * style.FramePadding.x,
+		tabbar.Max.y);
+	ImU32 color = ImGui::GetColorU32(ImGuiCol_Button);
+	// if (active) color = style.Colors[ImGuiCol_ButtonActive];
+
+	ImGui::RenderFrame(rectangle.Min, rectangle.Max, color);
+	const ImVec2 text_position = ImVec2(rectangle.Min.x + style.FramePadding.x,
+		rectangle.Min.y + style.FramePadding.y);
+	dock->get_imgui_window()->DrawList->AddText(text_position, color,
+		_window->get_title());
+	current_tabtitle_offset = rectangle.Max.x;
+
+	bool hovered, held;
+	bool clicked = ImGui::ButtonBehavior(rectangle,
+		_window->get_imgui_window()->GetID("#TABTITLE"),
+		&hovered, &held,
+		ImGuiButtonFlags_FlattenChilds);
+	if (clicked)
+	{
+		make_space(_window);
+		_window->set_collapsed(false);
+	}
 }
 
 #pragma endregion
@@ -545,8 +581,8 @@ ImRect dock_top_painter::get_inner_rectangle()
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
 	return ImRect(position.x, position.y + get_tabbar_height(),
-					position.x + size.x,
-					position.y + size.y - get_border_width());
+		position.x + size.x,
+		position.y + size.y - get_border_width());
 }
 
 ImRect dock_top_painter::get_tabbar_rectangle()
