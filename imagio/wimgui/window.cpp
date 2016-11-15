@@ -334,6 +334,19 @@ bool window::is_resizing()
     return held;
 }
 
+void window::set_cursor_position(ImVec2 _position)
+{
+    ImGuiWindow* imgui_window = get_imgui_window();
+    imgui_window->DC.CursorPos.x = _position.x;
+    imgui_window->DC.CursorPos.y = _position.y;
+}
+
+ImVec2 window::get_cursor_position()
+{
+    ImGuiWindow* imgui_window = get_imgui_window();
+    return imgui_window->DC.CursorPos;
+}
+
 // Copy/Paste from
 // https://github.com/guillaumechereau/goxel/blob/master/src/imgui_user.inl
 void window::draw_vertical_text(const char *text, ImVec2 _position)
@@ -348,7 +361,6 @@ void window::draw_vertical_text(const char *text, ImVec2 _position)
 
 	const ImFont::Glyph *glyph;
 	char c;
-	ImVec2 text_size = ImGui::CalcTextSize(text);
 
 	const  ImU32 text_color = 
 		ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]);

@@ -87,7 +87,7 @@ public:
 	virtual ImRect get_tabbar_rectangle() = 0;
 	virtual ImRect get_border_rectangle() = 0;
 	virtual ImRect get_inner_rectangle() = 0;
-	virtual float get_tabbar_height();
+	virtual float get_tabbar_height(bool always_visible = false);
 	virtual float get_inner_width() = 0;
 	virtual float get_inner_height() = 0;
 	virtual void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position) = 0;
@@ -99,7 +99,6 @@ public:
 	virtual void draw_border2(ImColor color, ImRect border_rectangle);
 	virtual float get_border_width();
 	virtual void make_space(window* new_window) = 0;
-	void reset_tabtitle_offset() { current_tabtitle_offset = 0.0f;  }
 };
 
 

@@ -118,7 +118,8 @@ void docker::draw()
 		draw(draw_normal);
 	}
 	collapsed_windows = 0;
-	painter->reset_tabtitle_offset();
+    ImVec2 tabbar_position = painter->get_tabbar_rectangle().Min;
+	set_cursor_position(tabbar_position);
 	for (auto _window : windows)
 	{
 		if (_window->is_collapsed())
@@ -234,10 +235,10 @@ float dock_painter::get_border_width()
 	return (mode == draw_hovered || mode == draw_resizing) ? hover_delta : 2.0f;
 }
 
-float dock_painter::get_tabbar_height()
+float dock_painter::get_tabbar_height(bool always_visible)
 {
 	ImGuiWindow* imgui_window = dock->get_imgui_window();
-	if (!imgui_window || dock->collapsed_windows == 0)
+	if (!always_visible && (!imgui_window || dock->collapsed_windows == 0))
 		return 0.0f;
 	float height = imgui_window->CalcFontSize()
 		+ GImGui->Style.FramePadding.y * 2.0f;
@@ -323,22 +324,22 @@ void dock_vertical_painter::draw_window_collapsed(window* _window)
 {
 	const ImGuiStyle& style = GImGui->Style;
 
-	ImRect tabbar = get_tabbar_rectangle();
-	const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
+    const char* title = _window->get_title();
+	ImVec2 _position = dock->get_cursor_position();
+	const ImVec2 text_size = ImGui::CalcTextSize(title,
 												 NULL, true);
-	ImRect rectangle(tabbar.Min.x,
-		tabbar.Min.y + current_tabtitle_offset,
-		tabbar.Max.x,
-		tabbar.Min.y + current_tabtitle_offset + text_size.x
-		+ 2 * style.FramePadding.x);
+	ImRect rectangle(_position.x, _position.y,
+		_position.x + text_size.y + 2 * style.FramePadding.y,
+		_position.y + text_size.x + 2 * style.FramePadding.x);
 	ImU32 color = ImGui::GetColorU32(ImGuiCol_Button);
 	// if (active) color = style.Colors[ImGuiCol_ButtonActive];
 
 	ImGui::RenderFrame(rectangle.Min, rectangle.Max, color);
-	dock->draw_vertical_text(_window->get_title(),
+	dock->draw_vertical_text(title,
 		ImVec2(rectangle.Min.x + style.FramePadding.y,
 		rectangle.Max.y - style.FramePadding.x));
-	current_tabtitle_offset = rectangle.Max.y;
+	dock->set_cursor_position(ImVec2(rectangle.Min.x,
+                rectangle.Max.y + style.FramePadding.x));
 
 	bool hovered, held;
 	bool clicked = ImGui::ButtonBehavior(rectangle,
@@ -436,7 +437,7 @@ ImRect dock_right_painter::get_tabbar_rectangle()
 {
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
-	return ImRect(position.x + size.x - get_tabbar_height(),
+	return ImRect(position.x + size.x - get_tabbar_height(true),
 		position.y,
 		position.x + size.x,
 		position.y + dock->size.y);
@@ -521,27 +522,27 @@ void dock_horizontal_painter::make_space(window* new_window)
 	sleep += 2;
 }
 
+// FIXME: DRY me a bit! It's almost the same code as in dock_vertical_painter
 void dock_horizontal_painter::draw_window_collapsed(window* _window)
 {
 	const ImGuiStyle& style = GImGui->Style;
 
-	ImRect tabbar = get_tabbar_rectangle();
-	const ImVec2 text_size = ImGui::CalcTextSize(_window->get_title(),
+    const char* title = _window->get_title();
+	ImVec2 _position = dock->get_cursor_position();
+	const ImVec2 text_size = ImGui::CalcTextSize(title,
 												 NULL, true);
-	ImRect rectangle(tabbar.Min.x + current_tabtitle_offset,
-		tabbar.Min.y,
-		tabbar.Min.x + current_tabtitle_offset + text_size.x
-		+ 2 * style.FramePadding.x,
-		tabbar.Max.y);
+	ImRect rectangle(_position.x, _position.y,
+		_position.x + text_size.x + 2 * style.FramePadding.x,
+		_position.y + text_size.y + 2 * style.FramePadding.y);
 	ImU32 color = ImGui::GetColorU32(ImGuiCol_Button);
 	// if (active) color = style.Colors[ImGuiCol_ButtonActive];
 
 	ImGui::RenderFrame(rectangle.Min, rectangle.Max, color);
-	const ImVec2 text_position = ImVec2(rectangle.Min.x + style.FramePadding.x,
-		rectangle.Min.y + style.FramePadding.y);
-	dock->get_imgui_window()->DrawList->AddText(text_position, color,
-		_window->get_title());
-	current_tabtitle_offset = rectangle.Max.x;
+    ImGui::RenderText(
+            ImVec2(rectangle.Min.x + style.FramePadding.x, rectangle.Min.y + style.FramePadding.y),
+            title, NULL, true);
+	dock->set_cursor_position(ImVec2(rectangle.Max.x + style.FramePadding.x,
+                rectangle.Min.y));
 
 	bool hovered, held;
 	bool clicked = ImGui::ButtonBehavior(rectangle,
@@ -589,12 +590,8 @@ ImRect dock_top_painter::get_tabbar_rectangle()
 {
 	ImVec2 position = dock->position;
 	ImVec2 size = dock->size;
-	float border_width = get_border_width();
-	return ImRect(position.x,
-		position.y + size.y -
-		border_width - get_tabbar_height(),
-		position.x + size.x,
-		position.y + size.y - border_width);
+	return ImRect(position.x, position.y,
+		position.x + size.x, position.y + get_tabbar_height());
 }
 
 void dock_top_painter::adjust(ImRect* client_window)
