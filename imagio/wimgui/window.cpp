@@ -233,6 +233,9 @@ void window::draw_imgui()
 			if (imgui_window)
 			{
 				ImVec2 imgui_position = imgui_window->Pos;
+				ImVec2 mouse_position = GImGui->IO.MousePos;
+				imgui_window->PosFloat.x = mouse_position.x - size.x / 2;
+				imgui_window->PosFloat.y = mouse_position.y - size.y / 2;
 				set_position(imgui_position.x, imgui_position.y);
 			}
 		}
@@ -307,8 +310,7 @@ void window::set_collapsed(bool collapsed)
 bool window::is_moving()
 {
 	ImGuiWindow* imgui_window = get_imgui_window();
-	ImGuiContext& context = *GImGui;
-	return (context.MovedWindow == imgui_window);
+	return (GImGui->MovedWindow == imgui_window);
 }
 
 // FIXME: Isn't working properly...
@@ -317,12 +319,11 @@ bool window::is_resizing()
     ImGuiWindow* imgui_window = get_imgui_window();
     if (!imgui_window)
         return false;
-	ImGuiContext& context = *GImGui;
-    const float window_rounding = context.Style.WindowRounding;
-    const float resize_corner_size = ImMax(context.FontSize * 1.35f,
+    const float window_rounding = GImGui->Style.WindowRounding;
+    const float resize_corner_size = ImMax(GImGui->FontSize * 1.35f,
                                            window_rounding +
                                                 1.0f +
-                                                context.FontSize * 0.2f);
+                                                GImGui->FontSize * 0.2f);
     ImVec2 corner = imgui_window->Rect().GetBR();
     const ImRect resize_rectangle(corner.x - resize_corner_size * 0.75f,
                                   corner.y - resize_corner_size * 0.75f,
@@ -355,9 +356,8 @@ void window::draw_vertical_text(const char *text, ImVec2 _position)
 	if (!imgui_window)
 		return;
 
-	ImGuiContext& context = *GImGui;
-	const ImGuiStyle& style = context.Style;
-	ImFont *font = context.Font;
+	const ImGuiStyle& style = GImGui->Style;
+	ImFont *font = GImGui->Font;
 
 	const ImFont::Glyph *glyph;
 	char c;
