@@ -234,8 +234,11 @@ void window::draw_imgui()
 			{
 				ImVec2 imgui_position = imgui_window->Pos;
 				ImVec2 mouse_position = GImGui->IO.MousePos;
-				imgui_window->PosFloat.x = mouse_position.x - size.x / 2;
-				imgui_window->PosFloat.y = mouse_position.y - size.y / 2;
+				if (!imgui_window->Rect().Contains(mouse_position))
+				{
+					imgui_window->PosFloat.x = mouse_position.x - size.x / 2;
+					imgui_window->PosFloat.y = mouse_position.y - size.y / 2;
+				}
 				set_position(imgui_position.x, imgui_position.y);
 			}
 		}
