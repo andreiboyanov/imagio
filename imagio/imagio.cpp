@@ -9,6 +9,8 @@
 
 #include <boost/filesystem.hpp>
 
+using namespace boost::filesystem;
+
 namespace imagio {
 
 
@@ -27,7 +29,8 @@ public:
 
 	void draw() {
 		ImGui::Text("Hello, world!");
-		ImGui::Text("Current path is %s", boost::filesystem::current_path().c_str());
+		path current_directory = current_path();
+		ImGui::Text("Current path is %s", current_directory.generic_string().c_str());
 	}
 };
 
