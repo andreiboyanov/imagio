@@ -7,6 +7,8 @@
 #include "wimgui/window.h"
 #include "wimgui/dock.h"
 
+#include <boost/filesystem.hpp>
+
 namespace imagio {
 
 
@@ -25,6 +27,7 @@ public:
 
 	void draw() {
 		ImGui::Text("Hello, world!");
+		ImGui::Text("Current path is %s", boost::filesystem::current_path().string());
 	}
 };
 
