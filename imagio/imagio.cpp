@@ -27,7 +27,7 @@ public:
 
 	void draw() {
 		ImGui::Text("Hello, world!");
-		ImGui::Text("Current path is %s", boost::filesystem::current_path().string());
+		ImGui::Text("Current path is %s", boost::filesystem::current_path().c_str());
 	}
 };
 
