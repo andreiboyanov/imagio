@@ -24,6 +24,7 @@ public:
 	~workspace();
 
 	void add_window(window *window);
+	void add_window(window *window, docker* dock);
 	void add_dock(docker *dock);
 	ImRect* get_client_area();
 	void draw();

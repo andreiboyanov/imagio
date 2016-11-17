@@ -6,10 +6,8 @@
 #include "wimgui/workspace.h"
 #include "wimgui/window.h"
 #include "wimgui/dock.h"
+#include "wimgui/file_explorer.h"
 
-#include <boost/filesystem.hpp>
-
-using namespace boost::filesystem;
 
 namespace imagio {
 
@@ -27,10 +25,9 @@ public:
 		show_menu(false);
 	}
 
-	void draw() {
+	void draw()
+	{
 		ImGui::Text("Hello, world!");
-		path current_directory = current_path();
-		ImGui::Text("Current path is %s", current_directory.generic_string().c_str());
 	}
 };
 
@@ -107,6 +104,7 @@ window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
 window_five window5("Fifth window");
+wimgui::file_explorer explorer("Choose file");
 wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
 wimgui::docker dock_bottom("##DOCK BOTTOM", wimgui::dock_bottom);
 wimgui::docker dock_top("##DOCK TOP", wimgui::dock_top);
@@ -122,23 +120,19 @@ void init()
 	workspace.add_dock(&dock_right);
 	workspace.add_dock(&dock_fill);
 
-	dock_left.add_window(&window1);
-	dock_bottom.add_window(&window3);
-	dock_bottom.add_window(&window2);
-	dock_right.add_window(&window4);
-	dock_left.add_window(&window5);
-
-	workspace.add_window(&window1);
-	workspace.add_window(&window2);
-	workspace.add_window(&window3);
-	workspace.add_window(&window4);
-	workspace.add_window(&window5);
+	workspace.add_window(&window1, &dock_left);
+	workspace.add_window(&window2, &dock_bottom);
+	workspace.add_window(&window3, &dock_bottom);
+	workspace.add_window(&window4, &dock_right);
+	workspace.add_window(&window5, &dock_left);
+	workspace.add_window(&explorer, &dock_top);
 }
 
 int draw()
 {
 	draw_main_menu();
 	workspace.draw_workspace();
+	ImGui::ShowTestWindow();
 	return 0;
 }
 

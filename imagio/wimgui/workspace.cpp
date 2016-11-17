@@ -26,11 +26,22 @@ workspace::~workspace() {}
 
 #pragma region public methods
 
-void workspace::add_window(wimgui::window *_window)
+void workspace::add_window(window *_window)
 {
 	windows.push_back(_window);
 }
 
+void workspace::add_window(window *_window, docker *_dock)
+{
+	windows.push_back(_window);
+	_dock->add_window(_window);
+	for (auto current_dock : docks)
+	{
+		if (current_dock == _dock)
+			return;
+	}
+	add_dock(_dock);
+}
 
 void workspace::add_dock(docker *_dock)
 {
