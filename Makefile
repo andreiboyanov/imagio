@@ -39,8 +39,10 @@ imagio_exe_CXX_SRCS   = imagio/imagio.cpp \
 							imagio/main.cpp \
 							imagio/imgui/imgui_draw.cpp \
 							imagio/imgui/imgui.cpp \
+							imagio/imgui/imgui_demo.cpp \
 							imagio/wimgui/window.cpp \
 							imagio/wimgui/dock.cpp \
+							imagio/wimgui/file_explorer.cpp \
 							imagio/wimgui/workspace.cpp
 imagio_exe_RC_SRCS    = # imagio/imagio.rc
 imagio_exe_LDFLAGS    = 

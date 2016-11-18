@@ -6,15 +6,16 @@ namespace wimgui
 
 void file_explorer::draw_directory_entry(path _path, bool full_path)
 {
-	bool node_open = ImGui::TreeNode(_path.generic_string().c_str(), "");
+	bool node_open = ImGui::TreeNode(_path.generic_string().c_str(), " ");
 	ImGui::SameLine();
 	if (full_path)
-		ImGui::Text(_path.generic_string().c_str());
+		ImGui::Text("%s", _path.generic_string().c_str());
 	else
-		ImGui::Text(_path.filename().generic_string().c_str());
+		ImGui::Text("%s", _path.filename().generic_string().c_str());
 	if (node_open)
 	{
-		for (auto entry : directory_iterator(_path))
+		for (auto& entry:
+                boost::make_iterator_range(directory_iterator(_path), {}))
 		{
 			if (is_directory(entry))
 			{

@@ -4,6 +4,7 @@
 #define WIMGUI_FILE_EXPLORER_H
 
 #include <boost/filesystem.hpp>
+#include <boost/range/iterator_range.hpp>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "../imgui/imgui.h"
