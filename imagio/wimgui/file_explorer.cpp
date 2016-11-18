@@ -14,21 +14,16 @@ void file_explorer::draw_directory_entry(path _path, bool full_path)
 		ImGui::Text("%s", _path.filename().generic_string().c_str());
 	if (node_open)
 	{
-		for (auto& entry:
-                boost::make_iterator_range(directory_iterator(_path), {}))
+		directory_iterator end_entry;
+		for (directory_iterator entry(_path); entry != end_entry; entry++)
 		{
-			if (is_directory(entry))
+			if (is_directory(entry->status()))
 			{
-				draw_directory_entry(entry);
+				draw_directory_entry(entry->path());
 			}
 		}
 		ImGui::TreePop();
 	}
-}
-
-void file_explorer::draw_directory_entry(directory_entry entry, bool full_path)
-{
-	draw_directory_entry(path(entry), full_path);
 }
 
 void file_explorer::draw()
