@@ -21,15 +21,18 @@ class file_explorer : public window
 {
 
 	path selected_path;
+	path selected_file;
+	path top_path;
 
 public:
-	file_explorer() : window("File explorer") {}
-	file_explorer(const char * _title) : window(_title) {}
+	file_explorer();
+	file_explorer(const char* _title);
 	~file_explorer() {}
 
 	void draw();
 	void draw_directory_entry(path _path, bool full_path=false);
-	void draw_directory_entry(directory_entry entry, bool full_path=false);
+	void draw_file_entry(path _path, bool full_path=false);
+	void show_directory_content();
 };
 
 }
