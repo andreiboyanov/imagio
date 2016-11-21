@@ -104,7 +104,7 @@ window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
 window_five window5("Fifth window");
-wimgui::file_explorer explorer("Choose file");
+wimgui::file_explorer explorer = wimgui::file_explorer("/", "Choose file");
 wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
 wimgui::docker dock_bottom("##DOCK BOTTOM", wimgui::dock_bottom);
 wimgui::docker dock_top("##DOCK TOP", wimgui::dock_top);
