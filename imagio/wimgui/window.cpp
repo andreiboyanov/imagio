@@ -304,6 +304,11 @@ bool window::is_collapsed()
 	return imgui_window ? imgui_window->Collapsed : false;
 }
 
+bool window::mouse_double_clicked(int button_index)
+{
+	return ImGui::IsMouseDoubleClicked(button_index);
+}
+
 void window::set_collapsed(bool collapsed)
 {
 	ImGuiWindow *imgui_window = get_imgui_window();

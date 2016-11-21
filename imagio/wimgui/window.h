@@ -66,6 +66,7 @@ public:
 	float get_current_width();
 	float get_current_height();
 	bool is_collapsed();
+	bool mouse_double_clicked(int button_index=0);
 	void set_collapsed(bool collapsed);
 	bool is_moving();
 	bool is_resizing();
