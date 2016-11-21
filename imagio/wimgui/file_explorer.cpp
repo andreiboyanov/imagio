@@ -27,10 +27,10 @@ void file_explorer::draw_directory_entry(directory_info* entry, bool full_path)
 {
 	if (selected_directory && selected_directory->parent == entry)
 		ImGui::SetNextTreeNodeOpen(true);
-	bool node_open = ImGui::TreeNode(entry->path.generic_string().c_str(), " ");
+	bool node_open = ImGui::TreeNode(entry->directory_path.generic_string().c_str(), " ");
 	ImGui::SameLine();
 	char label[512] = {};
-	get_path_string(entry->path, label, 512, full_path);
+	get_path_string(entry->directory_path, label, 512, full_path);
 	if (ImGui::Selectable(label, false))
 	{
 		select_directory(entry);
@@ -50,7 +50,7 @@ void file_explorer::draw_directory_entry(directory_info* entry, bool full_path)
 void file_explorer::draw_file_entry(directory_info* entry, bool full_path)
 {
 	char label[512] = {};
-	get_path_string(entry->path, label, 512, full_path);
+	get_path_string(entry->directory_path, label, 512, full_path);
 	if (ImGui::Selectable(label, false))
 	{
 		if (entry->is_directory || mouse_double_clicked())
@@ -60,7 +60,7 @@ void file_explorer::draw_file_entry(directory_info* entry, bool full_path)
 	}
 	ImGui::NextColumn();
 	if (entry->is_regular_file)
-		ImGui::Text("%10d", file_size(entry->path));
+		ImGui::Text("%10lu", file_size(entry->directory_path));
 	else if (entry->is_directory)
 		ImGui::Text("<dir>");
 	else
@@ -75,7 +75,7 @@ void file_explorer::draw_file_entry(directory_info* entry, bool full_path)
 void file_explorer::show_directory_content()
 {
 	if (selected_directory)
-		ImGui::Text("%s", selected_directory->path.generic_string().c_str());
+		ImGui::Text("%s", selected_directory->directory_path.generic_string().c_str());
 	ImGui::Separator();
 	ImGui::Columns(4, "File Info");
 	ImGui::Text("File name"); ImGui::NextColumn();
@@ -119,7 +119,7 @@ void file_explorer::draw()
 
 void file_explorer::select_directory(directory_info* entry)
 {
-	selected_directory_path = entry->path;
+	selected_directory_path = entry->directory_path;
 	selected_directory = entry;
 }
 
@@ -169,7 +169,7 @@ void file_explorer::load_children(directory_info* entry, bool refresh)
 	if (!entry->children.size())
 	{
 		directory_iterator end_directory;
-		for (directory_iterator directory(entry->path);
+		for (directory_iterator directory(entry->directory_path);
 			directory != end_directory;
 			directory++)
 			add_path(entry, new directory_info(directory->path()));

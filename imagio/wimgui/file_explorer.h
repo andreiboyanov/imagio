@@ -22,16 +22,16 @@ namespace wimgui
 
 struct directory_info
 {
-	path path;
+	path directory_path;
 	directory_info* parent;
 	directory_info* selected_child;
 	std::vector<directory_info*> children = std::vector<directory_info*>();
 	struct stat file_stat;
 public:	
 	directory_info(boost::filesystem::path _path)
-		: path(_path),
-		is_directory(boost::filesystem::is_directory(path)),
-		is_regular_file(boost::filesystem::is_regular_file(path))
+		: directory_path(_path),
+		is_directory(boost::filesystem::is_directory(directory_path)),
+		is_regular_file(boost::filesystem::is_regular_file(directory_path))
 	{
 		stat(_path.generic_string().c_str() , &file_stat);
 	}
