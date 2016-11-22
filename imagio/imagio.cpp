@@ -125,6 +125,11 @@ void init()
 	workspace.add_window(&window3, &dock_bottom);
 	workspace.add_window(&window4, &dock_right);
 	workspace.add_window(&window5, &dock_left);
+
+	explorer.set_dockable(false);
+	explorer.allow_resize(true);
+	explorer.set_height(workspace.get_height() / 2);
+	explorer.set_width(workspace.get_width() / 2);
 	workspace.add_window(&explorer, &dock_top);
 }
 

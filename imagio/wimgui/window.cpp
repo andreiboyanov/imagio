@@ -227,26 +227,36 @@ void window::draw_imgui()
 	{
 		init_draw();
 
-		if (is_moving())
+		ImGuiWindow* imgui_window = get_imgui_window();
+		if (is_dockable())
 		{
-			ImGuiWindow* imgui_window = get_imgui_window();
-			if (imgui_window)
+			if (is_moving())
 			{
-				ImVec2 imgui_position = imgui_window->Pos;
-				ImVec2 mouse_position = GImGui->IO.MousePos;
-				if (!imgui_window->Rect().Contains(mouse_position))
+				if (imgui_window)
 				{
-					imgui_window->PosFloat.x = mouse_position.x - size.x / 2;
-					imgui_window->PosFloat.y = mouse_position.y - size.y / 2;
+					ImVec2 imgui_position = imgui_window->Pos;
+					ImVec2 mouse_position = GImGui->IO.MousePos;
+					if (!imgui_window->Rect().Contains(mouse_position))
+					{
+						imgui_window->PosFloat.x = mouse_position.x - size.x / 2;
+						imgui_window->PosFloat.y = mouse_position.y - size.y / 2;
+					}
+					set_position(imgui_position.x, imgui_position.y);
 				}
-				set_position(imgui_position.x, imgui_position.y);
+			}
+			else
+			{
+				ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
 			}
 		}
 		else
 		{
-			ImGui::SetNextWindowPos(position, ImGuiSetCond_Always);
+			if (imgui_window)
+			{
+				size.x = imgui_window->Size.x;
+				size.y = imgui_window->Size.y;
+			}
 		}
-
 		ImGui::SetNextWindowSize(size, ImGuiSetCond_Always);
 
 		ImGui::Begin(title, &visible, flags);
@@ -261,36 +271,10 @@ void window::show(bool _visible)
 	visible = _visible;
 }
 
-void window::init_draw()
-{
-
-}
-
 void window::draw()
 {
 	ImGui::Text("This is an empty window. "
 		"Please implement your own draw() method");
-}
-
-void window::finish_draw()
-{
-
-}
-
-docker *window::docked_to()
-{
-	return dock;
-}
-
-void window::dock_to(docker *new_dock)
-{
-	dock = new_dock;
-
-}
-
-bool window::is_docked()
-{
-	return dock != nullptr;
 }
 
 ImGuiWindow* window::get_imgui_window()
@@ -324,36 +308,36 @@ bool window::is_moving()
 // FIXME: Isn't working properly...
 bool window::is_resizing()
 {
-    ImGuiWindow* imgui_window = get_imgui_window();
-    if (!imgui_window)
-        return false;
-    const float window_rounding = GImGui->Style.WindowRounding;
-    const float resize_corner_size = ImMax(GImGui->FontSize * 1.35f,
-                                           window_rounding +
-                                                1.0f +
-                                                GImGui->FontSize * 0.2f);
-    ImVec2 corner = imgui_window->Rect().GetBR();
-    const ImRect resize_rectangle(corner.x - resize_corner_size * 0.75f,
-                                  corner.y - resize_corner_size * 0.75f,
-                                  corner.x, corner.y);
-    const ImGuiID resize_id = imgui_window->GetID("#CHECK");
-    bool hovered, held;
-    ImGui::ButtonBehavior(resize_rectangle, resize_id, &hovered, &held,
-                          ImGuiButtonFlags_FlattenChilds);
-    return held;
+	ImGuiWindow* imgui_window = get_imgui_window();
+	if (!imgui_window)
+		return false;
+	const float window_rounding = GImGui->Style.WindowRounding;
+	const float resize_corner_size = ImMax(GImGui->FontSize * 1.35f,
+		window_rounding +
+		1.0f +
+		GImGui->FontSize * 0.2f);
+	ImVec2 corner = imgui_window->Rect().GetBR();
+	const ImRect resize_rectangle(corner.x - resize_corner_size * 0.75f,
+		corner.y - resize_corner_size * 0.75f,
+		corner.x, corner.y);
+	const ImGuiID resize_id = imgui_window->GetID("#CHECK");
+	bool hovered, held;
+	ImGui::ButtonBehavior(resize_rectangle, resize_id, &hovered, &held,
+		ImGuiButtonFlags_FlattenChilds);
+	return held;
 }
 
 void window::set_cursor_position(ImVec2 _position)
 {
-    ImGuiWindow* imgui_window = get_imgui_window();
-    imgui_window->DC.CursorPos.x = _position.x;
-    imgui_window->DC.CursorPos.y = _position.y;
+	ImGuiWindow* imgui_window = get_imgui_window();
+	imgui_window->DC.CursorPos.x = _position.x;
+	imgui_window->DC.CursorPos.y = _position.y;
 }
 
 ImVec2 window::get_cursor_position()
 {
-    ImGuiWindow* imgui_window = get_imgui_window();
-    return imgui_window->DC.CursorPos;
+	ImGuiWindow* imgui_window = get_imgui_window();
+	return imgui_window->DC.CursorPos;
 }
 
 // Copy/Paste from
@@ -370,7 +354,7 @@ void window::draw_vertical_text(const char *text, ImVec2 _position)
 	const ImFont::Glyph *glyph;
 	char c;
 
-	const  ImU32 text_color = 
+	const  ImU32 text_color =
 		ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Text]);
 	while ((c = *text++)) {
 		glyph = font->FindGlyph(c);
@@ -423,7 +407,7 @@ void background_window::init_draw()
 {
 	ImGuiStyle &style = ImGui::GetStyle();
 	ImVec4 color(0.0f, 0.0f, 0.0f, 0.0f);
-	
+
 	save_style(style);
 	style.Colors[ImGuiCol_WindowBg] = color;
 	style.WindowPadding.x = 0.0f;

@@ -18,6 +18,7 @@ class window {
 	const char *title = nullptr;
 	docker *dock = nullptr;
 	ImGuiWindowFlags flags = 0;
+	bool dockable = true;
 
 protected:
 	ImVec2 size = ImVec2(0.0f, 0.0f);
@@ -50,11 +51,11 @@ public:
 	virtual void show(bool _visible);
 
 	virtual void draw();
-	virtual void init_draw();
-	virtual void finish_draw();
+	virtual void init_draw() {}
+	virtual void finish_draw() {}
 	virtual void draw_imgui();
 
-    const char* get_title() { return title; };
+    inline const char* get_title() { return title; };
 	float get_width();
 	void set_width(float width);
 	float get_height();
@@ -68,13 +69,16 @@ public:
 	bool is_collapsed();
 	bool mouse_double_clicked(int button_index=0);
 	void set_collapsed(bool collapsed);
-	bool is_moving();
-	bool is_resizing();
+	inline bool is_moving();
+	inline bool is_resizing();
 	void draw_vertical_text(const char* text, ImVec2 _position);
 
-	docker *docked_to();
-	void dock_to(docker *new_dock = nullptr);
-	bool is_docked();
+	inline docker *docked_to() { return dock; }
+	inline void dock_to(docker *new_dock = nullptr)
+		{ if (dockable) dock = new_dock; }
+	inline bool is_docked() { return dock != nullptr; }
+	inline bool is_dockable() { return dockable; }
+	inline void set_dockable(bool _dockable) { dockable = _dockable;  }
 
 	void set_cursor_position(ImVec2 _position);
 	ImVec2 get_cursor_position();

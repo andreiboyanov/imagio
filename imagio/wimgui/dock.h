@@ -23,7 +23,6 @@ enum dock_draw_mode {
 };
 
 const float hover_delta = 5.0f;
-const float tabtitle_width = 50.0f;
 
 class docker: public background_window {
 
@@ -42,6 +41,7 @@ class docker: public background_window {
 	bool border_hovered = false;
 	bool border_held = false;
 	bool fill = true;
+	bool accept_new = true;
 	dock_draw_mode current_draw_mode = draw_normal;
 	int collapsed_windows = 0;
 
@@ -60,7 +60,10 @@ public:
 	void resize(ImVec2 mouse_position, ImVec2 mouse_clicked_position);
 	void adjust(ImRect* client_window);
 	void draw(dock_draw_mode mode);
-	void fill_free_space(bool _fill);
+	inline void fill_free_space(bool _fill) { fill = _fill; }
+	inline bool fill_free_space() { return fill;  }
+	inline void accept_new_windows(bool accept) { accept_new = accept; }
+	inline bool accept_new_windows() { return accept_new;  }
 	virtual void draw();
 	virtual void draw_imgui();
 	window* last_visible_window();

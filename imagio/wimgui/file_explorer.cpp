@@ -62,7 +62,7 @@ void file_explorer::draw_file_entry(directory_info* entry, bool full_path)
 	if (entry->is_regular_file)
 		ImGui::Text("%10lu", file_size(entry->directory_path));
 	else if (entry->is_directory)
-		ImGui::Text("<dir>");
+		ImGui::Text("%10s", "<dir>");
 	else
 		ImGui::Text("  -  ");
 	ImGui::NextColumn();

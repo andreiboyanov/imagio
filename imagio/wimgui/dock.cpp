@@ -52,14 +52,12 @@ void docker::set_dock_style(dock_style _style)
 
 void docker::add_window(window *_window)
 {
-	painter->make_space(_window);
-	windows.push_back(_window);
-	_window->dock_to(this);
-}
-
-void docker::fill_free_space(bool _fill)
-{
-	fill = _fill;
+	if (accept_new && _window->is_dockable())
+	{
+		painter->make_space(_window);
+		windows.push_back(_window);
+		_window->dock_to(this);
+	}
 }
 
 void docker::remove_window(window *_window)
