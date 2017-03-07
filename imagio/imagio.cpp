@@ -7,12 +7,18 @@
 #include "wimgui/window.h"
 #include "wimgui/dock.h"
 #include "wimgui/file_explorer.h"
+#include "wimgui/3dpaint.h"
 
 
 namespace imagio {
 
 
 class window_one : public wimgui::window {
+private:
+	wimgui::painter3d painter;
+	wimgui::vector3 from = wimgui::vector3(1, 2, 3);
+	wimgui::vector3 to = wimgui::vector3(4, 5, 6);
+
 public:
 	window_one(const char* _title) : window(_title)
 	{
@@ -28,6 +34,7 @@ public:
 	void draw()
 	{
 		ImGui::Text("Hello, world!");
+		painter.draw_line(from, to);
 	}
 };
 
