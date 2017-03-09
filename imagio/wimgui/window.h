@@ -66,6 +66,7 @@ public:
 	void set_position(float x, float y);
 	float get_current_width();
 	float get_current_height();
+	ImRect get_content_rectangle();
 	bool is_collapsed();
 	bool mouse_double_clicked(int button_index=0);
 	void set_collapsed(bool collapsed);

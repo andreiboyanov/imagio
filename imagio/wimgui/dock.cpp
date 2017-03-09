@@ -238,6 +238,7 @@ float dock_painter::get_tabbar_height(bool always_visible)
 	ImGuiWindow* imgui_window = dock->get_imgui_window();
 	if (!always_visible && (!imgui_window || dock->collapsed_windows == 0))
 		return 0.0f;
+
 	float height = imgui_window->CalcFontSize()
 		+ GImGui->Style.FramePadding.y * 2.0f;
 	return height;
@@ -699,32 +700,34 @@ void dock_fill_painter::adjust()
 			window->set_height(window->get_current_height());
 		window->set_width(window->get_current_width());
 
-		if (window->get_position().x < 1.0f)
-			window->set_position(20.0f, 20.0f);
+		// if (window->get_position().x < 1.0f)
+		window->set_position(dock->position.x, dock->position.y);
+		window->set_width(dock->get_width());
+		window->set_height(dock->get_height());
 
-		ImVec2 position = window->get_position();
-		float new_x = position.x, new_y = position.y;
-		bool need_reposition = false;
-		if (position.x < dock->position.x)
-		{
-			new_x = dock->position.x;
-			need_reposition = true;
-		}
-		if (position.y < dock->position.y)
-		{
-			new_y = dock->position.y;
-			need_reposition = true;
-		}
-		if (need_reposition)
-			window->set_position(new_x, new_y);
+		// ImVec2 position = window->get_position();
+		// float new_x = position.x, new_y = position.y;
+		// bool need_reposition = false;
+		// if (position.x < dock->position.x)
+		// {
+		// 	new_x = dock->position.x;
+		// 	need_reposition = true;
+		// }
+		// if (position.y < dock->position.y)
+		// {
+		// 	new_y = dock->position.y;
+		// 	need_reposition = true;
+		// }
+		// if (need_reposition)
+		// 	window->set_position(new_x, new_y);
 
-		position = window->get_position();
-		if (position.x + window->get_width() > dock->position.x + dock->size.x)
-			window->set_width(dock->position.x + dock->size.x -
-			position.x);
-		if (position.y + window->get_height() > dock->position.y + dock->size.y)
-			window->set_height(dock->position.y + dock->size.y -
-			position.y);
+		// position = window->get_position();
+		// if (position.x + window->get_width() > dock->position.x + dock->size.x)
+		// 	window->set_width(dock->position.x + dock->size.x -
+		// 	position.x);
+		// if (position.y + window->get_height() > dock->position.y + dock->size.y)
+		// 	window->set_height(dock->position.y + dock->size.y -
+		// 	position.y);
 	}
 }
 

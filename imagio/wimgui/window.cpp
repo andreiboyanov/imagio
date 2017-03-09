@@ -221,6 +221,17 @@ float window::get_current_height()
 	return imgui_window ? imgui_window->Size.y : -1.0f;
 }
 
+ImRect window::get_content_rectangle()
+{
+	const ImGuiStyle& style = GImGui->Style;
+	ImGuiWindow *imgui_window = get_imgui_window();
+	ImRect result = imgui_window->Rect();
+	result.Min.y += imgui_window->TitleBarHeight();
+	result.Min += style.WindowPadding;
+	result.Max -= style.WindowPadding;
+	return result;
+}
+
 void window::draw_imgui()
 {
 	if (visible)
