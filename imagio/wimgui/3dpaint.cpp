@@ -24,12 +24,14 @@ void painter3d::draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool do_
 void painter3d::draw_text(char* text, Vector3f& position, ImColor& color, bool do_transform)
 {
 	ImGui::SetCursorScreenPos(window_coordinates(position, do_transform));
+	ImGui::PushStyleColor(ImGuiCol_Text, color);
 	ImGui::Text(text);
+	ImGui::PopStyleColor();
 }
 
 Vector3f painter3d::view_coordinates(Vector3f& point, bool rotation_only)
 {
-	Transform<float, 3, Affine> transform = view_rotation;
+	Transform<float, 3, Affine> transform = move_rotation * view_rotation;
 	if (!rotation_only)
 	{
 		transform = move_translation * view_translation * transform;
@@ -61,8 +63,8 @@ ImVec2 painter3d::window_coordinates(float x, float y, float z, bool do_transfor
 
 void painter3d::draw_zero_cross()
 {
-	draw_line(Vector3f(-50.0f, 0.0f, 0.0f), Vector3f(50.0f, 0.0f, 0.0f), cross_line_color);
-	draw_line(Vector3f(0.0f, 0.0f, -50.0f), Vector3f(0.0f, 0.0f, 50.0f), cross_line_color);
+	draw_line(Vector3f(-50.0f, 0.0f, 0.0f), Vector3f(50.0f, 0.0f, 0.0f), x_axis_color);
+	draw_line(Vector3f(0.0f, 0.0f, -50.0f), Vector3f(0.0f, 0.0f, 50.0f), z_axis_color);
 }
 
 void painter3d::draw_axes()
@@ -78,26 +80,58 @@ void painter3d::draw_axes()
 void painter3d::init_view()
 {
 	move_translation = Translation3f(0.0f, 0.0f, 0.0f);
+	move_rotation = Affine3f(AngleAxisf(0.0f, Vector3f::UnitX()));
 	view_translation = Translation3f(300.0f, 300.0f, 300.0f);
-	view_rotation = Affine3f(AngleAxisf(radians(-90), Vector3f::UnitX())) * \
-					Affine3f(AngleAxisf(radians(0), Vector3f::UnitY())); 
+	view_rotation = Affine3f(AngleAxisf(radians(-20), Vector3f::UnitX()) * 
+							 AngleAxisf(radians(20), Vector3f::UnitY())); 
 }
 
 
 void painter3d::move(float x, float y)
 {
-	 Vector3f delta = Transform<float, 3, Affine>(view_rotation) * Vector3f(x, -y, 0.0f);
+	Vector3f delta = Vector3f(x, -y, 0.0f);
 	move_translation = Translation3f(delta);
 }
 
 void painter3d::move(float x, float y, float z)
 {
-	move_translation = Translation3f(0.0f, 0.0f, 0.0f);
+	x, y, z;
 }
 
 void painter3d::stop_moving()
 {
+	view_translation = move_translation * view_translation;
+	move_translation = Translation3f(0.0f, 0.0f, 0.0f);
+}
 
+void painter3d::rotate(float x, float y)
+{
+	Vector3f delta = Vector3f(x, -y, 0.0f);
+	move_rotation = Affine3f(AngleAxisf(-y / 100.0f, Vector3f::UnitX()) * 
+							 AngleAxisf(-x / 100.0f, Vector3f::UnitY()));
+}
+
+void painter3d::rotate(float x, float y, float z)
+{
+	x, y, z;
+}
+
+void painter3d::stop_rotating()
+{
+	view_rotation = move_rotation * view_rotation;
+	move_rotation = Affine3f(AngleAxisf(0.0f, Vector3f::UnitX()));
+}
+
+void painter3d::set_view_rotation(float x, float y, float z)
+{
+	view_rotation = Affine3f(AngleAxisf(x, Vector3f::UnitX()) * 
+							 AngleAxisf(y, Vector3f::UnitY()) *
+							 AngleAxisf(z, Vector3f::UnitZ()));
+}
+
+void painter3d::set_view_translation(float x, float y, float z)
+{
+	view_translation = Translation3f(x, y, z);
 }
 
 }

@@ -90,6 +90,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\cnpy\cnpy.cpp" />
     <ClCompile Include="imagio_menu.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -106,6 +107,7 @@
     <ClCompile Include="wimgui\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\cnpy\cnpy.h" />
     <ClInclude Include="imagio.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

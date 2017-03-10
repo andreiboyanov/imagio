@@ -22,6 +22,13 @@ private:
 public:
 	paint_window(const char* _title);
 	void draw();
+	void center();
+	void view_top();
+	void view_bottom();
+	void view_left();
+	void view_right();
+	void view_front();
+	void view_back();
 };
 
 }

@@ -28,6 +28,17 @@ void paint_window::draw()
 	{
 		painter->stop_moving();
 	}
+	if (ImGui::IsMouseDragging(2.0f, 1.0f))
+	{
+		ImGui::Text("Rotating");
+		ImVec2 delta = ImGui::GetMouseDragDelta(2, 1.0f);
+		ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
+		painter->rotate(delta.x, delta.y);
+	}
+	if (ImGui::IsMouseReleased(2))
+	{
+		painter->stop_rotating();
+	}
 	painter->draw_zero_cross();
 	painter->draw_axes();
 	for (float x = 0.0f, y = 0.0f, z = 0.0f;
@@ -35,6 +46,42 @@ void paint_window::draw()
 	{
 		painter->draw_point(Vector3f(x, y, z), ImColor(x / 1000.0f, y / 1000.0f, z / 1000.0f));
 	}
+}
+
+void paint_window::center()
+{
+	ImRect canvas = get_content_rectangle();
+	painter->set_view_translation(canvas.GetWidth() / 2.0f, canvas.GetHeight() / 2.0f, 0.0f);
+}
+
+void paint_window::view_top()
+{
+	painter->set_view_rotation(radians(90.0f), 0.0f, 0.0f);
+}
+
+void paint_window::view_bottom()
+{
+	painter->set_view_rotation(radians(-90.0f), 0.0f, 0.0f);
+}
+
+void paint_window::view_left()
+{
+	painter->set_view_rotation(0.0f, radians(90.0f), 0.0f);
+}
+
+void paint_window::view_right()
+{
+	painter->set_view_rotation(0.0f, radians(-90.0f), 0.0f);
+}
+
+void paint_window::view_front()
+{
+	painter->set_view_rotation(0.0f, 0.0f, 0.0f);
+}
+
+void paint_window::view_back()
+{
+	painter->set_view_rotation(0.0f, radians(180.0f), 0.0f);
 }
 
 }

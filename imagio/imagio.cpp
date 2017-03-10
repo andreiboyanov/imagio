@@ -63,9 +63,12 @@ public:
 };
 
 class window_five : public wimgui::window {
+private:
+	wimgui::paint_window* paint;
 public:
-	window_five(const char *_title) : window(_title)
+	window_five(const char *_title, wimgui::paint_window* _painter) : window(_title)
 	{
+		paint = _painter;
 		show_title(true);
 		show_border(true);
 		allow_resize(true);
@@ -76,7 +79,20 @@ public:
 	}
 
 	void draw() {
-		ImGui::Text("Hello, fifth world!");
+		if (ImGui::Button("Center"))
+			paint->center();
+		if (ImGui::Button("View top"))
+			paint->view_top();
+		if (ImGui::Button("View bottom"))
+			paint->view_bottom();
+		if (ImGui::Button("View left"))
+			paint->view_left();
+		if (ImGui::Button("View right"))
+			paint->view_right();
+		if (ImGui::Button("View front"))
+			paint->view_front();
+		if (ImGui::Button("View back"))
+			paint->view_back();
 	}
 };
 
@@ -85,7 +101,7 @@ wimgui::paint_window window1("Painter 3D");
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
-window_five window5("Fifth window");
+window_five window5("Control panel", &window1);
 // wimgui::file_explorer explorer = wimgui::file_explorer("/", "Choose file");
 wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
 wimgui::docker dock_bottom("##DOCK BOTTOM", wimgui::dock_bottom);

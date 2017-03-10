@@ -24,6 +24,7 @@ class painter3d
 private:
 	window* window;
 	Affine3f view_rotation;
+	Affine3f move_rotation;
 	Translation3f view_translation;
 	Translation3f move_translation;
 	float scale3 = 1.0f;
@@ -51,6 +52,11 @@ public:
 	void move(float x, float y);
 	void move(float x, float y, float z);
 	void stop_moving();
+	void rotate(float x, float y);
+	void rotate(float x, float y, float z);
+	void stop_rotating();
+	void set_view_rotation(float x, float y, float z);
+	void set_view_translation(float x, float y, float z);
 };
 
 }

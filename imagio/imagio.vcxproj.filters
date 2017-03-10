@@ -60,6 +60,9 @@
     <ClCompile Include="wimgui\paint_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\cnpy\cnpy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wimgui\paint_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cnpy\cnpy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
