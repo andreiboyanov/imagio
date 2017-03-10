@@ -101,6 +101,7 @@
     <ClCompile Include="wimgui\3dpaint.cpp" />
     <ClCompile Include="wimgui\dock.cpp" />
     <ClCompile Include="wimgui\file_explorer.cpp" />
+    <ClCompile Include="wimgui\paint_window.cpp" />
     <ClCompile Include="wimgui\workspace.cpp" />
     <ClCompile Include="wimgui\window.cpp" />
   </ItemGroup>
@@ -118,6 +119,7 @@
     <ClInclude Include="wimgui\3dpaint.h" />
     <ClInclude Include="wimgui\dock.h" />
     <ClInclude Include="wimgui\file_explorer.h" />
+    <ClInclude Include="wimgui\paint_window.h" />
     <ClInclude Include="wimgui\workspace.h" />
     <ClInclude Include="wimgui\window.h" />
   </ItemGroup>

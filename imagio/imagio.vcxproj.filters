@@ -57,6 +57,9 @@
     <ClCompile Include="wimgui\3dpaint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wimgui\paint_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -102,6 +105,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wimgui\3dpaint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wimgui\paint_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

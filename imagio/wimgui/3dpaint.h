@@ -25,6 +25,7 @@ private:
 	window* window;
 	Affine3f view_rotation;
 	Translation3f view_translation;
+	Translation3f move_translation;
 	float scale3 = 1.0f;
 	float scale2 = 1.0f;
 	ImColor cross_line_color = ImColor(0.5f, 0.5f, 0.5f);
@@ -34,6 +35,7 @@ private:
 
 	void init_view();
 public:
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 	// FIXME: Clean a bit the concept of rotation_only transformation
 	// (needed for the axes...)
 	painter3d(wimgui::window* _window) { window = _window; init_view();  }
@@ -46,6 +48,9 @@ public:
 	Vector3f view_coordinates(Vector3f& point, bool rotation_only=false);
 	void draw_zero_cross();
 	void draw_axes();
+	void move(float x, float y);
+	void move(float x, float y, float z);
+	void stop_moving();
 };
 
 }

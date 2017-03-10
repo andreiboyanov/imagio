@@ -338,9 +338,10 @@ bool window::is_resizing()
 	return held;
 }
 
-void window::set_cursor_position(ImVec2 _position)
+void window::set_cursor_position(ImVec2& _position)
 {
 	ImGuiWindow* imgui_window = get_imgui_window();
+	//ImGui::SetCursorPos(_position);
 	imgui_window->DC.CursorPos.x = _position.x;
 	imgui_window->DC.CursorPos.y = _position.y;
 }

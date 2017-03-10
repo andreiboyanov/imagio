@@ -81,7 +81,7 @@ public:
 	inline bool is_dockable() { return dockable; }
 	inline void set_dockable(bool _dockable) { dockable = _dockable;  }
 
-	void set_cursor_position(ImVec2 _position);
+	void set_cursor_position(ImVec2& _position);
 	ImVec2 get_cursor_position();
 	ImGuiWindow *get_imgui_window();
 };

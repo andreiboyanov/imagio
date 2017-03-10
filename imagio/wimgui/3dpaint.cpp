@@ -31,7 +31,9 @@ Vector3f painter3d::view_coordinates(Vector3f& point, bool rotation_only)
 {
 	Transform<float, 3, Affine> transform = view_rotation;
 	if (!rotation_only)
-		transform = view_translation * transform;
+	{
+		transform = move_translation * view_translation * transform;
+	}
 	Vector3f view_point = transform * point;
 	return view_point;
 }
@@ -47,7 +49,8 @@ ImVec2 painter3d::window_coordinates(Vector3f& point, bool do_transform)
 	Transform<float, 3, Affine> transform = \
 		Translation3f(0.0f, content_zone.GetHeight(), 0.0f) * \
 		Affine3f(AngleAxisf(radians(180), Vector3f::UnitX()));
-	Vector3f window_point = transform * view_coordinates(point, !do_transform);
+	Vector3f view_point = view_coordinates(point, !do_transform);
+	Vector3f window_point = transform * view_point;
 	return content_zone.GetTL() + ImVec2(window_point.x(), window_point.y());
 }
 
@@ -74,9 +77,27 @@ void painter3d::draw_axes()
 
 void painter3d::init_view()
 {
+	move_translation = Translation3f(0.0f, 0.0f, 0.0f);
 	view_translation = Translation3f(300.0f, 300.0f, 300.0f);
 	view_rotation = Affine3f(AngleAxisf(radians(-90), Vector3f::UnitX())) * \
 					Affine3f(AngleAxisf(radians(0), Vector3f::UnitY())); 
+}
+
+
+void painter3d::move(float x, float y)
+{
+	 Vector3f delta = Transform<float, 3, Affine>(view_rotation) * Vector3f(x, -y, 0.0f);
+	move_translation = Translation3f(delta);
+}
+
+void painter3d::move(float x, float y, float z)
+{
+	move_translation = Translation3f(0.0f, 0.0f, 0.0f);
+}
+
+void painter3d::stop_moving()
+{
+
 }
 
 }

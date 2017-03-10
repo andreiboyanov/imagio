@@ -8,39 +8,10 @@
 #include "wimgui/dock.h"
 #include "wimgui/file_explorer.h"
 #include "wimgui/3dpaint.h"
+#include "wimgui/paint_window.h"
 
 
 namespace imagio {
-
-
-class window_one : public wimgui::window {
-private:
-	wimgui::painter3d* painter;
-
-public:
-	window_one(const char* _title) : window(_title)
-	{
-		painter = new wimgui::painter3d(this);
-		show_title(true);
-		show_border(true);
-		allow_resize(true);
-		allow_move(true);
-		show_scrollbar(true);
-		allow_collapse(true);
-		show_menu(false);
-	}
-
-	void draw()
-	{
-		painter->draw_zero_cross();
-		painter->draw_axes();
-		for (float x = 0.0f, y = 0.0f, z = 0.0f;
-			x <= 1000.0f; x += 5.0f, y += 5.0f, z += 5.0f)
-		{
-			painter->draw_point(Vector3f(x, y, z), ImColor(x / 1000.0f, y / 1000.0f, z / 1000.0f));
-		}
-	}
-};
 
 
 class window_two : public wimgui::window {
@@ -110,7 +81,7 @@ public:
 };
 
 static wimgui::workspace workspace;
-window_one window1("First window");
+wimgui::paint_window window1("Painter 3D");
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
