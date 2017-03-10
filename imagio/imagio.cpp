@@ -9,7 +9,7 @@
 #include "wimgui/file_explorer.h"
 #include "wimgui/3dpaint.h"
 #include "wimgui/paint_window.h"
-
+#include <json/json.h>
 
 namespace imagio {
 
@@ -79,6 +79,8 @@ public:
 	}
 
 	void draw() {
+		if (ImGui::Button("Load cloud"))
+			load_point_cloud();
 		if (ImGui::Button("Center"))
 			paint->center();
 		if (ImGui::Button("View top"))
@@ -93,6 +95,21 @@ public:
 			paint->view_front();
 		if (ImGui::Button("View back"))
 			paint->view_back();
+	}
+
+	void load_point_cloud()
+	{
+		Json::Value point_root;
+		std::ifstream input_file("d:/src/imagio.git/imagio/sample_data/Tagging_Robert_Juan_00.json");
+		if (input_file.is_open())
+		{
+			input_file >> point_root;
+			std::cout << point_root["ReferenceData"]["Frame"][0];
+		}
+		else
+		{
+			std::cout << "Problem with opening the file";
+		}
 	}
 };
 
