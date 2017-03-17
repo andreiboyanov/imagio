@@ -63,6 +63,9 @@
     <ClCompile Include="libs\jsoncpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="point_cloud_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -113,10 +116,17 @@
     <ClInclude Include="wimgui\paint_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="point_cloud_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imagio.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="glsl_shaders\fragment.shader" />
+    <None Include="glsl_shaders\vertex.shader" />
   </ItemGroup>
 </Project>

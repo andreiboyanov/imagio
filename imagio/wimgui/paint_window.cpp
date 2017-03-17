@@ -5,7 +5,7 @@ namespace wimgui
 
 paint_window::paint_window(const char* _title) : window(_title)
 {
-	painter = new wimgui::painter3d(this);
+	painter = new wimgui::painter3d(this, (ImTextureID)0x99);
 	show_title(true);
 	show_border(true);
 	allow_resize(true);
@@ -17,35 +17,36 @@ paint_window::paint_window(const char* _title) : window(_title)
 
 void paint_window::draw()
 {
-	if (ImGui::IsMouseDragging(1, 1.0f))
-	{
-		ImGui::Text("Draging");
-		ImVec2 delta = ImGui::GetMouseDragDelta(1, 1.0f);
-		ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
-		painter->move(delta.x, delta.y);
-	}
-	if (ImGui::IsMouseReleased(1))
-	{
-		painter->stop_moving();
-	}
-	if (ImGui::IsMouseDragging(2.0f, 1.0f))
-	{
-		ImGui::Text("Rotating");
-		ImVec2 delta = ImGui::GetMouseDragDelta(2, 1.0f);
-		ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
-		painter->rotate(delta.x, delta.y);
-	}
-	if (ImGui::IsMouseReleased(2))
-	{
-		painter->stop_rotating();
-	}
-	painter->draw_zero_cross();
-	painter->draw_axes();
-	for (float x = 0.0f, y = 0.0f, z = 0.0f;
-		x <= 1000.0f; x += 5.0f, y += 5.0f, z += 5.0f)
-	{
-		painter->draw_point(Vector3f(x, y, z), ImColor(x / 1000.0f, y / 1000.0f, z / 1000.0f));
-	}
+	ImTextureID texture_id = (ImTextureID)0x99;
+	ImGui::Image((ImTextureID)painter->get_texture_id(), get_content_rectangle().GetSize());
+	//if (ImGui::IsMouseDragging(1, 1.0f))
+	//{
+	//	ImGui::Text("Draging");
+	//	ImVec2 delta = ImGui::GetMouseDragDelta(1, 1.0f);
+	//	ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
+	//	painter->move(delta.x, delta.y);
+	//}
+	//if (ImGui::IsMouseReleased(1))
+	//{
+	//	painter->stop_moving();
+	//}
+	//if (ImGui::IsMouseDragging(2.0f, 1.0f))
+	//{
+	//	ImGui::Text("Rotating");
+	//	ImVec2 delta = ImGui::GetMouseDragDelta(2, 1.0f);
+	//	ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
+	//	painter->rotate(delta.x, delta.y);
+	//}
+	//if (ImGui::IsMouseReleased(2))
+	//{
+	//	painter->stop_rotating();
+	//}
+
+	painter->draw();
+
+	//float mouse_wheel = ImGui::GetIO().MouseWheel;
+	//ImGui::Text("%f", mouse_wheel);
+	//painter->scale(mouse_wheel);
 }
 
 void paint_window::center()
@@ -82,6 +83,11 @@ void paint_window::view_front()
 void paint_window::view_back()
 {
 	painter->set_view_rotation(0.0f, radians(180.0f), 0.0f);
+}
+
+void paint_window::init_scene()
+{
+	painter->init_scene();
 }
 
 }
