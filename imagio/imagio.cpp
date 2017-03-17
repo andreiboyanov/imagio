@@ -8,7 +8,7 @@
 #include "wimgui/dock.h"
 #include "wimgui/file_explorer.h"
 #include "wimgui/3dpaint.h"
-#include "point_cloud_window.h"
+#include "wimgui/paint_window.h"
 #include <json/json.h>
 
 namespace imagio {
@@ -64,9 +64,9 @@ public:
 
 class window_five : public wimgui::window {
 private:
-	point_cloud_window* paint;
+	wimgui::paint_window* paint;
 public:
-	window_five(const char *_title, point_cloud_window* _painter) : window(_title)
+	window_five(const char *_title, wimgui::paint_window* _painter) : window(_title)
 	{
 		paint = _painter;
 		show_title(true);
@@ -79,8 +79,8 @@ public:
 	}
 
 	void draw() {
-		if (ImGui::Button("Open point cloud"))
-			paint->open_skv_depth("D:/src/imagio.git/imagio/sample_data/juan_00.skv");
+		if (ImGui::Button("Load cloud"))
+			load_point_cloud();
 		if (ImGui::Button("Center"))
 			paint->center();
 		if (ImGui::Button("View top"))
@@ -97,11 +97,24 @@ public:
 			paint->view_back();
 	}
 
+	void load_point_cloud()
+	{
+		Json::Value point_root;
+		std::ifstream input_file("d:/src/imagio.git/imagio/sample_data/Tagging_Robert_Juan_00.json");
+		if (input_file.is_open())
+		{
+			input_file >> point_root;
+			std::cout << point_root["ReferenceData"]["Frame"][0];
+		}
+		else
+		{
+			std::cout << "Problem with opening the file";
+		}
+	}
 };
 
 static wimgui::workspace workspace;
-
-point_cloud_window window1("Point cloud");
+wimgui::paint_window window1("Painter 3D");
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
@@ -133,7 +146,6 @@ void init()
 	// explorer.set_height(workspace.get_height() / 2);
 	// explorer.set_width(workspace.get_width() / 2);
 	// workspace.add_window(&explorer, &dock_top);
-	window1.get_painter()->init_view();
 }
 
 int draw()
@@ -142,11 +154,6 @@ int draw()
 	workspace.draw_workspace();
 	ImGui::ShowTestWindow();
 	return 0;
-}
-
-void custom_render()
-{
-	
 }
 
 }

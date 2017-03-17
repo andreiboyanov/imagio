@@ -1,3 +1,2 @@
 *.npy filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
-*.skv filter=lfs diff=lfs merge=lfs -text

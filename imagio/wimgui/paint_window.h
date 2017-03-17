@@ -16,12 +16,11 @@ namespace wimgui {
 
 class paint_window : public window
 {
-protected:
-	painter3d* painter;
+private:
+	wimgui::painter3d* painter;
 
 public:
 	paint_window(const char* _title);
-	painter3d* get_painter() { return painter; }
 	void draw();
 	void center();
 	void view_top();
@@ -30,7 +29,6 @@ public:
 	void view_right();
 	void view_front();
 	void view_back();
-	void init_scene();
 };
 
 }
