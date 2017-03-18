@@ -20,7 +20,7 @@ CEXTRA                = $(WARNINGS) -Wbad-function-cast
 CXXEXTRA              = -std=c++11 $(WARNINGS) -ggdb -g3
 RCEXTRA               =
 DEFINES               =
-INCLUDE_PATH          = -I/usr/local/include -Iimagio/libs/gl3w
+INCLUDE_PATH          = -isystem/usr/local/include -isystemimagio/libs/gl3w -isystem/usr/include/eigen3
 DLL_PATH              =
 DLL_IMPORTS           =
 LIBRARY_PATH          =
