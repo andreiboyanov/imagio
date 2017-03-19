@@ -310,12 +310,6 @@ void window::set_collapsed(bool collapsed)
 	imgui_window->Collapsed = collapsed;
 }
 
-bool window::is_moving()
-{
-	ImGuiWindow* imgui_window = get_imgui_window();
-	return (GImGui->MovedWindow == imgui_window);
-}
-
 // FIXME: Isn't working properly...
 bool window::is_resizing()
 {
@@ -338,7 +332,7 @@ bool window::is_resizing()
 	return held;
 }
 
-void window::set_cursor_position(ImVec2& _position)
+void window::set_cursor_position(ImVec2 _position)
 {
 	ImGuiWindow* imgui_window = get_imgui_window();
 	//ImGui::SetCursorPos(_position);

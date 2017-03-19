@@ -22,7 +22,7 @@ namespace wimgui
 class painter3d
 {
 private:
-	window* window;
+    wimgui::window* window;
 	Affine3f view_rotation;
 	Affine3f move_rotation;
 	Translation3f view_translation;
@@ -42,7 +42,7 @@ public:
 	painter3d(wimgui::window* _window) { window = _window; init_view();  }
 	void draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool do_transform=true);
 	void draw_point(Vector3f& poition, ImColor& color, bool do_transform=true);
-	void draw_text(char* text, Vector3f& position, ImColor& color, bool do_transform=true);
+	void draw_text(const char* text, Vector3f& position, ImColor& color, bool do_transform=true);
 	ImVec2 window_coordinates(float x, float y, float z, bool do_transform=true);
 	ImVec2 window_coordinates(Vector3f& point, bool do_transform=true);
 	Vector3f view_coordinates(float x, float y, float z, bool rotation_only=false);

@@ -9,8 +9,9 @@ namespace wimgui
 void painter3d::draw_point(Vector3f& position, ImColor& color, bool do_transform)
 {
 	ImDrawList* draw_list = ImGui::GetCurrentWindow()->DrawList;
-	ImVec2 point = window_coordinates(position, do_transform);
-	draw_list->AddCircle(point, 1.0f, color, 12, 1.0f);
+	ImVec2 from_point = window_coordinates(position, do_transform);
+	ImVec2 to_point = from_point + ImVec2(1.0f, 1.0f);
+	draw_list->AddLine(from_point, to_point, color);
 }
 
 void painter3d::draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool do_transform)
@@ -21,11 +22,11 @@ void painter3d::draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool do_
 	draw_list->AddLine(from_point, to_point, color);
 }
 
-void painter3d::draw_text(char* text, Vector3f& position, ImColor& color, bool do_transform)
+void painter3d::draw_text(const char* text, Vector3f& position, ImColor& color, bool do_transform)
 {
 	ImGui::SetCursorScreenPos(window_coordinates(position, do_transform));
 	ImGui::PushStyleColor(ImGuiCol_Text, color);
-	ImGui::Text(text);
+	ImGui::Text("%s", text);
 	ImGui::PopStyleColor();
 }
 
@@ -42,7 +43,8 @@ Vector3f painter3d::view_coordinates(Vector3f& point, bool rotation_only)
 
 Vector3f painter3d::view_coordinates(float x, float y, float z, bool rotation_only)
 {
-	return view_coordinates(Vector3f(x, y, z), rotation_only);
+    Vector3f vector = Vector3f(x, y, z);
+	return view_coordinates(vector, rotation_only);
 }
 
 ImVec2 painter3d::window_coordinates(Vector3f& point, bool do_transform)
@@ -58,23 +60,36 @@ ImVec2 painter3d::window_coordinates(Vector3f& point, bool do_transform)
 
 ImVec2 painter3d::window_coordinates(float x, float y, float z, bool do_transform)
 {
-	return window_coordinates(Vector3f(x, y, z), do_transform);
+    Vector3f vector = Vector3f(x, y, z);
+	return window_coordinates(vector, do_transform);
 }
 
 void painter3d::draw_zero_cross()
 {
-	draw_line(Vector3f(-50.0f, 0.0f, 0.0f), Vector3f(50.0f, 0.0f, 0.0f), x_axis_color);
-	draw_line(Vector3f(0.0f, 0.0f, -50.0f), Vector3f(0.0f, 0.0f, 50.0f), z_axis_color);
+    Vector3f from1 = Vector3f(-50.0f, 0.0f, 0.0f);
+    Vector3f to1 = Vector3f(50.0f, 0.0f, 0.0f);
+    Vector3f from2 = Vector3f(0.0f, 0.0f, -50.0f);
+    Vector3f to2 = Vector3f(0.0f, 0.0f, 50.0f);
+	draw_line(from1, to1, x_axis_color);
+	draw_line(from2, to2, z_axis_color);
 }
 
 void painter3d::draw_axes()
 {
-	draw_line(Vector3f(0, 0, 0), Vector3f(100, 0, 0), x_axis_color, false);
-	draw_text("x", Vector3f(100, 0, 0), x_axis_color, false);
-	draw_line(Vector3f(0, 0, 0), Vector3f(0, 100, 0), y_axis_color, false);
-	draw_text("y", Vector3f(0, 100, 0), y_axis_color, false);
-	draw_line(Vector3f(0, 0, 0), Vector3f(0, 0, 100), z_axis_color, false);
-	draw_text("z", Vector3f(0, 0, 100), z_axis_color, false);
+    Vector3f from_point = Vector3f(0, 0, 0);
+    Vector3f to_point = Vector3f(100, 0, 0);
+	draw_line(from_point, to_point, x_axis_color, false);
+	draw_text("x", to_point, x_axis_color, false);
+
+    from_point = Vector3f(0, 0, 0);
+    to_point = Vector3f(0, 100, 0);
+	draw_line(from_point, to_point, y_axis_color, false);
+	draw_text("y", to_point, y_axis_color, false);
+
+    from_point = Vector3f(0, 0, 0);
+    to_point = Vector3f(0, 0, 100);
+	draw_line(from_point, to_point, z_axis_color, false);
+	draw_text("z", to_point, z_axis_color, false);
 }
 
 void painter3d::init_view()
@@ -93,10 +108,10 @@ void painter3d::move(float x, float y)
 	move_translation = Translation3f(delta);
 }
 
-void painter3d::move(float x, float y, float z)
-{
-	x, y, z;
-}
+// void painter3d::move(float x, float y, float z)
+// {
+// 	x, y, z;
+// }
 
 void painter3d::stop_moving()
 {
@@ -106,15 +121,14 @@ void painter3d::stop_moving()
 
 void painter3d::rotate(float x, float y)
 {
-	Vector3f delta = Vector3f(x, -y, 0.0f);
 	move_rotation = Affine3f(AngleAxisf(-y / 100.0f, Vector3f::UnitX()) * 
 							 AngleAxisf(-x / 100.0f, Vector3f::UnitY()));
 }
 
-void painter3d::rotate(float x, float y, float z)
-{
-	x, y, z;
-}
+// void painter3d::rotate(float x, float y, float z)
+// {
+// 	x, y, z;
+// }
 
 void painter3d::stop_rotating()
 {

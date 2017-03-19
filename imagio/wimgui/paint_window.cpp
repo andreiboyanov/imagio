@@ -42,9 +42,11 @@ void paint_window::draw()
 	painter->draw_zero_cross();
 	painter->draw_axes();
 	for (float x = 0.0f, y = 0.0f, z = 0.0f;
-		x <= 1000.0f; x += 5.0f, y += 5.0f, z += 5.0f)
+		x <= 4000.0f; x += 1.0f, y += 5.0f, z += 5.0f)
 	{
-		painter->draw_point(Vector3f(x, y, z), ImColor(x / 1000.0f, y / 1000.0f, z / 1000.0f));
+        Vector3f point = Vector3f(x, y, z);
+        ImColor color = ImColor(x / 1000.0f, y / 1000.0f, z / 1000.0f);
+		painter->draw_point(point, color);
 	}
 }
 
