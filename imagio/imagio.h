@@ -7,7 +7,6 @@ namespace imagio {
 
 void init();
 int draw();
-void custom_render();
 void draw_main_menu();
 
 }
