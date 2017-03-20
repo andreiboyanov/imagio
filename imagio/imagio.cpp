@@ -6,9 +6,7 @@
 #include "wimgui/workspace.h"
 #include "wimgui/window.h"
 #include "wimgui/dock.h"
-#include "wimgui/file_explorer.h"
 #include "wimgui/3dpaint.h"
-#include "point_cloud_window.h"
 #include "wimgui/paint_window.h"
 // #include <json/json.h>
 

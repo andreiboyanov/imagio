@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\src\SKV\dist\include;libs;libs\gl3w;libs\glfw\include;D:\src\boost_1_62_0;D:\src\eigen</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>libs;libs\gl3w;libs\glfw\include;D:\src\eigen</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -99,10 +99,8 @@
     <ClCompile Include="libs\jsoncpp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="imagio.cpp" />
-    <ClCompile Include="point_cloud_window.cpp" />
     <ClCompile Include="wimgui\3dpaint.cpp" />
     <ClCompile Include="wimgui\dock.cpp" />
-    <ClCompile Include="wimgui\file_explorer.cpp" />
     <ClCompile Include="wimgui\paint_window.cpp" />
     <ClCompile Include="wimgui\workspace.cpp" />
     <ClCompile Include="wimgui\window.cpp" />
@@ -117,11 +115,9 @@
     <ClInclude Include="imgui\stb_textedit.h" />
     <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="imgui_opengl3\imgui_impl_glfw_gl3.h" />
-    <ClInclude Include="point_cloud_window.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="wimgui\3dpaint.h" />
     <ClInclude Include="wimgui\dock.h" />
-    <ClInclude Include="wimgui\file_explorer.h" />
     <ClInclude Include="wimgui\paint_window.h" />
     <ClInclude Include="wimgui\workspace.h" />
     <ClInclude Include="wimgui\window.h" />
