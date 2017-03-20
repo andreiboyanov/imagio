@@ -71,13 +71,13 @@ public:
 		init_view();
 	}
 	GLuint get_texture_id() { return texture_id;  }
-	void draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool translate=true, bool rotate=true);
-	void draw_point(Vector3f& poition, ImColor& color, bool translate=true, bool rotate=true);
-	void draw_text(char* text, Vector3f& position, ImColor& color, bool translate=true, bool rotate=true);
-	ImVec2 window_coordinates(float x, float y, float z, bool translate=true, bool rotate=true);
-	ImVec2 window_coordinates(Vector3f& point, bool translate=true, bool rotate=true);
-	Vector3f view_coordinates(float x, float y, float z, bool translate=true, bool rotate=true);
-	Vector3f view_coordinates(Vector3f& point, bool translate=true, bool rotate=true);
+	void draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
+	void draw_point(Vector3f& poition, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
+	void draw_text(char* text, Vector3f& position, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
+	ImVec2 window_coordinates(float x, float y, float z, bool translate=true, bool rotate=true, bool scale=true);
+	ImVec2 window_coordinates(Vector3f& point, bool translate=true, bool rotate=true, bool scale=true);
+	Vector3f view_coordinates(float x, float y, float z, bool translate=true, bool rotate=true, bool scale=true);
+	Vector3f view_coordinates(Vector3f& point, bool translate=true, bool rotate=true, bool scale=true);
 	void draw_zero_cross();
 	void draw_axes();
 	void move(float x, float y);

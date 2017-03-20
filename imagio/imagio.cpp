@@ -65,9 +65,9 @@ public:
 
 class window_five : public wimgui::window {
 private:
-	point_cloud_window* paint;
+	wimgui::paint_window* paint;
 public:
-	window_five(const char *_title, point_cloud_window* _painter) : window(_title)
+	window_five(const char *_title, wimgui::paint_window* _painter) : window(_title)
 	{
 		paint = _painter;
 		show_title(true);
@@ -80,8 +80,8 @@ public:
 	}
 
 	void draw() {
-		if (ImGui::Button("Open point cloud"))
-			paint->open_skv_depth("D:/src/imagio.git/imagio/sample_data/juan_00.skv");
+		//if (ImGui::Button("Open point cloud"))
+		//	paint->open_skv_depth("D:/src/imagio.git/imagio/sample_data/juan_00.skv");
 		if (ImGui::Button("Center"))
 			paint->center();
 		if (ImGui::Button("View top"))
@@ -116,7 +116,7 @@ public:
 
 static wimgui::workspace workspace;
 
-point_cloud_window window1("Point cloud");
+wimgui::paint_window window1("Point cloud");
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
