@@ -47,6 +47,15 @@ void paint_window::draw()
 	//float mouse_wheel = ImGui::GetIO().MouseWheel;
 	//ImGui::Text("%f", mouse_wheel);
 	//painter->scale(mouse_wheel);
+	//painter->draw_zero_cross();
+	//painter->draw_axes();
+	//for (float x = 0.0f, y = 0.0f, z = 0.0f;
+	//	x <= 4000.0f; x += 1.0f, y += 5.0f, z += 5.0f)
+	//{
+ //       Vector3f point = Vector3f(x, y, z);
+ //       ImColor color = ImColor(x / 1000.0f, y / 1000.0f, z / 1000.0f);
+	//	painter->draw_point(point, color);
+	//}
 }
 
 void paint_window::center()

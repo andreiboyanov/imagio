@@ -37,7 +37,7 @@ protected:
 public:
 	object3d(painter3d* _painter, bool _translate, bool _rotate)
 		: painter(_painter), translate(_translate), rotate(_rotate) {}
-	virtual void draw(ImDrawList* draw_list) = 0;
+	virtual void draw() = 0;
 	virtual void recalculate() = 0;
 };
 
@@ -45,7 +45,7 @@ public:
 class painter3d
 {
 private:
-	window* window;
+    wimgui::window* window;
 	Affine3f view_rotation;
 	Affine3f move_rotation;
 	Translation3f view_translation;
@@ -65,11 +65,10 @@ private:
 public:
 	void init_view();
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-	// FIXME: Clean a bit the concept of rotation_only transformation
-	// (needed for the axes...)
 	painter3d(wimgui::window* _window, ImTextureID _texture_id) {
 		window = _window;
 		texture_id = (GLuint)_texture_id;
+		init_view();
 	}
 	GLuint get_texture_id() { return texture_id;  }
 	void draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool translate=true, bool rotate=true);
@@ -90,8 +89,6 @@ public:
 	void stop_rotating();
 	void set_view_rotation(float x, float y, float z);
 	void set_view_translation(float x, float y, float z);
-	//void add_point(point p);
-	//void add_line(line l);
 	void clear();
 	void draw();
 	void init_scene();
@@ -114,7 +111,7 @@ public:
 	{
 		recalculate();
 	}
-	virtual void draw(ImDrawList* draw_list);
+	virtual void draw();
 	virtual void recalculate() { position = painter->window_coordinates(position3d, translate, rotate); }
 };
 
@@ -130,7 +127,7 @@ public:
 	{
 		recalculate();
 	}
-	virtual void draw(ImDrawList* draw_list);
+	virtual void draw();
 	virtual void recalculate() {
 		from = painter->window_coordinates(from3d, translate, rotate);
 		to = painter->window_coordinates(to3d, translate, rotate);

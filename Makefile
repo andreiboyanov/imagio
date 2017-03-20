@@ -20,7 +20,7 @@ CEXTRA                = $(WARNINGS) -Wbad-function-cast
 CXXEXTRA              = -std=c++11 $(WARNINGS) -ggdb -g3
 RCEXTRA               =
 DEFINES               =
-INCLUDE_PATH          = -I/usr/local/include -Iimagio/libs/gl3w
+INCLUDE_PATH          = -isystem/usr/local/include -isystemimagio/libs/gl3w -isystem/usr/include/eigen3
 DLL_PATH              =
 DLL_IMPORTS           =
 LIBRARY_PATH          =
@@ -43,7 +43,9 @@ imagio_exe_CXX_SRCS   = imagio/imagio.cpp \
 							imagio/wimgui/window.cpp \
 							imagio/wimgui/dock.cpp \
 							imagio/wimgui/file_explorer.cpp \
-							imagio/wimgui/workspace.cpp
+							imagio/wimgui/workspace.cpp \
+							imagio/wimgui/3dpaint.cpp \
+							imagio/wimgui/paint_window.cpp 
 imagio_exe_RC_SRCS    = # imagio/imagio.rc
 imagio_exe_LDFLAGS    = 
 imagio_exe_ARFLAGS    =
@@ -121,5 +123,4 @@ DEFLIB = $(LIBRARY_PATH) $(LIBRARIES) $(DLL_PATH) $(DLL_IMPORTS:%=-l%)
 
 $(imagio_exe_MODULE): $(imagio_exe_OBJS)
 	$(CXX) $(imagio_exe_LDFLAGS) -o $@ $(imagio_exe_OBJS) $(imagio_exe_LIBRARY_PATH) $(imagio_exe_DLL_PATH) $(DEFLIB) $(imagio_exe_DLLS:%=-l%) $(imagio_exe_LIBRARIES:%=-l%)
-
 

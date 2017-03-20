@@ -70,8 +70,12 @@ public:
 	bool is_collapsed();
 	bool mouse_double_clicked(int button_index=0);
 	void set_collapsed(bool collapsed);
-	inline bool is_moving();
-	inline bool is_resizing();
+	inline bool is_moving()
+    {
+	    ImGuiWindow* imgui_window = get_imgui_window();
+	    return (GImGui->MovedWindow == imgui_window);
+    }
+	bool is_resizing();
 	void draw_vertical_text(const char* text, ImVec2 _position);
 
 	inline docker *docked_to() { return dock; }
@@ -81,7 +85,7 @@ public:
 	inline bool is_dockable() { return dockable; }
 	inline void set_dockable(bool _dockable) { dockable = _dockable;  }
 
-	void set_cursor_position(ImVec2& _position);
+	void set_cursor_position(ImVec2 _position);
 	ImVec2 get_cursor_position();
 	ImGuiWindow *get_imgui_window();
 };
