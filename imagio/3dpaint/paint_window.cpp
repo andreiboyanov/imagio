@@ -17,7 +17,7 @@ paint_window::paint_window(const char* _title) : window(_title)
 
 void paint_window::draw()
 {
-	ImTextureID texture_id = (ImTextureID)0x99;
+	// ImTextureID texture_id = (ImTextureID)0x99;
 	// ImGui::Image((ImTextureID)painter->get_texture_id(), get_content_rectangle().GetSize());
 	if (ImGui::IsMouseDragging(1, 1.0f))
 	{
@@ -30,7 +30,7 @@ void paint_window::draw()
 	{
 		painter->stop_moving();
 	}
-	if (ImGui::IsMouseDragging(2.0f, 1.0f))
+	if (ImGui::IsMouseDragging(2, 1.0f))
 	{
 		ImGui::Text("Rotating");
 		ImVec2 delta = ImGui::GetMouseDragDelta(2, 1.0f);

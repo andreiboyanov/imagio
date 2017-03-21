@@ -9,7 +9,7 @@
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
 
-#include "window.h"
+#include "../wimgui/window.h"
 #include "3dpaint.h"
 
 namespace wimgui {

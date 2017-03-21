@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>libs;libs\gl3w;libs\glfw\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\src\eigen;libs;libs\gl3w;libs\glfw\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -90,6 +90,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3dpaint\3dpaint.cpp" />
+    <ClCompile Include="3dpaint\paint_window.cpp" />
+    <ClCompile Include="gltool\gltool.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -102,6 +105,9 @@
     <ClCompile Include="wimgui\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="3dpaint\3dpaint.h" />
+    <ClInclude Include="3dpaint\paint_window.h" />
+    <ClInclude Include="gltool\gltool.h" />
     <ClInclude Include="imagio.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -122,6 +128,8 @@
   <ItemGroup>
     <None Include="glsl_shaders\fragment.shader" />
     <None Include="glsl_shaders\vertex.shader" />
+    <None Include="gltool\build.sh" />
+    <None Include="gltool\gltool" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

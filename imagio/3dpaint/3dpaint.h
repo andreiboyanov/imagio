@@ -7,8 +7,10 @@
 #include <string>
 #include <fstream>
 
+#pragma warning(push, 0)       
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
+#pragma warning(pop)
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "../imgui/imgui.h"
@@ -16,7 +18,7 @@
 
 #include <GL/gl3w.h>
 
-#include "window.h"
+#include "../wimgui/window.h"
 
 #undef min
 #undef max
@@ -27,7 +29,7 @@ using namespace Eigen;
 namespace wimgui
 {
 
-struct painter3d;
+class painter3d;
 
 struct object3d
 {

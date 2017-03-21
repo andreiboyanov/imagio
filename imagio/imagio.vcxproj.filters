@@ -48,6 +48,15 @@
     <ClCompile Include="imgui\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="3dpaint\3dpaint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="3dpaint\paint_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gltool\gltool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -89,6 +98,15 @@
     <ClInclude Include="wimgui\dock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="3dpaint\3dpaint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3dpaint\paint_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gltool\gltool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imagio.rc">
@@ -98,5 +116,7 @@
   <ItemGroup>
     <None Include="glsl_shaders\fragment.shader" />
     <None Include="glsl_shaders\vertex.shader" />
+    <None Include="gltool\build.sh" />
+    <None Include="gltool\gltool" />
   </ItemGroup>
 </Project>

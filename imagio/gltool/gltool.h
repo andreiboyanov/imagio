@@ -1,8 +1,8 @@
 #ifndef IMAGIO_GLTOOL_H
 #define IMAGIO_GLTOOL_H
 
-#include <GL/glew.h>
-#include <GL/glut.h>
+//#include <GL/glew.h>
+#include <GL/gl3w.h>
 
 #include <stddef.h>
 #include <string>
