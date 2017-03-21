@@ -97,7 +97,7 @@ static std::vector<wimgui::workspace> workspaces =
 	wimgui::workspace("Layout 1"),
 	wimgui::workspace("Layout 2")
 };
-static wimgui::workspace* active_workspace = &(workspaces[0]);
+static wimgui::workspace* active_workspace = &workspaces[1];
 
 wimgui::paint_window window1("First window");
 window_two window2("Second window");
@@ -130,10 +130,7 @@ void init()
 	workspaces[0].add_window(&window5, &dock_left);
 
 	workspaces[1].add_window(&window5, &workspace2_dock_left);
-	workspaces[1].add_window(&window1, &workspace2_dock_top);
-	workspaces[1].add_window(&window2, &workspace2_dock_top);
-	workspaces[1].add_window(&window4, &workspace2_dock_top);
-	workspaces[1].add_window(&window3, &workspace2_dock_fill);
+	workspaces[1].add_window(&window1, &workspace2_dock_fill);
 
 }
 

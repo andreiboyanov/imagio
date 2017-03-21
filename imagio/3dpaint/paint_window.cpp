@@ -19,43 +19,43 @@ void paint_window::draw()
 {
 	// ImTextureID texture_id = (ImTextureID)0x99;
 	// ImGui::Image((ImTextureID)painter->get_texture_id(), get_content_rectangle().GetSize());
-	if (ImGui::IsMouseDragging(1, 1.0f))
-	{
-		ImGui::Text("Draging");
-		ImVec2 delta = ImGui::GetMouseDragDelta(1, 1.0f);
-		ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
-		painter->move(delta.x, delta.y);
-	}
-	if (ImGui::IsMouseReleased(1))
-	{
-		painter->stop_moving();
-	}
-	if (ImGui::IsMouseDragging(2, 1.0f))
-	{
-		ImGui::Text("Rotating");
-		ImVec2 delta = ImGui::GetMouseDragDelta(2, 1.0f);
-		ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
-		painter->rotate(delta.x, delta.y);
-	}
-	if (ImGui::IsMouseReleased(2))
-	{
-		painter->stop_rotating();
-	}
+	//if (ImGui::IsMouseDragging(1, 1.0f))
+	//{
+	//	ImGui::Text("Draging");
+	//	ImVec2 delta = ImGui::GetMouseDragDelta(1, 1.0f);
+	//	ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
+	//	painter->move(delta.x, delta.y);
+	//}
+	//if (ImGui::IsMouseReleased(1))
+	//{
+	//	painter->stop_moving();
+	//}
+	//if (ImGui::IsMouseDragging(2, 1.0f))
+	//{
+	//	ImGui::Text("Rotating");
+	//	ImVec2 delta = ImGui::GetMouseDragDelta(2, 1.0f);
+	//	ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
+	//	painter->rotate(delta.x, delta.y);
+	//}
+	//if (ImGui::IsMouseReleased(2))
+	//{
+	//	painter->stop_rotating();
+	//}
 
 	painter->draw();
 
-	float mouse_wheel = ImGui::GetIO().MouseWheel;
-	ImGui::Text("%f", mouse_wheel);
-	painter->scale(mouse_wheel);
-	painter->draw_zero_cross();
-	painter->draw_axes();
-	for (float x = 0.0f, y = 0.0f, z = 0.0f;
-		x <= 1000.0f; x += 10.0f, y += 5.0f, z += 5.0f)
-	{
-		Vector3f point = Vector3f(x, y, z);
-		ImColor color = ImColor(1.0f, 1.0f - y / 1000.0f, 1.0f);
-		painter->draw_point(point, color);
-	}
+	//float mouse_wheel = ImGui::GetIO().MouseWheel;
+	//ImGui::Text("%f", mouse_wheel);
+	//painter->scale(mouse_wheel);
+	//painter->draw_zero_cross();
+	//painter->draw_axes();
+	//for (float x = 0.0f, y = 0.0f, z = 0.0f;
+	//	x <= 1000.0f; x += 10.0f, y += 5.0f, z += 5.0f)
+	//{
+	//	Vector3f point = Vector3f(x, y, z);
+	//	ImColor color = ImColor(1.0f, 1.0f - y / 1000.0f, 1.0f);
+	//	painter->draw_point(point, color);
+	//}
 }
 
 void paint_window::center()

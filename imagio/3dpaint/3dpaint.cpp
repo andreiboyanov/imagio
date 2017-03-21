@@ -193,7 +193,6 @@ void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command
 	ImRect canvas = painter->get_window()->get_content_rectangle();
 	gltool::state last_state; last_state.save_current_state();
 
-	gltool::program program;
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -202,20 +201,24 @@ void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command
     glEnable(GL_SCISSOR_TEST);
     glActiveTexture(GL_TEXTURE0);
 
-    // Setup viewport, orthographic projection matrix
     glViewport((GLsizei)canvas.Min.x, (GLsizei)canvas.Min.y,
 			   (GLsizei)canvas.Max.x, (GLsizei)canvas.Max.y);
-    //const float ortho_projection[4][4] =
-    //{
-    //    { 2.0f/io.DisplaySize.x, 0.0f,                   0.0f, 0.0f },
-    //    { 0.0f,                  2.0f/-io.DisplaySize.y, 0.0f, 0.0f },
-    //    { 0.0f,                  0.0f,                  -1.0f, 0.0f },
-    //    {-1.0f,                  1.0f,                   0.0f, 1.0f },
-    //};
-    glUseProgram(program.get_id());
-    //glUniform1i(g_AttribLocationTex, 0);
-    //glUniformMatrix4fv(g_AttribLocationProjMtx, 1, GL_FALSE, &ortho_projection[0][0]);
-    //glBindVertexArray(g_VaoHandle);
+	float vertices[] = {
+		0.0f, 0.5f, 0.0f, 
+		0.5f, -0.5f, 0.5f,
+		-0.5f, -0.5f, 1.0f
+	};
+	GLuint vertex_buffer;
+	glGenBuffers(1, &vertex_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+
+	gltool::program program; program.compile(); program.use();
+	GLuint attribute = program.get_attribute_location("position");
+	program.set_attribute_float_pointer(attribute);
+	program.enable_attribute_array(attribute);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	last_state.restore();
 }

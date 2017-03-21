@@ -83,6 +83,31 @@ public:
 
 		return program_id;
 	}
+
+	void use()
+	{
+		glUseProgram(program_id);
+	}
+
+	GLuint get_attribute_location(const char* attribute_name)
+	{
+		return glGetAttribLocation(program_id, attribute_name);
+	}
+
+	void set_attribute_float_pointer(const char* attribute_name, GLsizei stride=0, const GLvoid* offset=0)
+	{
+		set_attribute_float_pointer(get_attribute_location(attribute_name), stride, offset);
+	}
+
+	void set_attribute_float_pointer(GLuint attribute_position, GLsizei stride=0, const GLvoid* offset=0)
+	{
+		glVertexAttribPointer(attribute_position, 3, GL_FLOAT, GL_FALSE, stride, offset);
+	}
+
+	void enable_attribute_array(GLuint attribute_position)
+	{
+		glEnableVertexAttribArray(attribute_position);
+	}
 };
 
 class state
