@@ -67,6 +67,10 @@ public:
 	virtual void draw();
 	virtual void draw_imgui();
 	window* last_visible_window();
+	bool contains(window* _window)
+	{
+		return std::find(windows.begin(), windows.end(), _window) != std::end(windows);
+	};
 	
 
 protected:

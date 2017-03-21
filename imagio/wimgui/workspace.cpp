@@ -35,12 +35,10 @@ void workspace::add_window(window *_window, docker *_dock)
 {
 	windows.push_back(_window);
 	_dock->add_window(_window);
-	for (auto current_dock : docks)
+	if (std::find(docks.begin(), docks.end(), _dock) == std::end(docks))
 	{
-		if (current_dock == _dock)
-			return;
+		add_dock(_dock);
 	}
-	add_dock(_dock);
 }
 
 void workspace::add_dock(docker *_dock)
@@ -85,42 +83,43 @@ void workspace::draw_workspace()
 
 	for (auto _window : windows)
 	{
-		if (_window->is_docked())
-		{
-			check_undocking(_window);
-		}
-		else
-		{
+		if (!check_undocking(_window))
 			check_docking(_window);
-			_window->draw_imgui();
-		}
+		//_window->draw_imgui();
 	}
 }
 
-void workspace::check_undocking(window* _window)
+bool workspace::check_undocking(window* _window)
 {
-	docker* _dock = _window->docked_to();
-	if (!_dock)
-		return;
-	ImGuiWindow* imgui_dock = _dock->get_imgui_window();
+	bool result = false;
 	ImGuiWindow* imgui_window = _window->get_imgui_window();
-
-	if (imgui_dock && imgui_window && _window->is_moving())
+	
+	for (auto& _dock : docks)
 	{
-		ImGuiContext& context = *GImGui;
-		ImVec2 mouse_position = context.IO.MousePos;
-		if (!(imgui_dock->Rect().Contains(mouse_position)))
+		if (!_dock->contains(_window))
+			continue;
+		result = true;
+
+		ImGuiWindow* imgui_dock = _dock->get_imgui_window();
+		if (imgui_dock && imgui_window && _window->is_moving())
 		{
-			_dock->remove_window(_window);
-			ImVec2 window_position = _window->get_position();
-			_window->set_size((mouse_position.x - window_position.x) * 2,
-								(mouse_position.y - window_position.y) * 2);
+			ImGuiContext& context = *GImGui;
+			ImVec2 mouse_position = context.IO.MousePos;
+			if (!(imgui_dock->Rect().Contains(mouse_position)))
+			{
+				_dock->remove_window(_window);
+				ImVec2 window_position = _window->get_position();
+				_window->set_size((mouse_position.x - window_position.x) * 2,
+					(mouse_position.y - window_position.y) * 2);
+			}
 		}
 	}
+	return result;
 }
 
-void workspace::check_docking(window* _window)
+bool workspace::check_docking(window* _window)
 {
+	bool result = false;
 	if (_window->is_moving())
 	{
 		for (auto _dock : docks)
@@ -134,12 +133,14 @@ void workspace::check_docking(window* _window)
 				if (imgui_dock->Rect().Contains(context.IO.MousePos))
 				{
 					_dock->add_window(_window);
+					result = true;
 					break;
 				}
 			}
 
 		}
 	}
+	return result;
 }
 
 #pragma endregion

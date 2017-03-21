@@ -36,9 +36,6 @@
     <ClCompile Include="wimgui\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="imagio_menu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="imagio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

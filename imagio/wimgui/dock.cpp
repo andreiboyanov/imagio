@@ -56,13 +56,13 @@ void docker::add_window(window *_window)
 	{
 		painter->make_space(_window);
 		windows.push_back(_window);
-		_window->dock_to(this);
+		//_window->dock_to(this);
 	}
 }
 
 void docker::remove_window(window *_window)
 {
-	_window->dock_to(nullptr);
+	//_window->dock_to(nullptr);
 	windows.remove(_window);
 }
 

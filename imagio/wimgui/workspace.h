@@ -29,8 +29,8 @@ public:
 	ImRect* get_client_area();
 	void draw();
 	void draw_workspace();
-	void check_undocking(window* _window);
-	void check_docking(window* _window);
+	bool check_undocking(window* _window);
+	bool check_docking(window* _window);
 };
 
 

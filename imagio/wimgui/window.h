@@ -78,10 +78,10 @@ public:
 	bool is_resizing();
 	void draw_vertical_text(const char* text, ImVec2 _position);
 
-	inline docker *docked_to() { return dock; }
-	inline void dock_to(docker *new_dock = nullptr)
-		{ if (dockable) dock = new_dock; }
-	inline bool is_docked() { return dock != nullptr; }
+	//inline docker *docked_to() { return dock; }
+	//inline void dock_to(docker *new_dock = nullptr)
+	//	{ if (dockable) dock = new_dock; }
+	//inline bool is_docked() { return dock != nullptr; }
 	inline bool is_dockable() { return dockable; }
 	inline void set_dockable(bool _dockable) { dockable = _dockable;  }
 
