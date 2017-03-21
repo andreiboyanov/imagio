@@ -6,6 +6,7 @@
 #include "wimgui/workspace.h"
 #include "wimgui/window.h"
 #include "wimgui/dock.h"
+#include "3dpaint/paint_window.h"
 
 namespace imagio {
 
@@ -98,7 +99,7 @@ static std::vector<wimgui::workspace> workspaces =
 };
 static wimgui::workspace* active_workspace = &(workspaces[0]);
 
-window_one window1("First window");
+wimgui::paint_window window1("First window");
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");

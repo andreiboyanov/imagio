@@ -95,6 +95,7 @@ public:
 	void draw();
 	void init_scene();
 	void recalculate();
+	wimgui::window* get_window() { return window; }
 protected:
 	GLuint load_and_compile_shader(std::string filename, GLenum shader_type);
 	GLuint create_program(std::string vertex_shader_filename, std::string fragment_shader_filename);

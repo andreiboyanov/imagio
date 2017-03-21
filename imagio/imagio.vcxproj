@@ -92,7 +92,7 @@
   <ItemGroup>
     <ClCompile Include="3dpaint\3dpaint.cpp" />
     <ClCompile Include="3dpaint\paint_window.cpp" />
-    <ClCompile Include="gltool\gltool.cpp" />
+    <ClCompile Include="3dpaint\gltool\gltool.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -107,7 +107,7 @@
   <ItemGroup>
     <ClInclude Include="3dpaint\3dpaint.h" />
     <ClInclude Include="3dpaint\paint_window.h" />
-    <ClInclude Include="gltool\gltool.h" />
+    <ClInclude Include="3dpaint\gltool\gltool.h" />
     <ClInclude Include="imagio.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -128,8 +128,8 @@
   <ItemGroup>
     <None Include="glsl_shaders\fragment.shader" />
     <None Include="glsl_shaders\vertex.shader" />
-    <None Include="gltool\build.sh" />
-    <None Include="gltool\gltool" />
+    <None Include="3dpaint\gltool\build.sh" />
+    <None Include="3dpaint\gltool\gltool" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

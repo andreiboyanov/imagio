@@ -1,5 +1,7 @@
 #include "3dpaint.h"
 
+#include "gltool/gltool.h"
+
 #include <iostream>
 
 using namespace Eigen;
@@ -184,9 +186,43 @@ void painter3d::clear()
 	objects3d.clear();
 }
 
+void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command)
+{
+	if (parent_list) {}
+	painter3d* painter = (painter3d *)draw_command->UserCallbackData;
+	ImRect canvas = painter->get_window()->get_content_rectangle();
+	gltool::state last_state; last_state.save_current_state();
+
+	gltool::program program;
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_SCISSOR_TEST);
+    glActiveTexture(GL_TEXTURE0);
+
+    // Setup viewport, orthographic projection matrix
+    glViewport((GLsizei)canvas.Min.x, (GLsizei)canvas.Min.y,
+			   (GLsizei)canvas.Max.x, (GLsizei)canvas.Max.y);
+    //const float ortho_projection[4][4] =
+    //{
+    //    { 2.0f/io.DisplaySize.x, 0.0f,                   0.0f, 0.0f },
+    //    { 0.0f,                  2.0f/-io.DisplaySize.y, 0.0f, 0.0f },
+    //    { 0.0f,                  0.0f,                  -1.0f, 0.0f },
+    //    {-1.0f,                  1.0f,                   0.0f, 1.0f },
+    //};
+    glUseProgram(program.get_id());
+    //glUniform1i(g_AttribLocationTex, 0);
+    //glUniformMatrix4fv(g_AttribLocationProjMtx, 1, GL_FALSE, &ortho_projection[0][0]);
+    //glBindVertexArray(g_VaoHandle);
+
+	last_state.restore();
+}
+
 void painter3d::draw()
 {
-
+	ImGui::GetWindowDrawList()->AddCallback(render_3dpaint, this);
 }
 
 void painter3d::init_scene()

@@ -54,7 +54,7 @@
     <ClCompile Include="3dpaint\paint_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gltool\gltool.cpp">
+    <ClCompile Include="3dpaint\gltool\gltool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,7 +104,7 @@
     <ClInclude Include="3dpaint\paint_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gltool\gltool.h">
+    <ClInclude Include="3dpaint\gltool\gltool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -116,7 +116,7 @@
   <ItemGroup>
     <None Include="glsl_shaders\fragment.shader" />
     <None Include="glsl_shaders\vertex.shader" />
-    <None Include="gltool\build.sh" />
-    <None Include="gltool\gltool" />
+    <None Include="3dpaint\gltool\build.sh" />
+    <None Include="3dpaint\gltool\gltool" />
   </ItemGroup>
 </Project>

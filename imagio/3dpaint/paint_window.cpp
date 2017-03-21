@@ -42,7 +42,7 @@ void paint_window::draw()
 		painter->stop_rotating();
 	}
 
-	// painter->draw();
+	painter->draw();
 
 	float mouse_wheel = ImGui::GetIO().MouseWheel;
 	ImGui::Text("%f", mouse_wheel);
