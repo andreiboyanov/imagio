@@ -99,7 +99,7 @@ static std::vector<wimgui::workspace> workspaces =
 };
 static wimgui::workspace* active_workspace = &workspaces[1];
 
-wimgui::paint_window window1("First window");
+wimgui::paint_window* window1;
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
@@ -117,20 +117,21 @@ wimgui::docker workspace2_dock_fill("##W2_DOCK_FILL", wimgui::dock_fill);
 
 void init()
 {
+	window1 = new wimgui::paint_window("3d window");
 	workspaces[0].add_dock(&dock_bottom);
 	workspaces[0].add_dock(&dock_left);
 	workspaces[0].add_dock(&dock_top);
 	workspaces[0].add_dock(&dock_right);
 	workspaces[0].add_dock(&dock_fill);
 
-	workspaces[0].add_window(&window1, &dock_top);
+	workspaces[0].add_window(window1, &dock_top);
 	workspaces[0].add_window(&window2, &dock_bottom);
 	workspaces[0].add_window(&window3, &dock_bottom);
 	workspaces[0].add_window(&window4, &dock_right);
 	workspaces[0].add_window(&window5, &dock_left);
 
 	workspaces[1].add_window(&window5, &workspace2_dock_left);
-	workspaces[1].add_window(&window1, &workspace2_dock_fill);
+	workspaces[1].add_window(window1, &workspace2_dock_fill);
 
 }
 

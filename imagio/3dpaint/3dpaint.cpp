@@ -1,7 +1,5 @@
 #include "3dpaint.h"
 
-#include "gltool/gltool.h"
-
 #include <iostream>
 
 using namespace Eigen;
@@ -115,16 +113,6 @@ void painter3d::draw_axes()
 	draw_text("z", to_point, z_axis_color, false, true, false);
 }
 
-void painter3d::init_view()
-{
-	move_translation = Translation3f(0.0f, 0.0f, 0.0f);
-	move_rotation = Affine3f(AngleAxisf(0.0f, Vector3f::UnitX()));
-	view_translation = Translation3f(300.0f, 300.0f, 300.0f);
-	view_rotation = Affine3f(AngleAxisf(radians(-20), Vector3f::UnitX()) *
-		AngleAxisf(radians(20), Vector3f::UnitY()));
-}
-
-
 void painter3d::move(float x, float y)
 {
 	Vector3f delta = Vector3f(x, -y, 0.0f);
@@ -188,7 +176,7 @@ void painter3d::clear()
 
 void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command)
 {
-	if (parent_list) {}
+	if (parent_list) { }
 	painter3d* painter = (painter3d *)draw_command->UserCallbackData;
 	ImRect canvas = painter->get_window()->get_content_rectangle();
 	gltool::state last_state; last_state.save_current_state();
@@ -201,25 +189,22 @@ void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command
     glEnable(GL_SCISSOR_TEST);
     glActiveTexture(GL_TEXTURE0);
 
-    glViewport((GLsizei)canvas.Min.x, (GLsizei)canvas.Min.y,
-			   (GLsizei)canvas.Max.x, (GLsizei)canvas.Max.y);
-	float vertices[] = {
-		0.0f, 0.5f, 0.0f, 
-		0.5f, -0.5f, 0.5f,
-		-0.5f, -0.5f, 1.0f
-	};
-	GLuint vertex_buffer;
-	glGenBuffers(1, &vertex_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+	ImVec2 viewport_position = ImVec2(canvas.Min.x,
+									  ImGui::GetIO().DisplaySize.y - canvas.Max.y);
+    glViewport((GLsizei)viewport_position.x, (GLsizei)viewport_position.y,
+			   (GLsizei)canvas.GetWidth(), (GLsizei)canvas.GetHeight());
 
-	gltool::program program; program.compile(); program.use();
+	gltool::program program = *painter->get_program();
+	program.use();
+	glBindVertexArray(painter->get_vertex_array());
+	glBindBuffer(GL_ARRAY_BUFFER, painter->get_vertex_buffer());
 	GLuint attribute = program.get_attribute_location("position");
-	program.set_attribute_float_pointer(attribute);
 	program.enable_attribute_array(attribute);
+	program.set_attribute_float_pointer(attribute);
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
+	program.disable_attribute_array(attribute);
 	last_state.restore();
 }
 
@@ -227,6 +212,23 @@ void painter3d::draw()
 {
 	ImGui::GetWindowDrawList()->AddCallback(render_3dpaint, this);
 }
+
+void painter3d::init_view()
+{
+	program.compile(); program.use();
+	glGenVertexArrays(1, &vertex_array);
+	glBindVertexArray(vertex_array);
+	glGenBuffers(1, &vertex_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+
+	move_translation = Translation3f(0.0f, 0.0f, 0.0f);
+	move_rotation = Affine3f(AngleAxisf(0.0f, Vector3f::UnitX()));
+	view_translation = Translation3f(300.0f, 300.0f, 300.0f);
+	view_rotation = Affine3f(AngleAxisf(radians(-20), Vector3f::UnitX()) *
+		AngleAxisf(radians(20), Vector3f::UnitY()));
+}
+
 
 void painter3d::init_scene()
 {

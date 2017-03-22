@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 #include <string>
+#include <vector>
 
 namespace gltool
 {
@@ -16,22 +17,22 @@ private:
 	std::string vertex_shader = std::string(""\
 		"#version 330 core\n" \
 		"\n" \
-		"layout(location=0) in vec3 position;\n" \
+		"in vec3 position;\n" \
 		"\n" \
 		"void main()\n" \
 		"{\n" \
-		"   glPosition.xyz = position;\n" \
-		"   glPosition.w = 1.0;\n" \
+		"   gl_Position.xyz = position;\n" \
+		"   gl_Position.w = 1.0;\n" \
 		"}\n");
 	GLuint fragment_shader_id;
 	std::string fragment_shader = std::string(""\
 		"#version 330 core\n" \
 		"\n" \
-		"out vec3 color\n" \
+		"out vec4 color;\n" \
 		"\n" \
 		"void main()\n" \
 		"{\n" \
-		"   color = vec(1, 1, 1)\n" \
+		"   color = vec4(1.0, 0.0, 0.0, 1.0);\n" \
 		"}\n");
 	GLuint program_id;
 
@@ -54,26 +55,45 @@ public:
 
 	GLuint compile()
 	{
+		GLint compilation_result = GL_FALSE;
+		int compilation_result_length;
+
 		vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
 		const char * vertex_shader_pointer = vertex_shader.c_str();
 		glShaderSource(vertex_shader_id, 1, &vertex_shader_pointer, NULL);
 		glCompileShader(vertex_shader_id);
-		// glGetShaderiv(vertex_shader_id, GL_COMPILE_STATUS, &check_result);
-		// glGetShaderiv(vertex_shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
-		//
+		glGetShaderiv(vertex_shader_id, GL_COMPILE_STATUS, &compilation_result);
+		glGetShaderiv(vertex_shader_id, GL_INFO_LOG_LENGTH, &compilation_result_length);
+		if (compilation_result_length > 0){
+			std::vector<char> error_message(compilation_result_length + 1);
+			glGetShaderInfoLog(vertex_shader_id, compilation_result_length, NULL, &error_message[0]);
+			printf("%s\n", &error_message[0]);
+		}
+
 		fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 		const char * fragment_shader_pointer = fragment_shader.c_str();
 		glShaderSource(fragment_shader_id, 1, &fragment_shader_pointer, NULL);
 		glCompileShader(fragment_shader_id);
-		// glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, &check_result);
-		// glGetShaderiv(fragment_shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
+		glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, &compilation_result);
+		glGetShaderiv(fragment_shader_id, GL_INFO_LOG_LENGTH, &compilation_result_length);
+		if (compilation_result_length > 0){
+			std::vector<char> error_message(compilation_result_length + 1);
+			glGetShaderInfoLog(vertex_shader_id, compilation_result_length, NULL, &error_message[0]);
+			printf("%s\n", &error_message[0]);
+		}
 
 		program_id = glCreateProgram();
 		glAttachShader(program_id, vertex_shader_id);
 		glAttachShader(program_id, fragment_shader_id);
 		glLinkProgram(program_id);
 
-		// Check the program here
+		glGetProgramiv(program_id, GL_LINK_STATUS, &compilation_result);
+		glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &compilation_result_length);
+		if (compilation_result_length > 0){
+			std::vector<char> error_message(compilation_result_length + 1);
+			glGetProgramInfoLog(program_id, compilation_result_length, NULL, &error_message[0]);
+			printf("%s\n", &error_message[0]);
+		}
 
 		glDetachShader(program_id, vertex_shader_id);
 		glDetachShader(program_id, fragment_shader_id);
@@ -107,6 +127,11 @@ public:
 	void enable_attribute_array(GLuint attribute_position)
 	{
 		glEnableVertexAttribArray(attribute_position);
+	}
+
+	void disable_attribute_array(GLuint attribute_position)
+	{
+			glDisableVertexAttribArray(attribute_position);
 	}
 };
 

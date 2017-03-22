@@ -19,6 +19,8 @@
 #include <GL/gl3w.h>
 
 #include "../wimgui/window.h"
+#include "gltool/gltool.h"
+
 
 #undef min
 #undef max
@@ -43,6 +45,11 @@ public:
 	virtual void recalculate() = 0;
 };
 
+static const GLfloat vertices[] = {
+	-1.0f, -1.0, 0.0f, 
+	1.0f, 1.0f, 0.0,
+	-1.0f, 1.0f, 0.0f
+};
 
 class painter3d
 {
@@ -60,9 +67,9 @@ private:
 	ImColor z_axis_color = ImColor(0.0f, 0.0f, 1.0f);
 	std::vector<object3d*> objects3d = std::vector<object3d*>();
 	GLuint texture_id;
-	GLuint vertex_array_object;
-	GLuint vertex_buffer_object;
-	GLfloat *vertices;
+	GLuint vertex_buffer;
+	GLuint vertex_array;
+	gltool::program program; 
 
 public:
 	void init_view();
@@ -73,6 +80,9 @@ public:
 		init_view();
 	}
 	GLuint get_texture_id() { return texture_id;  }
+	GLuint get_vertex_buffer() { return vertex_buffer; }
+	GLuint get_vertex_array() { return vertex_array;  }
+	gltool::program* get_program() { return &program;  }
 	void draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
 	void draw_point(Vector3f& poition, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
 	void draw_text(char* text, Vector3f& position, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
