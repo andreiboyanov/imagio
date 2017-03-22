@@ -17,12 +17,13 @@ private:
 	std::string vertex_shader = std::string(""\
 		"#version 330 core\n" \
 		"\n" \
-		"in vec3 position;\n" \
+		"layout(location=0) in vec3 position;\n" \
 		"\n" \
 		"void main()\n" \
 		"{\n" \
 		"   gl_Position.xyz = position;\n" \
 		"   gl_Position.w = 1.0;\n" \
+		"	gl_PointSize = 10.0;\n" \
 		"}\n");
 	GLuint fragment_shader_id;
 	std::string fragment_shader = std::string(""\

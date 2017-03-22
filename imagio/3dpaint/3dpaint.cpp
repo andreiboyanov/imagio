@@ -202,7 +202,7 @@ void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command
 	program.enable_attribute_array(attribute);
 	program.set_attribute_float_pointer(attribute);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_POINTS, 0, 3);
 
 	program.disable_attribute_array(attribute);
 	last_state.restore();
@@ -221,6 +221,7 @@ void painter3d::init_view()
 	glGenBuffers(1, &vertex_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+	glEnable(GL_PROGRAM_POINT_SIZE);
 
 	move_translation = Translation3f(0.0f, 0.0f, 0.0f);
 	move_rotation = Affine3f(AngleAxisf(0.0f, Vector3f::UnitX()));
