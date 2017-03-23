@@ -5,7 +5,7 @@ namespace wimgui
 
 paint_window::paint_window(const char* _title) : window(_title)
 {
-	painter = new wimgui::painter3d(this, (ImTextureID)0x99);
+	painter = new wimgui::painter3d(this);
 	show_title(true);
 	show_border(true);
 	allow_resize(true);

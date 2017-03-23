@@ -15,26 +15,26 @@ class program
 private:
 	GLuint vertex_shader_id;
 	std::string vertex_shader = std::string(""\
-											"#version 330 core\n" \
-											"\n" \
-											"layout(location=0) in vec3 position;\n" \
-											"uniform mat4 view_matrix;\n" \
-											"\n" \
-											"void main()\n" \
-											"{\n" \
-											"   gl_Position = view_matrix * vec4(position, 1.0);\n" \
-											"	gl_PointSize = 1.0;\n" \
-											"}\n");
+		"#version 330 core\n" \
+		"\n" \
+		"layout(location=0) in vec3 position;\n" \
+		"uniform mat4 view_matrix;\n" \
+		"\n" \
+		"void main()\n" \
+		"{\n" \
+		"   gl_Position = view_matrix * vec4(position, 1.0);\n" \
+		"	gl_PointSize = 1.0;\n" \
+		"}\n");
 	GLuint fragment_shader_id;
 	std::string fragment_shader = std::string(""\
-											  "#version 330 core\n" \
-											  "\n" \
-											  "out vec4 color;\n" \
-											  "\n" \
-											  "void main()\n" \
-											  "{\n" \
-											  "   color = vec4(0.6, 0.6, 0.6, 1.0);\n" \
-											  "}\n");
+		"#version 330 core\n" \
+		"\n" \
+		"out vec4 color;\n" \
+		"\n" \
+		"void main()\n" \
+		"{\n" \
+		"   color = vec4(0.6, 0.6, 0.6, 1.0);\n" \
+		"}\n");
 	GLuint program_id;
 
 public:
