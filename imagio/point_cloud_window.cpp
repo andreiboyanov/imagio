@@ -46,7 +46,7 @@ void point_cloud_window::open_skv_depth(std::string filename)
 			float y = float(i / image_width);
 			float x = float(i % image_width);
 			float depth = float(data[i]);
-			if(depth < 10000.0f)
+			if(depth < 3000.0f)
 			{
 				painter->draw_point(x, -y, -depth, point_color);
 				count++;

@@ -15,26 +15,26 @@ class program
 private:
 	GLuint vertex_shader_id;
 	std::string vertex_shader = std::string(""\
-		"#version 330 core\n" \
-		"\n" \
-		"layout(location=0) in vec3 position;\n" \
-		"\n" \
-		"void main()\n" \
-		"{\n" \
-		"   gl_Position.xyz = position;\n" \
-		"   gl_Position.w = 1.0;\n" \
-		"	gl_PointSize = 1.0;\n" \
-		"}\n");
+											"#version 330 core\n" \
+											"\n" \
+											"layout(location=0) in vec3 position;\n" \
+											"uniform mat4 view_matrix;\n" \
+											"\n" \
+											"void main()\n" \
+											"{\n" \
+											"   gl_Position = view_matrix * vec4(position, 1.0);\n" \
+											"	gl_PointSize = 1.0;\n" \
+											"}\n");
 	GLuint fragment_shader_id;
 	std::string fragment_shader = std::string(""\
-		"#version 330 core\n" \
-		"\n" \
-		"out vec4 color;\n" \
-		"\n" \
-		"void main()\n" \
-		"{\n" \
-		"   color = vec4(0.6, 0.6, 0.6, 1.0);\n" \
-		"}\n");
+											  "#version 330 core\n" \
+											  "\n" \
+											  "out vec4 color;\n" \
+											  "\n" \
+											  "void main()\n" \
+											  "{\n" \
+											  "   color = vec4(0.6, 0.6, 0.6, 1.0);\n" \
+											  "}\n");
 	GLuint program_id;
 
 public:
@@ -65,7 +65,8 @@ public:
 		glCompileShader(vertex_shader_id);
 		glGetShaderiv(vertex_shader_id, GL_COMPILE_STATUS, &compilation_result);
 		glGetShaderiv(vertex_shader_id, GL_INFO_LOG_LENGTH, &compilation_result_length);
-		if (compilation_result_length > 0){
+		if(compilation_result_length > 0)
+		{
 			std::vector<char> error_message(compilation_result_length + 1);
 			glGetShaderInfoLog(vertex_shader_id, compilation_result_length, NULL, &error_message[0]);
 			printf("%s\n", &error_message[0]);
@@ -77,7 +78,8 @@ public:
 		glCompileShader(fragment_shader_id);
 		glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, &compilation_result);
 		glGetShaderiv(fragment_shader_id, GL_INFO_LOG_LENGTH, &compilation_result_length);
-		if (compilation_result_length > 0){
+		if(compilation_result_length > 0)
+		{
 			std::vector<char> error_message(compilation_result_length + 1);
 			glGetShaderInfoLog(vertex_shader_id, compilation_result_length, NULL, &error_message[0]);
 			printf("%s\n", &error_message[0]);
@@ -90,7 +92,8 @@ public:
 
 		glGetProgramiv(program_id, GL_LINK_STATUS, &compilation_result);
 		glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &compilation_result_length);
-		if (compilation_result_length > 0){
+		if(compilation_result_length > 0)
+		{
 			std::vector<char> error_message(compilation_result_length + 1);
 			glGetProgramInfoLog(program_id, compilation_result_length, NULL, &error_message[0]);
 			printf("%s\n", &error_message[0]);
@@ -115,14 +118,29 @@ public:
 		return glGetAttribLocation(program_id, attribute_name);
 	}
 
-	void set_attribute_float_pointer(const char* attribute_name, GLsizei stride=0, const GLvoid* offset=0)
+	void set_attribute_float_pointer(const char* attribute_name, GLsizei stride = 0, const GLvoid* offset = 0)
 	{
 		set_attribute_float_pointer(get_attribute_location(attribute_name), stride, offset);
 	}
 
-	void set_attribute_float_pointer(GLuint attribute_position, GLsizei stride=0, const GLvoid* offset=0)
+	void set_attribute_float_pointer(GLuint attribute_position, GLsizei stride = 0, const GLvoid* offset = 0)
 	{
 		glVertexAttribPointer(attribute_position, 3, GL_FLOAT, GL_FALSE, stride, offset);
+	}
+
+	GLuint get_uniform_location(const char* attribute_name)
+	{
+		return glGetUniformLocation(program_id, attribute_name);
+	}
+
+	void set_uniform(const char* attribute_name, const GLfloat* value)
+	{
+		set_uniform(get_uniform_location(attribute_name), value);
+	}
+
+	void set_uniform(GLuint attribute_position, const GLfloat* value)
+	{
+		glUniformMatrix4fv(attribute_position, 1, GL_FALSE, value);
 	}
 
 	void enable_attribute_array(GLuint attribute_position)
@@ -132,7 +150,7 @@ public:
 
 	void disable_attribute_array(GLuint attribute_position)
 	{
-			glDisableVertexAttribArray(attribute_position);
+		glDisableVertexAttribArray(attribute_position);
 	}
 };
 
@@ -186,12 +204,23 @@ public:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_array_buffer);
 		glBlendEquationSeparate(blend_equation_rgb, blend_equation_alpha);
 		glBlendFunc(blend_src, blend_dst);
-		if (enable_blend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
-		if (enable_cull_face) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
-		if (enable_depth_test) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
-		if (enable_scissor_test) glEnable(GL_SCISSOR_TEST); else glDisable(GL_SCISSOR_TEST);
+		if(enable_blend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
+		if(enable_cull_face) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
+		if(enable_depth_test) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
+		if(enable_scissor_test) glEnable(GL_SCISSOR_TEST); else glDisable(GL_SCISSOR_TEST);
 		glViewport(viewport[0], viewport[1], (GLsizei)viewport[2], (GLsizei)viewport[3]);
 		glScissor(scissor_box[0], scissor_box[1], (GLsizei)scissor_box[2], (GLsizei)scissor_box[3]);
+	}
+
+	void activate_imgui_defaults()
+	{
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_SCISSOR_TEST);
+		glActiveTexture(GL_TEXTURE0);
 	}
 };
 

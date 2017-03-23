@@ -23,12 +23,13 @@ void painter3d::draw_point(Vector3f& position, ImColor& color)
 
 void painter3d::draw_point(float x, float y, float z, ImColor& color)
 {
+	float scale = 5.0f;
 	if(color.Value.x > 0) {}
-	if(vertex_array + 3 > get_max_vertices()) { return; }
+	if(vertex_index + 3 > 3 * get_max_vertices()) { return; }
 	ImRect canvas = window->get_content_rectangle();
-	vertices[vertex_index++] = -0.5f + 5.0f * x / (2.0f * canvas.GetWidth());
-	vertices[vertex_index++] = 0.5f + 5.0f * y / (2.0f * canvas.GetHeight());
-	vertices[vertex_index++] = z - z;
+	vertices[vertex_index++] = -0.5f + scale * x / (2.0f * canvas.GetWidth());
+	vertices[vertex_index++] = 0.5f + scale * y / (2.0f * canvas.GetHeight());
+	vertices[vertex_index++] = z - z - 0.5f;
 }
 
 
@@ -174,15 +175,8 @@ void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command
 	if(parent_list) {}
 	painter3d* painter = (painter3d *)draw_command->UserCallbackData;
 	ImRect canvas = painter->get_window()->get_content_rectangle();
-	gltool::state last_state; last_state.save_current_state();
-
-	glEnable(GL_BLEND);
-	glBlendEquation(GL_FUNC_ADD);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_SCISSOR_TEST);
-	glActiveTexture(GL_TEXTURE0);
+	gltool::state state; state.save_current_state();
+	state.activate_imgui_defaults();
 
 	ImVec2 viewport_position = ImVec2(canvas.Min.x,
 									  ImGui::GetIO().DisplaySize.y - canvas.Max.y);
@@ -193,22 +187,25 @@ void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command
 	program.use();
 	glBindVertexArray(painter->get_vertex_array());
 	glBindBuffer(GL_ARRAY_BUFFER, painter->get_vertex_buffer());
-	glBufferData(GL_ARRAY_BUFFER, painter->get_vertex_index(), painter->get_vertices(), GL_STREAM_DRAW);
 
-	GLuint attribute = program.get_attribute_location("position");
-	program.enable_attribute_array(attribute);
-	program.set_attribute_float_pointer(attribute);
+	glm::mat4 view_matrix(1.0f);
 
-	unsigned int vertices_number = painter->get_vertex_index();
+	GLuint position_attribute = program.get_attribute_location("position");
+	program.enable_attribute_array(position_attribute);
+	program.set_attribute_float_pointer(position_attribute);
+	program.set_uniform("view_matrix", &view_matrix[0][0]);
+
+	unsigned int vertices_count = painter->get_vertex_index() / 3;
 	unsigned int count = GL_MAX_ELEMENTS_VERTICES;
-	for(unsigned int start = 0; start < vertices_number; start += count)
+	glBufferData(GL_ARRAY_BUFFER, vertices_count * 3 * sizeof(float), painter->get_vertices(), GL_STREAM_DRAW);
+	for(unsigned int start = 0; start < vertices_count; start += count)
 	{
-		if(start + count > vertices_number) count = vertices_number - start;
+		if(start + count > vertices_count) count = vertices_count - start;
 		glDrawArrays(GL_POINTS, start, count);
 	}
 
-	program.disable_attribute_array(attribute);
-	last_state.restore();
+	program.disable_attribute_array(position_attribute);
+	state.restore();
 }
 
 void painter3d::draw()
