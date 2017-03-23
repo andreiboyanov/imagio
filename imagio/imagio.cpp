@@ -6,7 +6,7 @@
 #include "wimgui/workspace.h"
 #include "wimgui/window.h"
 #include "wimgui/dock.h"
-#include "3dpaint/paint_window.h"
+#include "point_cloud_window.h"
 
 namespace imagio {
 
@@ -74,8 +74,10 @@ public:
 };
 
 class window_five : public wimgui::window {
+private:
+	point_cloud_window* point_cloud;
 public:
-	window_five(const char *_title) : window(_title)
+	window_five(const char *_title, point_cloud_window* _point_cloud) : window(_title), point_cloud(_point_cloud)
 	{
 		show_title(true);
 		show_border(true);
@@ -88,6 +90,10 @@ public:
 
 	void draw() {
 		ImGui::Text("Toobox");
+		if(ImGui::Button("Open point cloud"))
+		{
+			point_cloud->open_skv_depth("D:/data/robert/olivier/scenarii/A1.skv");
+		}
 	}
 
 };
@@ -99,11 +105,11 @@ static std::vector<wimgui::workspace> workspaces =
 };
 static wimgui::workspace* active_workspace = &workspaces[1];
 
-wimgui::paint_window* window1;
+point_cloud_window* window1;
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
-window_five window5("Control panel");
+window_five* window5;
 
 wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
 wimgui::docker dock_bottom("##DOCK BOTTOM", wimgui::dock_bottom);
@@ -117,7 +123,8 @@ wimgui::docker workspace2_dock_fill("##W2_DOCK_FILL", wimgui::dock_fill);
 
 void init()
 {
-	window1 = new wimgui::paint_window("3d window");
+	window1 = new point_cloud_window("Point cloud");
+	window5 = new window_five("Control panel", window1);
 	workspaces[0].add_dock(&dock_bottom);
 	workspaces[0].add_dock(&dock_left);
 	workspaces[0].add_dock(&dock_top);
@@ -128,9 +135,9 @@ void init()
 	workspaces[0].add_window(&window2, &dock_bottom);
 	workspaces[0].add_window(&window3, &dock_bottom);
 	workspaces[0].add_window(&window4, &dock_right);
-	workspaces[0].add_window(&window5, &dock_left);
+	workspaces[0].add_window(window5, &dock_left);
 
-	workspaces[1].add_window(&window5, &workspace2_dock_left);
+	workspaces[1].add_window(window5, &workspace2_dock_left);
 	workspaces[1].add_window(window1, &workspace2_dock_fill);
 
 }
@@ -206,7 +213,7 @@ void draw_main_menu() {
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Workspaces"))
+		if (ImGui::BeginMenu("Workspace"))
 		{
 			for (auto& workspace : workspaces)
 			{

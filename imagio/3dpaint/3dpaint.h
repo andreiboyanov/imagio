@@ -40,21 +40,15 @@ protected:
 	bool translate, rotate;
 public:
 	object3d(painter3d* _painter, bool _translate, bool _rotate)
-		: painter(_painter), translate(_translate), rotate(_rotate) {}
+		: painter(_painter), translate(_translate), rotate(_rotate)
+	{}
 	virtual void draw() = 0;
-	virtual void recalculate() = 0;
-};
-
-static const GLfloat vertices[] = {
-	1.0f, 1.0f, 0.0,
-	-1.0f, -1.0, 0.0f, 
-	-1.0f, 1.0f, 0.0f
 };
 
 class painter3d
 {
 private:
-    wimgui::window* window;
+	wimgui::window* window;
 	Affine3f view_rotation;
 	Affine3f move_rotation;
 	Translation3f view_translation;
@@ -69,27 +63,37 @@ private:
 	GLuint texture_id;
 	GLuint vertex_buffer;
 	GLuint vertex_array;
-	gltool::program program; 
+	gltool::program program;
+	GLfloat *vertices;
+	unsigned int vertex_index = 0;
 
+#define MAX_VERTICES 64000
 public:
-	void init_view();
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-	painter3d(wimgui::window* _window, ImTextureID _texture_id) {
+	painter3d(wimgui::window* _window, ImTextureID _texture_id)
+	{
 		window = _window;
 		texture_id = (GLuint)_texture_id;
+		vertices = new GLfloat[3 * MAX_VERTICES];
 		init_view();
 	}
-	GLuint get_texture_id() { return texture_id;  }
+	~painter3d() { delete vertices; }
+	void init_view();
+	unsigned int get_max_vertices() { return MAX_VERTICES; }
+	unsigned int get_vertex_index() { return vertex_index; }
+	GLfloat* get_vertices() { return vertices;  }
+	GLuint get_texture_id() { return texture_id; }
 	GLuint get_vertex_buffer() { return vertex_buffer; }
-	GLuint get_vertex_array() { return vertex_array;  }
-	gltool::program* get_program() { return &program;  }
-	void draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
-	void draw_point(Vector3f& poition, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
-	void draw_text(char* text, Vector3f& position, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
-	ImVec2 window_coordinates(float x, float y, float z, bool translate=true, bool rotate=true, bool scale=true);
-	ImVec2 window_coordinates(Vector3f& point, bool translate=true, bool rotate=true, bool scale=true);
-	Vector3f view_coordinates(float x, float y, float z, bool translate=true, bool rotate=true, bool scale=true);
-	Vector3f view_coordinates(Vector3f& point, bool translate=true, bool rotate=true, bool scale=true);
+	GLuint get_vertex_array() { return vertex_array; }
+	gltool::program* get_program() { return &program; }
+	void draw_line(Vector3f& from, Vector3f& to, ImColor& color);
+	void draw_point(Vector3f& poition, ImColor& color);
+	void draw_point(float x, float y, float z, ImColor& color);
+	void draw_text(char* text, Vector3f& position, ImColor& color);
+	ImVec2 window_coordinates(float x, float y, float z);
+	ImVec2 window_coordinates(Vector3f& point);
+	Vector3f view_coordinates(float x, float y, float z);
+	Vector3f view_coordinates(Vector3f& point);
 	void draw_zero_cross();
 	void draw_axes();
 	void move(float x, float y);
@@ -104,11 +108,7 @@ public:
 	void clear();
 	void draw();
 	void init_scene();
-	void recalculate();
 	wimgui::window* get_window() { return window; }
-protected:
-	GLuint load_and_compile_shader(std::string filename, GLenum shader_type);
-	GLuint create_program(std::string vertex_shader_filename, std::string fragment_shader_filename);
 };
 
 struct point : public object3d
@@ -119,13 +119,10 @@ public:
 	ImVec2 position;
 	ImColor color;
 	point(painter3d* _painter, Vector3f& _position3d, float _size, ImColor _color,
-		bool _translate=true, bool _rotate=true)
+		  bool _translate = true, bool _rotate = true)
 		: object3d(_painter, _translate, _rotate), position3d(_position3d), size(_size), color(_color)
-	{
-		recalculate();
-	}
+	{}
 	virtual void draw();
-	virtual void recalculate() { position = painter->window_coordinates(position3d, translate, rotate); }
 };
 
 struct line : public object3d
@@ -135,16 +132,10 @@ public:
 	ImVec2 from, to;
 	ImColor color;
 	line(painter3d* _painter, Vector3f _from3d, Vector3f _to3d, ImColor _color,
-		bool _translate=true, bool _rotate=true)
+		 bool _translate = true, bool _rotate = true)
 		: object3d(_painter, _translate, _rotate), from3d(_from3d), to3d(_to3d), color(_color)
-	{
-		recalculate();
-	}
+	{}
 	virtual void draw();
-	virtual void recalculate() {
-		from = painter->window_coordinates(from3d, translate, rotate);
-		to = painter->window_coordinates(to3d, translate, rotate);
-	}
 };
 
 

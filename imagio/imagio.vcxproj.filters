@@ -57,6 +57,9 @@
     <ClCompile Include="3dpaint\gltool\gltool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="point_cloud_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="3dpaint\gltool\gltool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="point_cloud_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

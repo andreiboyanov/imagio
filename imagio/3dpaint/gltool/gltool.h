@@ -23,7 +23,7 @@ private:
 		"{\n" \
 		"   gl_Position.xyz = position;\n" \
 		"   gl_Position.w = 1.0;\n" \
-		"	gl_PointSize = 10.0;\n" \
+		"	gl_PointSize = 1.0;\n" \
 		"}\n");
 	GLuint fragment_shader_id;
 	std::string fragment_shader = std::string(""\
@@ -33,7 +33,7 @@ private:
 		"\n" \
 		"void main()\n" \
 		"{\n" \
-		"   color = vec4(1.0, 0.0, 0.0, 1.0);\n" \
+		"   color = vec4(0.6, 0.6, 0.6, 1.0);\n" \
 		"}\n");
 	GLuint program_id;
 

@@ -54,15 +54,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\src\eigen;libs;libs\gl3w;libs\glfw\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\src\SKV\dist\include;D:\src\eigen;libs;libs\gl3w;libs\glfw\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>libs\glfw\lib-vc2010-32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\src\SKV\dist\lib\Windows7_x86_VS2013;libs\glfw\lib-vc2010-32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>skv.lib;opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>MSVCRT.lib;msvcprt.lib</IgnoreSpecificDefaultLibraries>
@@ -100,6 +100,7 @@
     <ClCompile Include="libs\gl3w\GL\gl3w.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="imagio.cpp" />
+    <ClCompile Include="point_cloud_window.cpp" />
     <ClCompile Include="wimgui\dock.cpp" />
     <ClCompile Include="wimgui\workspace.cpp" />
     <ClCompile Include="wimgui\window.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="imgui\stb_textedit.h" />
     <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="imgui_opengl3\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="point_cloud_window.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="wimgui\dock.h" />
     <ClInclude Include="wimgui\workspace.h" />
