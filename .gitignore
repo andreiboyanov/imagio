@@ -41,4 +41,6 @@ imgui.ini
 *.suo
 *sdf
 *.aps
+*.db
+*.opendb
 
