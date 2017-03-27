@@ -133,8 +133,8 @@ void painter3d::init_view()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	// FIXME: Check if the projection correction is OK
-	projection_matrix = glm::ortho(-4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f, -1.0f, 1.0f);
-	model_matrix = glm::rotate(model_matrix, -45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	// projection_matrix = glm::ortho(-4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+	model_matrix = glm::rotate(model_matrix, -30.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 
