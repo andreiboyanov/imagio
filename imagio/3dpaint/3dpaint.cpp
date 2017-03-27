@@ -7,12 +7,12 @@ namespace wimgui
 
 void painter3d::draw_point(float x, float y, float z, ImColor& color)
 {
-	float scale = 5.0f;
+	float new_scale = 5.0f;
 	if(color.Value.x > 0) {}
 	if(vertex_index + 3 > 3 * get_max_vertices()) { return; }
 	ImRect canvas = window->get_content_rectangle();
-	vertices[vertex_index++] = -0.5f + scale * x / (2.0f * canvas.GetWidth());
-	vertices[vertex_index++] = 0.5f + scale * y / (2.0f * canvas.GetHeight());
+	vertices[vertex_index++] = -0.5f + new_scale * x / (2.0f * canvas.GetWidth());
+	vertices[vertex_index++] = 0.5f + new_scale * y / (2.0f * canvas.GetHeight());
 	vertices[vertex_index++] = z - z - 0.5f;
 }
 

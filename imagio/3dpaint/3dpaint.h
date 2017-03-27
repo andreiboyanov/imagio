@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 
+#define GLM_FORCE_RADIANS
 #pragma warning(push, 0)       
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>

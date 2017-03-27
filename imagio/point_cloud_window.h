@@ -18,7 +18,7 @@ namespace imagio
 class point_cloud_window : public wimgui::paint_window
 {
 public:
-	point_cloud_window(const char* title) : paint_window(title) {}
+	point_cloud_window(const char* _title) : paint_window(_title) {}
 	void open_skv_depth(std::string filename);
 };
 

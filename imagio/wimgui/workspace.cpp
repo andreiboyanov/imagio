@@ -35,10 +35,13 @@ void workspace::add_window(window *_window, docker *_dock)
 {
 	windows.push_back(_window);
 	_dock->add_window(_window);
-	if (std::find(docks.begin(), docks.end(), _dock) == std::end(docks))
+	// if (std::find(docks.begin(), docks.end(), _dock) == std::end(docks))
+    // FIXME: fidn why std::find is not compiling
+    for(auto current_dock : docks)
 	{
-		add_dock(_dock);
+        if(current_dock == _dock) return;
 	}
+    add_dock(_dock);
 }
 
 void workspace::add_dock(docker *_dock)

@@ -92,7 +92,8 @@ public:
 		ImGui::Text("Toobox");
 		if(ImGui::Button("Open point cloud"))
 		{
-			point_cloud->open_skv_depth("D:/data/robert/olivier/scenarii/A1.skv");
+			// point_cloud->open_skv_depth("D:/data/robert/olivier/scenarii/A1.skv");
+			point_cloud->open_skv_depth("../../motionsim/.hglf/data/Donnees brutes Motion TEA orig/simulator_01.skv");
 		}
 	}
 
