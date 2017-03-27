@@ -90,10 +90,23 @@ public:
 
 	void draw() {
 		ImGui::Text("Toobox");
+		if(ImGui::Button("Open json cloud"))
+		{
+			point_cloud->open_json("../sample_data/juan_cloud.json");
+		}
 		if(ImGui::Button("Open point cloud"))
 		{
 			// point_cloud->open_skv_depth("D:/data/robert/olivier/scenarii/A1.skv");
-			point_cloud->open_skv_depth("../../motionsim/.hglf/data/Donnees brutes Motion TEA orig/simulator_01.skv");
+			point_cloud->open_skv_depth("../../../tmp/scenarii/A1.skv");
+        }
+		if(ImGui::Button(" >> "))
+		{
+			point_cloud->move_forward();
+		}
+        ImGui::SameLine();
+		if(ImGui::Button(" << "))
+		{
+			point_cloud->move_backward();
 		}
 	}
 

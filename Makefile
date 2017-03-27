@@ -16,14 +16,14 @@ CXXEXTRA              = -std=c++11 $(WARNINGS) -ggdb -g3
 RCEXTRA               =
 DEFINES               =
 INCLUDE_PATH          = -isystem/usr/local/include -isystemimagio/libs/gl3w -isystem/usr/include/eigen3 \
-						-isystem../../SKV/dist/include
+						-isystem../../SKV/dist/include -isystem/usr/include/jsoncpp
 DLL_PATH              =
 DLL_IMPORTS           =
 LIBRARY_PATH          = -L../../SKV/dist/lib/Ubuntu14.04_x86_64_gcc/
 LIBRARIES             = -lglut -lGL -lGLEW -lGLU -lglfw3 -lX11 -ldl \
 						-lXxf86vm -lXrandr -lpthread -lXi -lm -lrt \
 						-lXcursor -lXinerama -lboost_filesystem -lboost_system \
-						-lskv
+						-lskv -ljsoncpp
 
 
 ### imagio.exe sources and settings
