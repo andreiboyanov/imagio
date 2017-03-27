@@ -69,7 +69,10 @@ public:
 	window* last_visible_window();
 	bool contains(window* _window)
 	{
-		return std::find(windows.begin(), windows.end(), _window) != std::end(windows);
+		// return std::find(windows.begin(), windows.end(), _window) != std::end(windows);
+        for (auto current_window : windows)
+            if(current_window == _window) return true;
+        return false;
 	};
 	
 

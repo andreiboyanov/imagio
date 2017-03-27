@@ -17,18 +17,18 @@ void point_cloud_window::open_skv_depth(std::string filename)
 		assert(depth_stream.get_type() == skv_stream_type_image);
 		assert(depth_stream.get_image_type() == skv_image_type_int16);
 
-		if(depth_stream.has_pinhole_model())
-		{
-			skv_pinhole_model pinhole = depth_stream.get_pinhole_model();
-		}
-		if(depth_stream.has_distortion_model())
-		{
-			skv_distortion_model distortion = depth_stream.get_distortion_model();
-		}
-		if(depth_stream.has_stereo_transform())
-		{
-			skv_stereo_transform stereo = depth_stream.get_stereo_transform();
-		}
+	 // if(depth_stream.has_pinhole_model())
+	 // {
+	 // 	skv_pinhole_model pinhole = depth_stream.get_pinhole_model();
+	 // }
+	 // if(depth_stream.has_distortion_model())
+	 // {
+	 // 	skv_distortion_model distortion = depth_stream.get_distortion_model();
+	 // }
+	 // if(depth_stream.has_stereo_transform())
+	 // {
+	 // 	skv_stereo_transform stereo = depth_stream.get_stereo_transform();
+	 // }
 
 		painter->init_scene();
 		std::tuple<uint32_t, uint32_t> depth_resolution = depth_stream.get_resolution();

@@ -7,12 +7,12 @@ namespace wimgui
 
 void painter3d::draw_point(float x, float y, float z, ImColor& color)
 {
-	float scale = 5.0f;
+	float new_scale = 5.0f;
 	if(color.Value.x > 0) {}
 	if(vertex_index + 3 > 3 * get_max_vertices()) { return; }
 	ImRect canvas = window->get_content_rectangle();
-	vertices[vertex_index++] = -0.5f + scale * x / (2.0f * canvas.GetWidth());
-	vertices[vertex_index++] = 0.5f + scale * y / (2.0f * canvas.GetHeight());
+	vertices[vertex_index++] = -0.5f + new_scale * x / (2.0f * canvas.GetWidth());
+	vertices[vertex_index++] = 0.5f + new_scale * y / (2.0f * canvas.GetHeight());
 	vertices[vertex_index++] = z - z - 0.5f;
 }
 
@@ -134,7 +134,7 @@ void painter3d::init_view()
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	// FIXME: Check if the projection correction is OK
 	projection_matrix = glm::ortho(-4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f, -1.0f, 1.0f);
-	model_matrix = glm::rotate(model_matrix, -45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	model_matrix = glm::rotate(model_matrix, radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 
