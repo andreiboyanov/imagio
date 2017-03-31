@@ -18,22 +18,26 @@ private:
 		"#version 330 core\n" \
 		"\n" \
 		"layout(location=0) in vec3 position;\n" \
+		"layout(location=1) in vec3 color;\n" \
+		"layout(location=2) in float size;\n" \
 		"uniform mat4 view_matrix;\n" \
+        "out vec4 fragment_color;\n" \
 		"\n" \
 		"void main()\n" \
 		"{\n" \
 		"   gl_Position = view_matrix * vec4(position, 1.0);\n" \
-		"	gl_PointSize = 1.0;\n" \
+		"	gl_PointSize = size;\n" \
+        "   fragment_color = vec4(color, 1.0);\n" \
 		"}\n");
 	GLuint fragment_shader_id;
 	std::string fragment_shader = std::string(""\
 		"#version 330 core\n" \
-		"\n" \
-		"out vec4 color;\n" \
+		"in vec4 fragment_color;\n" \
+		"out vec4 out_color;\n" \
 		"\n" \
 		"void main()\n" \
 		"{\n" \
-		"   color = vec4(0.6, 0.6, 0.6, 1.0);\n" \
+		"   out_color = fragment_color;\n" \
 		"}\n");
 	GLuint program_id;
 
@@ -118,14 +122,14 @@ public:
 		return glGetAttribLocation(program_id, attribute_name);
 	}
 
-	void set_attribute_float_pointer(const char* attribute_name, GLsizei stride = 0, const GLvoid* offset = 0)
+	void set_attribute_float_pointer(const char* attribute_name, int size=3, GLsizei stride = 0, const GLvoid* offset = 0)
 	{
-		set_attribute_float_pointer(get_attribute_location(attribute_name), stride, offset);
+		set_attribute_float_pointer(get_attribute_location(attribute_name), size, stride, offset);
 	}
 
-	void set_attribute_float_pointer(GLuint attribute_position, GLsizei stride = 0, const GLvoid* offset = 0)
+	void set_attribute_float_pointer(GLuint attribute_position, int size=3, GLsizei stride = 0, const GLvoid* offset = 0)
 	{
-		glVertexAttribPointer(attribute_position, 3, GL_FLOAT, GL_FALSE, stride, offset);
+		glVertexAttribPointer(attribute_position, size, GL_FLOAT, GL_FALSE, stride, offset);
 	}
 
 	GLuint get_uniform_location(const char* attribute_name)

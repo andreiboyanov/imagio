@@ -92,7 +92,7 @@ public:
 		ImGui::Text("Toobox");
 		if(ImGui::Button("Open json cloud"))
 		{
-			point_cloud->open_json("../sample_data/juan_cloud.json");
+			point_cloud->open_json("../sample_data/juan2.json");
 		}
 		if(ImGui::Button("Open point cloud"))
 		{

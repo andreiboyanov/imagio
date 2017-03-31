@@ -32,6 +32,17 @@
 namespace wimgui
 {
 
+struct vertex
+{
+    float position_x;
+    float position_y;
+    float position_z;
+    float color_r;
+    float color_g;
+    float color_b;
+    float size;
+};
+
 class painter3d
 {
 private:
@@ -44,7 +55,7 @@ private:
 	GLuint vertex_buffer;
 	GLuint vertex_array;
 	gltool::program program;
-	GLfloat *vertices;
+	vertex* vertices;
 	unsigned int vertex_index = 0;
 
 	glm::mat4 projection_matrix, view_matrix, model_matrix, transformation_matrix;
@@ -54,7 +65,7 @@ public:
 	painter3d(wimgui::window* _window)
 	{
 		window = _window;
-		vertices = new GLfloat[3 * MAX_VERTICES];
+		vertices = new vertex[MAX_VERTICES * sizeof(vertex)];
 		init_view();
 	}
 	~painter3d() { delete vertices; }
@@ -65,12 +76,13 @@ public:
 		return glm::value_ptr(transformation_matrix);
 	}
 	unsigned int get_max_vertices() { return MAX_VERTICES; }
+	unsigned int get_max_bytes() { return MAX_VERTICES * sizeof(vertex); }
 	unsigned int get_vertex_index() { return vertex_index; }
-	GLfloat* get_vertices() { return vertices;  }
+	vertex* get_vertices() { return vertices;  }
 	GLuint get_vertex_buffer() { return vertex_buffer; }
 	GLuint get_vertex_array() { return vertex_array; }
 	gltool::program* get_program() { return &program; }
-	void draw_point(float x, float y, float z, ImColor& color);
+	void draw_point(float x, float y, float z, ImColor& color, float vertex_size=5.0f);
 	void draw_zero_cross();
 	void draw_axes();
 	void move(float x, float y);
