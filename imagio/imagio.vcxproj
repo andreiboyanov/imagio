@@ -54,9 +54,10 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>libs\glm\dist\include;D:\src\SKV\dist\include;D:\src\eigen;libs;libs\gl3w;libs\glfw\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>libs\glm\dist\include;D:\src\jsoncpp\dist;D:\src\SKV\dist\include;D:\src\eigen;libs;libs\gl3w;libs\glfw\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4702;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
@@ -90,6 +91,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\jsoncpp\dist\jsoncpp.cpp" />
     <ClCompile Include="3dpaint\3dpaint.cpp" />
     <ClCompile Include="3dpaint\paint_window.cpp" />
     <ClCompile Include="3dpaint\gltool\gltool.cpp" />
@@ -128,8 +130,8 @@
     <ResourceCompile Include="imagio.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="glsl_shaders\fragment.shader" />
-    <None Include="glsl_shaders\vertex.shader" />
+    <None Include="3dpaint\gltool\glsl_shaders\fragment.shader" />
+    <None Include="3dpaint\gltool\glsl_shaders\vertex.shader" />
     <None Include="3dpaint\gltool\build.sh" />
     <None Include="3dpaint\gltool\gltool" />
   </ItemGroup>

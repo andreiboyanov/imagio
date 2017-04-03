@@ -60,6 +60,9 @@
     <ClCompile Include="point_cloud_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\jsoncpp\dist\jsoncpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -120,9 +123,9 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="glsl_shaders\fragment.shader" />
-    <None Include="glsl_shaders\vertex.shader" />
     <None Include="3dpaint\gltool\build.sh" />
     <None Include="3dpaint\gltool\gltool" />
+    <None Include="3dpaint\gltool\glsl_shaders\fragment.shader" />
+    <None Include="3dpaint\gltool\glsl_shaders\vertex.shader" />
   </ItemGroup>
 </Project>
