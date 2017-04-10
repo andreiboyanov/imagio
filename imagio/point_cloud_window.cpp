@@ -32,13 +32,13 @@ void point_cloud_window::open_json(std::string filename)
 //
 //			self.brownRadial2Dto3DMatrix[y, x] = np.array(elementValues)
 //
-//			def build_brown_radial_table(self) :
+//def build_brown_radial_table(self) :
 //			self.kValues = self.buildKValues()
 //			self.brownRadial2Dto3DMatrix = np.empty((self.stream_configuration.height,
 //													 self.stream_configuration.width, 3))
 //			self.build_2d_to_3d_matrix()
 //
-//			def get_nearest_less_k(self, key) :
+//def get_nearest_less_k(self, key) :
 //
 //			key = self.create_dict_key(key)
 //
@@ -48,25 +48,43 @@ void point_cloud_window::open_json(std::string filename)
 //				key = self.kValues.iloc[index]
 //				return self.kValues[key]
 //
-//				def create_dict_key(self, value) :
+//def create_dict_key(self, value) :
 //				return int(round(value, 3) * 1000)
 //
-//				def transform2dTo3dBrownRadial(self, x, y, depth) :
+//def transform2dTo3dBrownRadial(self, x, y, depth) :
 //				pixelValues = self.brown_radial_lut[x, y]
 //				x1 = pixelValues[0]
 //				y1 = pixelValues[1]
 //				k = pixelValues[2]
+
 //
 //				x1 = x1 * k
 //				y1 = y1 * k
 //
 //				return np.array([x1 * depth, y1 * depth, depth])
 
-
-
-void point_cloud_window::calculate_xyz_from_depth(float& x, float& y, float& z, int depth)
+void point_cloud_window::initialize_brown_radial()
 {
+	k_values.clear();
+	for(int i = 0; i < brown_radial_lut_size; i++)
+	{
+		float r2 = i * rad_step2_depth;
+		float pr2 = 1 + r2 * (distortion_model.k1 + r2 * (distortion_model.k2 + r2 * distortion_model.k3));
+		float key = int(r2 * pr2 * 1000);
+		k_values[key] = 1 / pr2;
+	}
+}
 
+void point_cloud_window::calculate_xyz_from_depth(float& x, float& y, float& z)
+{
+	float x1 = (x - pinhole_model.cx) / distortion_model.fx;
+	float y1 = (pinhole_model.cy - y) / distortion_model.fy;
+	float r2 = x1 * x1 * y1 * y1;
+	float k = 1.0; // TODO: imlement it !!!
+
+	x = x1 * k / 1000;
+	y = y1 * k / 1000;
+	z = x / 1000;
 }
 
 void point_cloud_window::create_points_from_depth_image()
@@ -83,21 +101,24 @@ void point_cloud_window::create_points_from_depth_image()
 	}
 
 	painter->init_scene();
+
 	std::tuple<uint32_t, uint32_t> depth_resolution = stream.get_resolution();
 	image_width = std::get<0>(depth_resolution);
 	image_height = std::get<1>(depth_resolution);
+	pinhole_model = stream.get_pinhole_model();
+	distortion_model = stream.get_distortion_model;
 
 	size_t byte_count = stream.get_frame_byte_count(current_frame);
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
 	stream.get_frame_data(current_frame, data);
+
 	for(int image_x = 0; image_x < image_width; image_x++)
 	{
 		for(int image_y = 0; image_y < image_height; image_y++)
 		{
-			int image_index = image_x * image_width + image_y;
-			int depth = (int)data[image_index];
-			float x, y, z;
-			calculate_xyz_from_depth(x, y, z, depth);
+			int depth_index = image_width * image_x + image_y;
+			float x = (float)image_x, y = (float)image_y, z = (float)data[depth_index];
+			calculate_xyz_from_depth(x, y, z);
 		}
 	}
 
