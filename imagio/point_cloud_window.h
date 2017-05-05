@@ -28,9 +28,10 @@ private:
 	skv_distortion_model distortion_model;
 
 	float brown_radial_lut_size = 400;
-	float max_rad2_depth = 0.647376332409;
+	float max_rad2_depth = 0.647376332409f;
 	float rad_step2_depth = max_rad2_depth / brown_radial_lut_size;
 	std::map<int, float> k_values;
+	ImColor point_cloud_color = ImColor(1.0f, 0.0f, 0.0f);
 public:
 	point_cloud_window(const char* _title) : paint_window(_title) {}
 	void open_json(std::string filename);
@@ -43,6 +44,7 @@ public:
 
 protected:
 	void initialize_brown_radial();
+	int get_k_key(float value);
 };
 
 }

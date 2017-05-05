@@ -63,6 +63,12 @@ void point_cloud_window::open_json(std::string filename)
 //
 //				return np.array([x1 * depth, y1 * depth, depth])
 
+int point_cloud_window::get_k_key(float value)
+{
+	int key = int(value * 1000);
+	return key;
+}
+
 void point_cloud_window::initialize_brown_radial()
 {
 	k_values.clear();
@@ -70,7 +76,7 @@ void point_cloud_window::initialize_brown_radial()
 	{
 		float r2 = i * rad_step2_depth;
 		float pr2 = 1 + r2 * (distortion_model.k1 + r2 * (distortion_model.k2 + r2 * distortion_model.k3));
-		float key = int(r2 * pr2 * 1000);
+		int key = get_k_key(r2 * pr2);
 		k_values[key] = 1 / pr2;
 	}
 }
@@ -80,11 +86,14 @@ void point_cloud_window::calculate_xyz_from_depth(float& x, float& y, float& z)
 	float x1 = (x - pinhole_model.cx) / distortion_model.fx;
 	float y1 = (pinhole_model.cy - y) / distortion_model.fy;
 	float r2 = x1 * x1 * y1 * y1;
-	float k = 1.0; // TODO: imlement it !!!
+	std::map<int, float>::iterator k_value = k_values.lower_bound(get_k_key(r2));
+	if(k_value != k_values.begin())
+		--k_value;
+	float k = (k_value)->second;
 
-	x = x1 * k / 1000;
-	y = y1 * k / 1000;
-	z = x / 1000;
+	x = z * x1 * k;
+	y = z * y1 * k;
+	z = z;
 }
 
 void point_cloud_window::create_points_from_depth_image()
@@ -106,7 +115,8 @@ void point_cloud_window::create_points_from_depth_image()
 	image_width = std::get<0>(depth_resolution);
 	image_height = std::get<1>(depth_resolution);
 	pinhole_model = stream.get_pinhole_model();
-	distortion_model = stream.get_distortion_model;
+	distortion_model = stream.get_distortion_model();
+	initialize_brown_radial();
 
 	size_t byte_count = stream.get_frame_byte_count(current_frame);
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
@@ -116,9 +126,13 @@ void point_cloud_window::create_points_from_depth_image()
 	{
 		for(int image_y = 0; image_y < image_height; image_y++)
 		{
-			int depth_index = image_width * image_x + image_y;
-			float x = (float)image_x, y = (float)image_y, z = (float)data[depth_index];
-			calculate_xyz_from_depth(x, y, z);
+			int depth_index = image_height * image_x + image_y;
+			float x = (float)image_x, y = (float)image_y, z = (float)data[depth_index] / 1000.0f;
+			if(z < 32.0f && z > 0.001f)
+			{
+				calculate_xyz_from_depth(x, y, z);
+				painter->draw_point(y, -x, z, point_cloud_color, 1.0f);
+			}
 		}
 	}
 
