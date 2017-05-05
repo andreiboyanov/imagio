@@ -109,14 +109,38 @@ void point_cloud_window::create_points_from_depth_image()
 		return;
 	}
 
-	painter->init_scene();
-
 	std::tuple<uint32_t, uint32_t> depth_resolution = stream.get_resolution();
 	image_width = std::get<0>(depth_resolution);
 	image_height = std::get<1>(depth_resolution);
 	pinhole_model = stream.get_pinhole_model();
 	distortion_model = stream.get_distortion_model();
 	initialize_brown_radial();
+
+	painter->init_scene();
+
+	std::vector<std::vector<float>> repers = {
+		{0.0f, 0.0f, 0.5f},
+		{320.0f, 0.0f, 0.5f},
+		{320.0f, 240.0f, 0.5f},
+		{0.0f, 240.0f, 0.5f},
+		{0.0f, 0.0f, 1.0f},
+		{320.0f, 0.0f, 1.0f},
+		{320.0f, 240.0f, 1.0f},
+		{0.0f, 240.0f, 1.0f},
+		{0.0f, 0.0f, 1.5f},
+		{320.0f, 0.0f, 1.5f},
+		{320.0f, 240.0f, 1.5f},
+		{0.0f, 240.0f, 1.5f},
+	};
+	ImColor reper_color(1.0f, 0.0f, 0.0f);
+	ImColor depth_reper_color(0.0f, 1.0f, 0.0f);
+	for(auto& reper_point : repers)
+	{
+		float x = reper_point[0], y = reper_point[1], z = reper_point[2];
+		painter->draw_point(x / 320.0f, y / 240.0f, z, reper_color, 10.0f);
+		calculate_xyz_from_depth(x, y, z);
+		painter->draw_point(y, -x, z, depth_reper_color, 5.0f);
+	}
 
 	size_t byte_count = stream.get_frame_byte_count(current_frame);
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
