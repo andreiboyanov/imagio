@@ -5,9 +5,9 @@
 
 #include <stddef.h>
 #include <iostream>
+#include <map>
 
 #pragma warning(push, 0)       
-#include <json/json.h>
 #include "softkinetic/skv.h"
 #pragma warning(pop)
 #include "3dpaint/paint_window.h"
@@ -19,7 +19,6 @@ namespace imagio
 class point_cloud_window : public wimgui::paint_window
 {
 private:
-    Json::Value depth_stream;
 	softkinetic::skv::file skv_file;
     int current_frame = 0;
     int image_width = 320;
