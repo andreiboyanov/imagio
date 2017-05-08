@@ -12,57 +12,6 @@ void point_cloud_window::open_json(std::string filename)
 	show_current_frame();
 }
 
-
-//def build_2d_to_3d_matrix(self) :
-//	distortion_model = self.camera_configuration.distortion_model
-//	pinhole_model = self.camera_configuration.pinhole_model
-//	for x in range(0, self.stream_configuration.width) :
-//		for y in range(0, self.stream_configuration.height) :
-//			x1 = (x - pinhole_model.cx) / distortion_model.fx
-//			y1 = (pinhole_model.cy - y) / distortion_model.fy
-//
-//			r2 = x1 * x1 + y1 * y1
-//
-//			k = self.get_nearest_less_k(r2)
-//
-//			elementValues = []
-//			elementValues.append(x1 * k / 1000)
-//			elementValues.append(1 / 1000)
-//			elementValues.append(y1 * k / 1000)
-//
-//			self.brownRadial2Dto3DMatrix[y, x] = np.array(elementValues)
-//
-//def build_brown_radial_table(self) :
-//			self.kValues = self.buildKValues()
-//			self.brownRadial2Dto3DMatrix = np.empty((self.stream_configuration.height,
-//													 self.stream_configuration.width, 3))
-//			self.build_2d_to_3d_matrix()
-//
-//def get_nearest_less_k(self, key) :
-//
-//			key = self.create_dict_key(key)
-//
-//			index = self.kValues.bisect(key)
-//			if index == self.brown_radial_lut_size :
-//				index = index - 1
-//				key = self.kValues.iloc[index]
-//				return self.kValues[key]
-//
-//def create_dict_key(self, value) :
-//				return int(round(value, 3) * 1000)
-//
-//def transform2dTo3dBrownRadial(self, x, y, depth) :
-//				pixelValues = self.brown_radial_lut[x, y]
-//				x1 = pixelValues[0]
-//				y1 = pixelValues[1]
-//				k = pixelValues[2]
-
-//
-//				x1 = x1 * k
-//				y1 = y1 * k
-//
-//				return np.array([x1 * depth, y1 * depth, depth])
-
 int point_cloud_window::get_k_key(float value)
 {
 	int key = int(std::round(value * 1000.0f));
