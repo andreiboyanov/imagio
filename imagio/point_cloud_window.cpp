@@ -65,7 +65,7 @@ void point_cloud_window::open_json(std::string filename)
 
 int point_cloud_window::get_k_key(float value)
 {
-	int key = int(value * 1000);
+	int key = int(std::round(value * 1000.0f));
 	return key;
 }
 
@@ -76,8 +76,8 @@ void point_cloud_window::initialize_brown_radial()
 	{
 		float r2 = i * rad_step2_depth;
 		float pr2 = 1 + r2 * (distortion_model.k1 + r2 * (distortion_model.k2 + r2 * distortion_model.k3));
-		int key = get_k_key(r2 * pr2);
-		k_values[key] = 1 / pr2;
+		int k_key = get_k_key(r2 * pr2);
+		k_values[k_key] = 1 / pr2;
 	}
 }
 
@@ -85,8 +85,9 @@ void point_cloud_window::calculate_xyz_from_depth(float& x, float& y, float& z)
 {
 	float x1 = (x - pinhole_model.cx) / distortion_model.fx;
 	float y1 = (pinhole_model.cy - y) / distortion_model.fy;
-	float r2 = x1 * x1 * y1 * y1;
-	std::map<int, float>::iterator k_value = k_values.lower_bound(get_k_key(r2));
+	float r2 = x1 * x1 + y1 * y1;
+	int k_key = get_k_key(r2);
+	std::map<int, float>::iterator k_value = k_values.lower_bound(k_key);
 	if(k_value != k_values.begin())
 		--k_value;
 	float k = (k_value)->second;
@@ -118,30 +119,6 @@ void point_cloud_window::create_points_from_depth_image()
 
 	painter->init_scene();
 
-	std::vector<std::vector<float>> repers = {
-		{0.0f, 0.0f, 0.5f},
-		{320.0f, 0.0f, 0.5f},
-		{320.0f, 240.0f, 0.5f},
-		{0.0f, 240.0f, 0.5f},
-		{0.0f, 0.0f, 1.0f},
-		{320.0f, 0.0f, 1.0f},
-		{320.0f, 240.0f, 1.0f},
-		{0.0f, 240.0f, 1.0f},
-		{0.0f, 0.0f, 1.5f},
-		{320.0f, 0.0f, 1.5f},
-		{320.0f, 240.0f, 1.5f},
-		{0.0f, 240.0f, 1.5f},
-	};
-	ImColor reper_color(1.0f, 0.0f, 0.0f);
-	ImColor depth_reper_color(0.0f, 1.0f, 0.0f);
-	for(auto& reper_point : repers)
-	{
-		float x = reper_point[0], y = reper_point[1], z = reper_point[2];
-		painter->draw_point(x / 320.0f, y / 240.0f, z, reper_color, 10.0f);
-		calculate_xyz_from_depth(x, y, z);
-		painter->draw_point(y, -x, z, depth_reper_color, 5.0f);
-	}
-
 	size_t byte_count = stream.get_frame_byte_count(current_frame);
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
 	stream.get_frame_data(current_frame, data);
@@ -150,12 +127,12 @@ void point_cloud_window::create_points_from_depth_image()
 	{
 		for(int image_y = 0; image_y < image_height; image_y++)
 		{
-			int depth_index = image_height * image_x + image_y;
+			int depth_index = image_width * image_y + image_x;
 			float x = (float)image_x, y = (float)image_y, z = (float)data[depth_index] / 1000.0f;
 			if(z < 32.0f && z > 0.001f)
 			{
 				calculate_xyz_from_depth(x, y, z);
-				painter->draw_point(y, -x, z, point_cloud_color, 1.0f);
+				painter->draw_point(x, y, z, point_cloud_color, 1.0f);
 			}
 		}
 	}

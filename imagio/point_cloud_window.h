@@ -31,7 +31,7 @@ private:
 	float max_rad2_depth = 0.647376332409f;
 	float rad_step2_depth = max_rad2_depth / brown_radial_lut_size;
 	std::map<int, float> k_values;
-	ImColor point_cloud_color = ImColor(1.0f, 0.0f, 0.0f);
+	ImColor point_cloud_color = ImColor(1.0f, 1.0f, 0.0f);
 public:
 	point_cloud_window(const char* _title) : paint_window(_title) {}
 	void open_json(std::string filename);
