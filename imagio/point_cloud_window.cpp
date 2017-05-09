@@ -47,7 +47,7 @@ void point_cloud_window::create_points_from_depth_image()
 	if(!(stream.has_pinhole_model() && stream.has_distortion_model()))
 	{
 		std::cout << "Pinhole and/or distortion models missing in the skv file.";
-		std::cout << " They are needed for depth 3d points calkculation. " << std::endl;
+		std::cout << " They are needed for depth 3d points calculation. " << std::endl;
 		return;
 	}
 
@@ -88,8 +88,12 @@ void point_cloud_window::open_skv_depth(std::string filename)
 
 		std::string vendor_name, camera_model;
 		std::tie(vendor_name, camera_model) = skv_file.get_device_info();
-		create_points_from_depth_image();
+
+		auto stream = skv_file.get_stream_by_name("depth_0");
+		frames_count = stream.get_frame_count();
+		show_current_frame();
 	}
+	// FIXME: Move exception catches to the appropriate place
 	catch(softkinetic::skv::file_error& e)
 	{
 		std::cout << "File error: " << e.get_message() << std::endl;
@@ -106,21 +110,26 @@ void point_cloud_window::open_skv_depth(std::string filename)
 
 void point_cloud_window::move_forward()
 {
-	current_frame++;
-	//TODO: Check last frame limit
-	show_current_frame();
+	if(current_frame < frames_count - 1)
+	{
+		current_frame++;
+		show_current_frame();
+	}
 }
 
 void point_cloud_window::move_backward()
 {
-	current_frame--;
-	if(current_frame < 0) current_frame = 0;
-	show_current_frame();
+	if(current_frame > 0)
+	{
+		current_frame--;
+		show_current_frame();
+	}
 }
 
 void point_cloud_window::show_current_frame()
 {
-	create_points_from_depth_image();
+	if(frames_count > 0)
+		create_points_from_depth_image();
 }
 
 }

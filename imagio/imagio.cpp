@@ -94,15 +94,16 @@ public:
 			point_cloud->open_skv_depth("D:/data/robert/olivier/scenarii/A1.skv");
 			//point_cloud->open_skv_depth("../../../tmp/scenarii/A1.skv");
         }
-		if(ImGui::Button(" >> "))
-		{
-			point_cloud->move_forward();
-		}
-        ImGui::SameLine();
 		if(ImGui::Button(" << "))
 		{
 			point_cloud->move_backward();
 		}
+        ImGui::SameLine();
+		if(ImGui::Button(" >> "))
+		{
+			point_cloud->move_forward();
+		}
+		ImGui::Text("Frame %5d / %5d", point_cloud->get_current_frame(), point_cloud->get_frames_count() - 1);
 	}
 
 };
