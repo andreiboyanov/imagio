@@ -27,7 +27,7 @@ private:
 		"{\n" \
 		"   gl_Position = view_matrix * vec4(position, 1.0);\n" \
 		"	gl_PointSize = size;\n" \
-        "   fragment_color = vec4(color, 1.0);\n" \
+        "   fragment_color = vec4(color.x, color.y, position.z, 1.0);\n" \
 		"}\n");
 	GLuint fragment_shader_id;
 	std::string fragment_shader = std::string(""\

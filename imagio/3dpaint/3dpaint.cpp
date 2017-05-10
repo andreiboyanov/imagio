@@ -48,6 +48,13 @@ void painter3d::rotate(float x, float y)
 {
 	if(x > 0) {}
 	if(y > 0) {}
+
+	glm::mat4 x_rotation, y_rotation;
+	glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
+	glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
+	x_rotation = glm::rotate(x_rotation, radians(x), y_axis);
+	y_rotation = glm::rotate(y_rotation, radians(y), x_axis);
+	view_matrix = temporary_view_matrix * x_rotation * y_rotation;
 }
 
 void painter3d::rotate(float x, float y, float z)
@@ -59,6 +66,7 @@ void painter3d::rotate(float x, float y, float z)
 
 void painter3d::stop_rotating()
 {
+	temporary_view_matrix = view_matrix;
 }
 
 void painter3d::scale(float wheel)

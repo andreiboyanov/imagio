@@ -59,6 +59,7 @@ private:
 	unsigned int vertex_index = 0;
 
 	glm::mat4 projection_matrix, view_matrix, model_matrix, transformation_matrix;
+	glm::mat4 temporary_view_matrix;
 
 #define MAX_VERTICES 64000
 public:
@@ -72,7 +73,7 @@ public:
 	void init_view();
 	float* get_transformation_pointer()
 	{ 
-		transformation_matrix =  projection_matrix * view_matrix * model_matrix; 
+		transformation_matrix = projection_matrix * view_matrix * model_matrix; 
 		return glm::value_ptr(transformation_matrix);
 	}
 	unsigned int get_max_vertices() { return MAX_VERTICES; }

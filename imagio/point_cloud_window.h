@@ -32,6 +32,7 @@ private:
 	float rad_step2_depth = max_rad2_depth / brown_radial_lut_size;
 	std::map<int, float> k_values;
 	ImColor point_cloud_color = ImColor(1.0f, 1.0f, 0.0f);
+
 public:
 	point_cloud_window(const char* _title) : paint_window(_title) {}
 	void open_skv_depth(std::string filename);
@@ -42,7 +43,6 @@ public:
     void show_current_frame();
 	unsigned int get_current_frame() { return current_frame; }
 	unsigned int get_frames_count() { return frames_count; }
-
 
 protected:
 	void initialize_brown_radial();
