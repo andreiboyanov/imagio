@@ -129,7 +129,22 @@ void point_cloud_window::move_backward()
 void point_cloud_window::show_current_frame()
 {
 	if(frames_count > 0)
+	{
 		create_points_from_depth_image();
+		show_joints();
+	}
+}
+
+void point_cloud_window::show_joints()
+{
+	for(auto const &joint : first_frame_joints)
+	{
+		auto joint_name = joint.first;
+		auto joint_position = std::get<0>(joint.second);
+		auto joint_color = std::get<1>(joint.second);
+		painter->draw_point(joint_position.x, joint_position.z, joint_position.y,
+							joint_color, 10.0f);
+	}
 }
 
 }

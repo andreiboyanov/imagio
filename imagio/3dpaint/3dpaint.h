@@ -84,6 +84,7 @@ public:
 	GLuint get_vertex_array() { return vertex_array; }
 	gltool::program* get_program() { return &program; }
 	void draw_point(float x, float y, float z, ImColor& color, float vertex_size=5.0f);
+	void draw_point(glm::vec3& position, ImColor& color, float vertex_size = 5.0f) { draw_point(position.x, position.y, position.z, color, vertex_size); };
 	void draw_zero_cross();
 	void draw_axes();
 	void move(float x, float y);

@@ -91,7 +91,7 @@ public:
 	void draw() {
 		if(ImGui::Button("Open point cloud"))
 		{
-			point_cloud->open_skv_depth("D:/data/robert/olivier/scenarii/A1.skv");
+			point_cloud->open_skv_depth("D:/data/robert/olivier/scenarii/B2.skv");
 			//point_cloud->open_skv_depth("../../../tmp/scenarii/A1.skv");
         }
 		if(ImGui::Button(" << "))
@@ -156,7 +156,7 @@ int draw()
 {
 	draw_main_menu();
 	active_workspace->draw_workspace();
-	ImGui::ShowTestWindow();
+	// ImGui::ShowTestWindow();
 	return 0;
 }
 
