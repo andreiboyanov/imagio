@@ -77,7 +77,7 @@ void point_cloud_window::create_points_from_depth_image()
 			}
 		}
 	}
-
+	tracker.new_frame(painter->get_vertices(), painter->get_vertex_index());
 }
 
 void point_cloud_window::open_skv_depth(std::string filename)

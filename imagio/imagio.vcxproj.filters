@@ -57,7 +57,10 @@
     <ClCompile Include="3dpaint\gltool\gltool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="point_cloud_window.cpp">
+    <ClCompile Include="point_cloud\point_cloud_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="point_cloud\joint_tracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -110,7 +113,10 @@
     <ClInclude Include="3dpaint\gltool\gltool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="point_cloud_window.h">
+    <ClInclude Include="point_cloud\point_cloud_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="point_cloud\joint_tracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

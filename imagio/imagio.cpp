@@ -6,7 +6,7 @@
 #include "wimgui/workspace.h"
 #include "wimgui/window.h"
 #include "wimgui/dock.h"
-#include "point_cloud_window.h"
+#include "point_cloud/point_cloud_window.h"
 
 namespace imagio {
 

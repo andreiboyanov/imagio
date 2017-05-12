@@ -10,8 +10,9 @@
 #pragma warning(push, 0)       
 #include "softkinetic/skv.h"
 #pragma warning(pop)
-#include "3dpaint/paint_window.h"
-#include "imgui/imgui.h"
+#include "../3dpaint/paint_window.h"
+#include "../imgui/imgui.h"
+#include "../point_cloud/joint_tracker.h"
 
 namespace imagio
 {
@@ -37,6 +38,22 @@ const std::map<std::string, std::tuple<glm::vec3, const ImColor&>> first_frame_j
 	{"left_foot",		{{ 0.227873027, 1.58939934, -0.756034400},		yellow}},
 	{"right_foot",		{{-0.112991482, 1.60227287, -0.777440131},		yellow}},
 };
+const std::vector<glm::vec3> first_frame_joint_positions = {
+	{ 0.049042556, 1.27974129,  0.391834855},
+	{ 0.223657891, 1.38038421,  0.186490983},
+	{-0.108562335, 1.39295137,  0.218086720},
+	{ 0.268882900, 1.27903306, -0.071093180},
+	{-0.174655050, 1.15550470,  0.084570530},
+	{ 0.226134900, 1.08374476, -0.203915060},
+	{-0.121038109, 0.94242920,  0.183195367},
+	{ 0.049824394, 1.55311739, -0.190368563},
+	{ 0.162650300, 1.54967749, -0.191829562},
+	{-0.062769400, 1.55727637, -0.189216971},
+	{ 0.204919338, 1.28167045, -0.501541100},
+	{-0.113106430, 1.30452681, -0.509594142},
+	{ 0.227873027, 1.58939934, -0.756034400},
+	{-0.112991482, 1.60227287, -0.777440131},
+};
 
 class point_cloud_window : public wimgui::paint_window
 {
@@ -55,8 +72,10 @@ private:
 	std::map<int, float> k_values;
 	ImColor point_cloud_color = ImColor(1.0f, 1.0f, 0.0f);
 
+	joint_tracker tracker;
+
 public:
-	point_cloud_window(const char* _title) : paint_window(_title) {}
+	point_cloud_window(const char* _title) : paint_window(_title), tracker(first_frame_joint_positions) {}
 	void open_skv_depth(std::string filename);
 	void create_points_from_depth_image();
 	void calculate_xyz_from_depth(float& x, float &y, float &z);
