@@ -13,6 +13,10 @@
 
 #include <vector>
 #include <cmath>
+#include <tuple>
+#include <algorithm>
+#include <iostream>
+#include <iomanip>
 
 #include "../3dpaint/3dpaint.h"
 
@@ -25,21 +29,27 @@ private:
 	const float pi = 3.1415926535897f;
 	const float pnoise = 0.01f;
 	const float pinvisible = 0.1f;
-	const float sigma = 0.0001f;
+	//const float sigma = 0.0001f;
+	const float sigma = 10.0f;
 	const int force_lambda = 100;
 	const int em_itterations = 20;
 	const float depth_occlude_tol = 0.03f;
 
-	std::vector<glm::vec3> joints;
-	std::vector<std::vector<float>> alfa_nk;
-	std::vector<float> visibility_k;
+	std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> joints;
 	wimgui::vertex* points = nullptr;
 	unsigned int points_count = 0;
+
+	std::vector<std::vector<float>> alfa_nk;
+	std::vector<std::vector<float>> distance;
+	std::vector<float> visibility_k;
 public:
-	joint_tracker(std::vector<glm::vec3> initial_joints) : joints(initial_joints) {};
+	joint_tracker(std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> initial_joints) : joints(initial_joints) {};
 	void new_frame(wimgui::vertex* vertices, unsigned int vertices_count);
 	void calculate_visibility_k();
 	void calculate_alfa_nk();
+	std::vector<std::vector<float>>& get_alfa_nk() { return alfa_nk; }
+	std::vector<std::vector<float>>& get_distance() { return distance; }
+
 };
 
 }

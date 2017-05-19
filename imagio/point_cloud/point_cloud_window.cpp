@@ -64,9 +64,9 @@ void point_cloud_window::create_points_from_depth_image()
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
 	stream.get_frame_data(current_frame, data);
 
-	for(int image_x = 0; image_x < image_width; image_x++)
+	for(int image_x = 0; image_x < image_width; image_x += 3)
 	{
-		for(int image_y = 0; image_y < image_height; image_y++)
+		for(int image_y = 0; image_y < image_height; image_y += 3)
 		{
 			int depth_index = image_width * image_y + image_x;
 			float x = (float)image_x, y = (float)image_y, z = (float)data[depth_index] / 1000.0f;
@@ -137,13 +137,33 @@ void point_cloud_window::show_current_frame()
 
 void point_cloud_window::show_joints()
 {
-	for(auto const &joint : first_frame_joints)
+	for(auto const &joint : joints)
 	{
-		auto joint_name = joint.first;
-		auto joint_position = std::get<0>(joint.second);
-		auto joint_color = std::get<1>(joint.second);
-		painter->draw_point(joint_position.x, joint_position.z, joint_position.y,
+		auto joint_name = std::get<2>(joint);
+		auto joint_position = std::get<0>(joint);
+		auto joint_color = std::get<1>(joint);
+		painter->draw_point(joint_position.x, joint_position.y, joint_position.z,
 							joint_color, 10.0f);
+	}
+}
+
+void point_cloud_window::draw()
+{
+	paint_window::draw();
+	std::vector<std::vector<float>>& distances = tracker.get_distance();
+	//std::vector<std::vector<float>>& alfa_nk = tracker.get_alfa_nk();
+	if(distances.size() >= joints.size())
+	{
+		std::vector<unsigned int> joint_indices = { 0, 5, 6, 12, 13 };
+		for(auto& joint_index: joint_indices)
+		{	
+			auto& joint = joints[joint_index];
+			const float *joint_distance = &distances[joint_index][0];
+			//const float *joint_alfa = &alfa_nk[joint_index][0];
+			int points_count = distances[joint_index].size();
+			ImGui::PlotLines((std::get<2>(joint) + " distance").c_str(), joint_distance, points_count);
+			//ImGui::PlotLines((std::get<2>(joint) + " alfa").c_str(), joint_alfa, points_count);
+		}
 	}
 }
 

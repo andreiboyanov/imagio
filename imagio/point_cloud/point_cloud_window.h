@@ -17,42 +17,30 @@
 namespace imagio
 {
 
-const ImColor red = ImColor(1.0f, 0.0f, 0.0f);
-const ImColor blue = ImColor(0.0f, 0.0f, 1.0f);
-const ImColor green = ImColor(0.0f, 1.0f, 0.0f);
-const ImColor magenta = ImColor(1.0f, 0.0f, 1.0f);
-const ImColor yellow = ImColor(1.0f, 1.0f, 0.0f);
-const std::map<std::string, std::tuple<glm::vec3, const ImColor&>> first_frame_joints = {
-	{"head",			{{ 0.049042556, 1.27974129,  0.391834855},		red}},
-	{"left_shoulder",	{{ 0.223657891, 1.38038421,  0.186490983},		green}},
-	{"right_shoulder",	{{-0.108562335, 1.39295137,  0.218086720},		green}},
-	{ "left_forearm",	{{ 0.268882900, 1.27903306, -0.071093180},		blue}},
-	{"right_forearm",	{{-0.174655050, 1.15550470,  0.084570530},		blue}},
-	{"left_wrist",		{{ 0.226134900, 1.08374476, -0.203915060},		magenta}},
-	{"right_wrist",		{{-0.121038109, 0.94242920,  0.183195367},		magenta}},
-	{"hips",			{{ 0.049824394, 1.55311739, -0.190368563},		yellow}},
-	{"left_hip",		{{ 0.162650300, 1.54967749, -0.191829562},		yellow}},
-	{"right_hip",		{{-0.062769400, 1.55727637, -0.189216971},		yellow}},
-	{"left_knee",		{{ 0.204919338, 1.28167045, -0.501541100},		yellow}},
-	{"right_knee",		{{-0.113106430, 1.30452681, -0.509594142},		yellow}},
-	{"left_foot",		{{ 0.227873027, 1.58939934, -0.756034400},		yellow}},
-	{"right_foot",		{{-0.112991482, 1.60227287, -0.777440131},		yellow}},
-};
-const std::vector<glm::vec3> first_frame_joint_positions = {
-	{ 0.049042556, 1.27974129,  0.391834855},
-	{ 0.223657891, 1.38038421,  0.186490983},
-	{-0.108562335, 1.39295137,  0.218086720},
-	{ 0.268882900, 1.27903306, -0.071093180},
-	{-0.174655050, 1.15550470,  0.084570530},
-	{ 0.226134900, 1.08374476, -0.203915060},
-	{-0.121038109, 0.94242920,  0.183195367},
-	{ 0.049824394, 1.55311739, -0.190368563},
-	{ 0.162650300, 1.54967749, -0.191829562},
-	{-0.062769400, 1.55727637, -0.189216971},
-	{ 0.204919338, 1.28167045, -0.501541100},
-	{-0.113106430, 1.30452681, -0.509594142},
-	{ 0.227873027, 1.58939934, -0.756034400},
-	{-0.112991482, 1.60227287, -0.777440131},
+const ImColor color_000 = ImColor(0.0f, 0.0f, 0.0f);
+const ImColor color_001 = ImColor(0.0f, 0.0f, 1.0f);
+const ImColor color_010 = ImColor(0.0f, 1.0f, 0.0f);
+const ImColor color_011 = ImColor(0.0f, 1.0f, 1.0f);
+const ImColor color_100 = ImColor(1.0f, 0.0f, 0.0f);
+const ImColor color_101 = ImColor(1.0f, 0.0f, 1.0f);
+const ImColor color_110 = ImColor(1.0f, 1.0f, 0.0f);
+const ImColor color_111 = ImColor(1.0f, 1.0f, 1.0f);
+
+const std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> joints = {
+	{{ 0.049042556,  0.391834855, 1.27974129},		color_011,		"head"},
+	{{ 0.223657891,  0.186490983, 1.38038421},		color_011,		"left_shoulder"},
+	{{-0.108562335,  0.218086720, 1.39295137},		color_011,		"right_shoulder"},
+	{{ 0.268882900, -0.071093180, 1.27903306},		color_011,		"left_forearm"},
+	{{-0.174655050,  0.084570530, 1.15550470},		color_011,		"right_forearm"},
+	{{ 0.226134900, -0.203915060, 1.08374476},		color_010,		"left_wrist"},
+	{{-0.121038109,  0.183195367, 0.94242920},		color_001,		"right_wrist"},
+	{{ 0.049824394, -0.190368563, 1.55311739},		color_000,		"hips"},
+	{{ 0.162650300, -0.191829562, 1.54967749},		color_000,		"left_hip"},
+	{{-0.062769400, -0.189216971, 1.55727637},		color_000,		"right_hip"},
+	{{ 0.204919338, -0.501541100, 1.28167045},		color_100,		"left_knee"},
+	{{-0.113106430, -0.509594142, 1.30452681},		color_000,		"right_knee"},
+	{{ 0.227873027, -0.756034400, 1.58939934},		color_000,		"left_foot"},
+	{{-0.112991482, -0.777440131, 1.60227287},		color_000,		"right_foot"},
 };
 
 class point_cloud_window : public wimgui::paint_window
@@ -70,12 +58,12 @@ private:
 	float max_rad2_depth = 0.647376332409f;
 	float rad_step2_depth = max_rad2_depth / brown_radial_lut_size;
 	std::map<int, float> k_values;
-	ImColor point_cloud_color = ImColor(1.0f, 1.0f, 0.0f);
+	ImColor point_cloud_color = ImColor(0.0f, 0.0f, 0.0f);
 
 	joint_tracker tracker;
 
 public:
-	point_cloud_window(const char* _title) : paint_window(_title), tracker(first_frame_joint_positions) {}
+	point_cloud_window(const char* _title) : paint_window(_title), tracker(joints) {}
 	void open_skv_depth(std::string filename);
 	void create_points_from_depth_image();
 	void calculate_xyz_from_depth(float& x, float &y, float &z);
@@ -85,6 +73,7 @@ public:
 	void show_joints();
 	unsigned int get_current_frame() { return current_frame; }
 	unsigned int get_frames_count() { return frames_count; }
+	virtual void point_cloud_window::draw();
 
 protected:
 	void initialize_brown_radial();
