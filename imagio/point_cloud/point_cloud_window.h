@@ -33,7 +33,7 @@ const std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> joints = {
 	{{ 0.268882900, -0.071093180, 1.27903306},		color_011,		"left_forearm"},
 	{{-0.174655050,  0.084570530, 1.15550470},		color_011,		"right_forearm"},
 	{{ 0.226134900, -0.203915060, 1.08374476},		color_010,		"left_wrist"},
-	{{-0.121038109,  0.183195367, 0.94242920},		color_001,		"right_wrist"},
+	{{-0.121038109,  0.183195367, 0.94242920},		color_100,		"right_wrist"},
 	{{ 0.049824394, -0.190368563, 1.55311739},		color_000,		"hips"},
 	{{ 0.162650300, -0.191829562, 1.54967749},		color_000,		"left_hip"},
 	{{-0.062769400, -0.189216971, 1.55727637},		color_000,		"right_hip"},
@@ -78,6 +78,9 @@ public:
 protected:
 	void initialize_brown_radial();
 	int get_k_key(float value);
+	void plot_graph(std::string label, const float* data, const unsigned int values_count, int start_index=-1, int end_index=-1);
+	void highlight_point(wimgui::vertex& vertex);
+	void unhighlight_point(wimgui::vertex& vertex);
 };
 
 }

@@ -64,9 +64,9 @@ void point_cloud_window::create_points_from_depth_image()
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
 	stream.get_frame_data(current_frame, data);
 
-	for(int image_x = 0; image_x < image_width; image_x += 3)
+	for(int image_x = 0; image_x < image_width; image_x++)
 	{
-		for(int image_y = 0; image_y < image_height; image_y += 3)
+		for(int image_y = 0; image_y < image_height; image_y++)
 		{
 			int depth_index = image_width * image_y + image_x;
 			float x = (float)image_x, y = (float)image_y, z = (float)data[depth_index] / 1000.0f;
@@ -154,16 +154,73 @@ void point_cloud_window::draw()
 	//std::vector<std::vector<float>>& alfa_nk = tracker.get_alfa_nk();
 	if(distances.size() >= joints.size())
 	{
-		std::vector<unsigned int> joint_indices = { 0, 5, 6, 12, 13 };
-		for(auto& joint_index: joint_indices)
-		{	
+		std::vector<unsigned int> joint_indices = { 0, 1, 2, 3, 4, 5, 6 };
+		for(auto& joint_index : joint_indices)
+		{
 			auto& joint = joints[joint_index];
 			const float *joint_distance = &distances[joint_index][0];
 			//const float *joint_alfa = &alfa_nk[joint_index][0];
 			int points_count = distances[joint_index].size();
-			ImGui::PlotLines((std::get<2>(joint) + " distance").c_str(), joint_distance, points_count);
+			int start_index = (int)(points_count / 2) - 200;
+			int end_index = (int)(points_count / 2) + 200;
+			plot_graph((std::get<2>(joint) + " distance").c_str(), joint_distance, points_count, start_index, end_index);
 			//ImGui::PlotLines((std::get<2>(joint) + " alfa").c_str(), joint_alfa, points_count);
 		}
+	}
+}
+
+
+void point_cloud_window::highlight_point(wimgui::vertex& vertex)
+{
+	vertex.size = 14.0f;
+}
+
+void point_cloud_window::unhighlight_point(wimgui::vertex& vertex)
+{
+	vertex.size = 1.0f;
+}
+
+
+void point_cloud_window::plot_graph(std::string label, const float* data, const unsigned int values_count, int start_index, int end_index)
+{
+	if(-1 == start_index) start_index = 0;
+	if(-1 == end_index) end_index = values_count - 1;
+	int items_count = end_index - start_index + 1;
+
+	ImGuiWindow* window = get_imgui_window();
+	const ImGuiStyle& style = GImGui->Style;
+	const ImVec2 label_size = ImGui::CalcTextSize(label.c_str(), NULL, true);
+	float graph_size_x = ImGui::CalcItemWidth();
+	float graph_size_y = label_size.y + (style.FramePadding.y * 2);
+
+	const ImRect graph_frame(window->DC.CursorPos, window->DC.CursorPos + ImVec2(graph_size_x, graph_size_y));
+	const ImRect graph_inner_box(graph_frame.Min + style.FramePadding, graph_frame.Max - style.FramePadding);
+	ImGui::RenderFrame(graph_inner_box.Min, graph_inner_box.Max, ImGui::GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
+
+	static int value_index = -1;
+	if(ImGui::IsHovered(graph_inner_box, 0))
+	{
+		const float t = ImClamp((GImGui->IO.MousePos.x - graph_inner_box.Min.x) / (graph_inner_box.Max.x - graph_inner_box.Min.x), 0.0f, 0.9999f);
+		value_index = start_index + (int)(t * items_count - 1) % items_count;
+
+		wimgui::vertex& vertex = painter->get_vertices()[value_index];
+		highlight_point(vertex);
+	}
+	else if (value_index > -1)
+	{
+		wimgui::vertex& vertex = painter->get_vertices()[value_index];
+		unhighlight_point(vertex);
+	}
+	ImGui::PlotLines(label.c_str(), &data[start_index], items_count);
+	if(value_index > -1)
+	{
+		wimgui::vertex& vertex = painter->get_vertices()[value_index];
+		ImGui::Text("vertext number = %d; x = %8.4g; y = %8.4g; z = %8.4g", value_index, vertex.position_x, vertex.position_y, vertex.position_z);
+		glm::vec3 right_wrist = std::get<0>(joints[6]);
+		glm::vec3 head = std::get<0>(joints[0]);
+		float wrist_distance = std::sqrt(std::pow(vertex.position_x - right_wrist.x, 2) + std::pow(vertex.position_y - right_wrist.y, 2) + std::pow(vertex.position_z - right_wrist.z, 2));
+		float head_distance = std::sqrt(std::pow(vertex.position_x - head.x, 2) + std::pow(vertex.position_y - head.y, 2) + std::pow(vertex.position_z - head.z, 2));
+		ImGui::Text("right wrist distance = %8.4g; head distance = %8.4g", wrist_distance, head_distance);
 	}
 }
 
