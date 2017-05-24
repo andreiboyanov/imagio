@@ -30,7 +30,7 @@ private:
 	const float pnoise = 0.01f;
 	const float pinvisible = 0.1f;
 	//const float sigma = 0.0001f;
-	const float sigma = 10.0f;
+	const float sigma = 0.0001f;
 	const int force_lambda = 100;
 	const int em_itterations = 20;
 	const float depth_occlude_tol = 0.03f;
@@ -39,17 +39,19 @@ private:
 	wimgui::vertex* points = nullptr;
 	unsigned int points_count = 0;
 
-	std::vector<std::vector<float>> alfa_nk;
+	std::vector<std::vector<float>> alpha_kn;
+	std::vector<glm::vec3> force_k;
 	std::vector<std::vector<float>> distance;
 	std::vector<float> visibility_k;
 public:
 	joint_tracker(std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> initial_joints) : joints(initial_joints) {};
 	void new_frame(wimgui::vertex* vertices, unsigned int vertices_count);
 	void calculate_visibility_k();
-	void calculate_alfa_nk();
-	std::vector<std::vector<float>>& get_alfa_nk() { return alfa_nk; }
+	void calculate_alpha_kn();
+	void calculate_force_k();
+	std::vector<std::vector<float>>& get_alpha_kn() { return alpha_kn; }
 	std::vector<std::vector<float>>& get_distance() { return distance; }
-
+	std::vector<glm::vec3>& get_force_k() { return force_k; }
 };
 
 }

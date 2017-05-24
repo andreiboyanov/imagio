@@ -57,12 +57,12 @@ void paint_window::center()
 
 void paint_window::view_top()
 {
-	painter->set_view_rotation(radians(90.0f), 0.0f, 0.0f);
+	painter->set_view_rotation(radians(-90.0f), 0.0f, 0.0f);
 }
 
 void paint_window::view_bottom()
 {
-	painter->set_view_rotation(radians(-90.0f), 0.0f, 0.0f);
+	painter->set_view_rotation(radians(90.0f), 0.0f, 0.0f);
 }
 
 void paint_window::view_left()

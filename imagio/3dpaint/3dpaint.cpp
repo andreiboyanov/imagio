@@ -10,7 +10,7 @@ void painter3d::draw_point(float x, float y, float z, ImColor& color, float vert
 	if(vertex_index + sizeof(vertex) > get_max_bytes()) { return; }
 	vertices[vertex_index].position_x = x;
 	vertices[vertex_index].position_y = y;
-	vertices[vertex_index].position_z = z - 0.5f;
+	vertices[vertex_index].position_z = z;
     vertices[vertex_index].color_r = color.Value.x;
     vertices[vertex_index].color_g = color.Value.y;
     vertices[vertex_index].color_b = color.Value.z;
@@ -76,9 +76,15 @@ void painter3d::scale(float wheel)
 
 void painter3d::set_view_rotation(float x, float y, float z)
 {
-	if(x > 0) {}
-	if(y > 0) {}
-	if(z > 0) {}
+	glm::mat4 x_rotation, y_rotation, z_rotation;
+	glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
+	glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
+	glm::vec3 z_axis(0.0f, 0.0f, 1.0f);
+	x_rotation = glm::rotate(x_rotation, x, x_axis);
+	y_rotation = glm::rotate(y_rotation, y, y_axis);
+	z_rotation = glm::rotate(z_rotation, z, z_axis);
+	view_matrix = x_rotation * y_rotation * z_rotation;
+	stop_rotating();
 }
 
 void painter3d::set_view_translation(float x, float y, float z)
@@ -151,7 +157,7 @@ void painter3d::init_view()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	// FIXME: Check if the projection correction is OK
-	projection_matrix = glm::ortho(-4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+	projection_matrix = glm::ortho(-4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f, -2.0f, 2.0f);
 	// model_matrix = glm::rotate(model_matrix, -30.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 

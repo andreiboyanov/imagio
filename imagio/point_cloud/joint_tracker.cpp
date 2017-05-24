@@ -9,7 +9,8 @@ void joint_tracker::new_frame(wimgui::vertex* vertices, unsigned int vertices_co
 	points = vertices;
 	points_count = vertices_count;
 	calculate_visibility_k();
-	calculate_alfa_nk();
+	calculate_alpha_kn();
+	calculate_force_k();
 	// to be continued... 
 }
 
@@ -23,17 +24,17 @@ void joint_tracker::calculate_visibility_k()
 	}
 }
 
-void joint_tracker::calculate_alfa_nk()
+void joint_tracker::calculate_alpha_kn()
 {
-	alfa_nk.clear();
-	alfa_nk.resize(joints.size());
+	alpha_kn.clear();
+	alpha_kn.resize(joints.size());
 	distance.clear();
 	distance.resize(joints.size());
 	std::vector<float> k_sums = std::vector<float>(points_count, 0.0f);
 	for(unsigned int k = 0; k < joints.size(); ++k)
 	{
 		glm::vec3 mk = std::get<0>(joints[k]);
-		alfa_nk[k].resize(points_count);
+		alpha_kn[k].resize(points_count);
 		distance[k].resize(points_count);
 		for(unsigned int n = 0; n < points_count; ++n)
 		{
@@ -43,42 +44,42 @@ void joint_tracker::calculate_alfa_nk()
 			float delta_z = cn.position_z - mk.z;
 
 			distance[k][n] = std::sqrt(delta_x * delta_x + delta_y * delta_y + delta_z * delta_z);
-			alfa_nk[k][n] = delta_x * delta_x + delta_y * delta_y + delta_z * delta_z;
-			alfa_nk[k][n] /= (-2 * sigma);
-			alfa_nk[k][n] = std::exp(alfa_nk[k][n]);
-			alfa_nk[k][n] /= std::pow(2 * pi * sigma, 3.0f / 2.0f);
+			alpha_kn[k][n] = delta_x * delta_x + delta_y * delta_y + delta_z * delta_z;
+			alpha_kn[k][n] /= (-2 * sigma);
+			alpha_kn[k][n] = std::exp(alpha_kn[k][n]);
+			alpha_kn[k][n] /= std::pow(2 * pi * sigma, 3.0f / 2.0f);
 
-			k_sums[n] += alfa_nk[k][n];
+			k_sums[n] += alpha_kn[k][n];
 		}
 	}
 
-	std::vector<unsigned int> k_alfa_max(points_count);
-	std::vector<unsigned int> k_alfa_min(points_count);
+	std::vector<float> alpha_max(points_count, std::numeric_limits<float>::min());
+	std::vector<float> alpha_min(points_count, std::numeric_limits<float>::max());
+	std::vector<unsigned int> k_alpha_max(points_count);
+	std::vector<unsigned int> k_alpha_min(points_count);
 	std::vector<unsigned int> k_distance_max(points_count);
 	std::vector<unsigned int> k_distance_min(points_count);
 	for(unsigned int n = 0; n < points_count; ++n)
 	{
-		k_alfa_max[n] = 0;
-		k_alfa_min[n] = 0;
+		k_alpha_max[n] = 0;
+		k_alpha_min[n] = 0;
 		k_distance_max[n] = 0;
 		k_distance_min[n] = 0;
-		float alfa_max = std::numeric_limits<float>::min();
-		float alfa_min = std::numeric_limits<float>::max();
 		float distance_max = std::numeric_limits<float>::min();
 		float distance_min = std::numeric_limits<float>::max();
 		for(unsigned int k = 0; k < joints.size(); ++k)
 		{
-			alfa_nk[k][n] /= (k_sums[n] + pnoise);
+			alpha_kn[k][n] /= (k_sums[n] + pnoise);
 
-			if(alfa_nk[k][n] > alfa_max)
+			if(alpha_kn[k][n] > alpha_max[n])
 			{
-				alfa_max = alfa_nk[k][n];
-				k_alfa_max[n] = k;
+				alpha_max[n] = alpha_kn[k][n];
+				k_alpha_max[n] = k;
 			}
-			if(alfa_nk[k][n] < alfa_min)
+			if(alpha_kn[k][n] < alpha_min[n])
 			{
-				alfa_min = alfa_nk[k][n];
-				k_alfa_min[n] = k;
+				alpha_min[n] = alpha_kn[k][n];
+				k_alpha_min[n] = k;
 			}
 			if(distance[k][n] > distance_max)
 			{
@@ -96,13 +97,36 @@ void joint_tracker::calculate_alfa_nk()
 	for(unsigned int n = 0; n < points_count; ++n)
 	{
 		wimgui::vertex &cn = points[n];
-		unsigned int k_min = k_distance_min[n];
-		ImColor mk_color = std::get<1>(joints[k_min]);
-		cn.color_r = mk_color.Value.x;
-		cn.color_g = mk_color.Value.y;
-		cn.color_b = mk_color.Value.z;
+		unsigned int k_max = k_alpha_max[n];
+		float color_coefficient = alpha_kn[k_max][n] / alpha_max[n];
+		ImColor mk_color = std::get<1>(joints[k_max]);
+		cn.color_r = color_coefficient * mk_color.Value.x;
+		cn.color_g = color_coefficient * mk_color.Value.y;
+		cn.color_b = color_coefficient * mk_color.Value.z;
 	}
+}
 
+void joint_tracker::calculate_force_k()
+{
+	force_k.clear();
+	force_k.resize(joints.size());
+	for(unsigned int k = 0; k < joints.size(); ++k)
+	{
+		glm::vec3 mk = std::get<0>(joints[k]);
+		std::string mk_name = std::get<2>(joints[k]);
+		glm::vec3 sum_distance(0.0f, 0.0f, 0.0f);
+		for(unsigned int n = 0; n < points_count; ++n)
+		{
+			wimgui::vertex& cn = points[n];
+			sum_distance.x += alpha_kn[k][n] * (cn.position_x - mk.x);
+			sum_distance.y += alpha_kn[k][n] * (cn.position_y - mk.y);
+			sum_distance.z += alpha_kn[k][n] * (cn.position_z - mk.z);
+		}
+		force_k[k].x = force_lambda * sum_distance.x;
+		force_k[k].y = force_lambda * sum_distance.y;
+		force_k[k].z = force_lambda * sum_distance.z;
+		std::cout << "Force for joint " << mk_name << " (" << force_k[k].x << ", " << force_k[k].y << ", " << force_k[k].z << ")" << std::endl;
+	}
 }
 
 }

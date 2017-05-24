@@ -64,6 +64,7 @@ void point_cloud_window::create_points_from_depth_image()
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
 	stream.get_frame_data(current_frame, data);
 
+	int current_point = 0;
 	for(int image_x = 0; image_x < image_width; image_x++)
 	{
 		for(int image_y = 0; image_y < image_height; image_y++)
@@ -73,6 +74,7 @@ void point_cloud_window::create_points_from_depth_image()
 			if(z < 32.0f && z > 0.001f)
 			{
 				calculate_xyz_from_depth(x, y, z);
+				current_point++;
 				painter->draw_point(x, y, z, point_cloud_color, 1.0f);
 			}
 		}
@@ -150,21 +152,21 @@ void point_cloud_window::show_joints()
 void point_cloud_window::draw()
 {
 	paint_window::draw();
-	std::vector<std::vector<float>>& distances = tracker.get_distance();
-	//std::vector<std::vector<float>>& alfa_nk = tracker.get_alfa_nk();
-	if(distances.size() >= joints.size())
+	//std::vector<std::vector<float>>& distances = tracker.get_distance();
+	std::vector<std::vector<float>>& alpha_kn = tracker.get_alpha_kn();
+	if(alpha_kn.size() >= joints.size())
 	{
-		std::vector<unsigned int> joint_indices = { 0, 1, 2, 3, 4, 5, 6 };
+		std::vector<unsigned int> joint_indices = { 0, 1, 2, 5, 6 };
 		for(auto& joint_index : joint_indices)
 		{
 			auto& joint = joints[joint_index];
-			const float *joint_distance = &distances[joint_index][0];
-			//const float *joint_alfa = &alfa_nk[joint_index][0];
-			int points_count = distances[joint_index].size();
-			int start_index = (int)(points_count / 2) - 200;
-			int end_index = (int)(points_count / 2) + 200;
-			plot_graph((std::get<2>(joint) + " distance").c_str(), joint_distance, points_count, start_index, end_index);
-			//ImGui::PlotLines((std::get<2>(joint) + " alfa").c_str(), joint_alfa, points_count);
+			//const float *joint_distance = &distances[joint_index][0];
+			const float *joint_alpha = &alpha_kn[joint_index][0];
+			int points_count = alpha_kn[joint_index].size();
+			//int start_index = (int)(points_count / 2) - 200;
+			//int end_index = (int)(points_count / 2) + 200;
+			plot_graph((std::get<2>(joint) + " alpha").c_str(), joint_alpha, points_count);
+			//ImGui::PlotLines((std::get<2>(joint) + " alpha").c_str(), joint_alpha, points_count);
 		}
 	}
 }
@@ -212,16 +214,6 @@ void point_cloud_window::plot_graph(std::string label, const float* data, const 
 		unhighlight_point(vertex);
 	}
 	ImGui::PlotLines(label.c_str(), &data[start_index], items_count);
-	if(value_index > -1)
-	{
-		wimgui::vertex& vertex = painter->get_vertices()[value_index];
-		ImGui::Text("vertext number = %d; x = %8.4g; y = %8.4g; z = %8.4g", value_index, vertex.position_x, vertex.position_y, vertex.position_z);
-		glm::vec3 right_wrist = std::get<0>(joints[6]);
-		glm::vec3 head = std::get<0>(joints[0]);
-		float wrist_distance = std::sqrt(std::pow(vertex.position_x - right_wrist.x, 2) + std::pow(vertex.position_y - right_wrist.y, 2) + std::pow(vertex.position_z - right_wrist.z, 2));
-		float head_distance = std::sqrt(std::pow(vertex.position_x - head.x, 2) + std::pow(vertex.position_y - head.y, 2) + std::pow(vertex.position_z - head.z, 2));
-		ImGui::Text("right wrist distance = %8.4g; head distance = %8.4g", wrist_distance, head_distance);
-	}
 }
 
 }

@@ -103,6 +103,34 @@ public:
 		{
 			point_cloud->move_forward();
 		}
+		if(ImGui::Button(" Top "))
+		{
+			point_cloud->view_top();
+		}
+        ImGui::SameLine();
+		if(ImGui::Button(" Bottom "))
+		{
+			point_cloud->view_bottom();
+		}
+		if(ImGui::Button(" Left "))
+		{
+			point_cloud->view_left();
+		}
+        ImGui::SameLine();
+		if(ImGui::Button(" Right "))
+		{
+			point_cloud->view_right();
+		}
+		if(ImGui::Button(" Front "))
+		{
+			point_cloud->view_front();
+		}
+        ImGui::SameLine();
+		if(ImGui::Button(" Back "))
+		{
+			point_cloud->view_back();
+		}
+
 		ImGui::Text("Frame %5d / %5d", point_cloud->get_current_frame(), point_cloud->get_frames_count() - 1);
 	}
 
