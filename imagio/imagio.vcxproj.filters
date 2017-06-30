@@ -119,6 +119,9 @@
     <ClInclude Include="point_cloud\joint_tracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="point_cloud\camera_model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imagio.rc">

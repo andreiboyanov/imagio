@@ -120,6 +120,7 @@
     <ClInclude Include="imgui\stb_textedit.h" />
     <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="imgui_opengl3\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="point_cloud\camera_model.h" />
     <ClInclude Include="point_cloud\joint_tracker.h" />
     <ClInclude Include="point_cloud\point_cloud_window.h" />
     <ClInclude Include="resource.h" />

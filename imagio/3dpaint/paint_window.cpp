@@ -43,8 +43,11 @@ void paint_window::draw()
 	painter->draw();
 
 	float mouse_wheel = ImGui::GetIO().MouseWheel;
-	ImGui::Text("%f", mouse_wheel);
-	painter->scale(mouse_wheel);
+	if(mouse_wheel)
+	{
+		ImGui::Text("%f", mouse_wheel);
+		painter->scale(mouse_wheel);
+	}
 	//painter->draw_zero_cross();
 	//painter->draw_axes();
 }

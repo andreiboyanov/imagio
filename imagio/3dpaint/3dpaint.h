@@ -10,6 +10,7 @@
 #define GLM_FORCE_RADIANS
 #pragma warning(push, 0)       
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #pragma warning(pop)

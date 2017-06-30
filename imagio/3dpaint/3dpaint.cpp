@@ -71,7 +71,8 @@ void painter3d::stop_rotating()
 
 void painter3d::scale(float wheel)
 {
-	if(wheel > 1.0f) {}
+	view_matrix = glm::scale(view_matrix, glm::vec3((10 + wheel) / 10));
+	temporary_view_matrix = view_matrix;
 }
 
 void painter3d::set_view_rotation(float x, float y, float z)

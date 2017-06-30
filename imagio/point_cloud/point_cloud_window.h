@@ -14,6 +14,8 @@
 #include "../imgui/imgui.h"
 #include "../point_cloud/joint_tracker.h"
 
+#include "camera_model.h"
+
 namespace imagio
 {
 
@@ -54,11 +56,13 @@ private:
 	skv_pinhole_model pinhole_model;
 	skv_distortion_model distortion_model;
 
+	fisheye_camera* camera;
+
 	float brown_radial_lut_size = 400;
 	float max_rad2_depth = 0.647376332409f;
 	float rad_step2_depth = max_rad2_depth / brown_radial_lut_size;
 	std::map<int, float> k_values;
-	ImColor point_cloud_color = ImColor(0.0f, 0.0f, 0.0f);
+	ImColor point_cloud_color = ImColor(1.0f, 0.0f, 0.5f, 0.5f);
 
 	joint_tracker tracker;
 
@@ -66,11 +70,11 @@ public:
 	point_cloud_window(const char* _title) : paint_window(_title), tracker(joints) {}
 	void open_skv_depth(std::string filename);
 	void create_points_from_depth_image();
-	void calculate_xyz_from_depth(float& x, float &y, float &z);
+	void calculate_xy_from_depth(float z, float* x, float* y);
     void move_forward();
     void move_backward();
     void show_current_frame();
-	void show_joints();
+	void show_joints(bool draw_forces = false);
 	unsigned int get_current_frame() { return current_frame; }
 	unsigned int get_frames_count() { return frames_count; }
 	virtual void point_cloud_window::draw();

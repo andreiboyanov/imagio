@@ -22,10 +22,10 @@ void point_cloud_window::initialize_brown_radial()
 	}
 }
 
-void point_cloud_window::calculate_xyz_from_depth(float& x, float& y, float& z)
+void point_cloud_window::calculate_xy_from_depth(float z, float* x, float* y)
 {
-	float x1 = (x - pinhole_model.cx) / distortion_model.fx;
-	float y1 = (pinhole_model.cy - y) / distortion_model.fy;
+	float x1 = (*x - pinhole_model.cx) / distortion_model.fx;
+	float y1 = (pinhole_model.cy - *y) / distortion_model.fy;
 	float r2 = x1 * x1 + y1 * y1;
 	int k_key = get_k_key(r2);
 	std::map<int, float>::iterator k_value = k_values.lower_bound(k_key);
@@ -33,33 +33,15 @@ void point_cloud_window::calculate_xyz_from_depth(float& x, float& y, float& z)
 		--k_value;
 	float k = (k_value)->second;
 
-	x = z * x1 * k;
-	y = z * y1 * k;
-	z = z;
+	*x = z * x1 * k;
+	*y = z * y1 * k;
 }
 
 void point_cloud_window::create_points_from_depth_image()
 {
-	auto stream = skv_file.get_stream_by_name("depth_0");
-
-	assert(stream.get_type() == skv_stream_type_image);
-	assert(stream.get_image_type() == skv_image_type_int16);
-	if(!(stream.has_pinhole_model() && stream.has_distortion_model()))
-	{
-		std::cout << "Pinhole and/or distortion models missing in the skv file.";
-		std::cout << " They are needed for depth 3d points calculation. " << std::endl;
-		return;
-	}
-
-	std::tuple<uint32_t, uint32_t> depth_resolution = stream.get_resolution();
-	image_width = std::get<0>(depth_resolution);
-	image_height = std::get<1>(depth_resolution);
-	pinhole_model = stream.get_pinhole_model();
-	distortion_model = stream.get_distortion_model();
-	initialize_brown_radial();
-
 	painter->init_scene();
 
+	auto stream = skv_file.get_stream_by_name("depth_0");
 	size_t byte_count = stream.get_frame_byte_count(current_frame);
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
 	stream.get_frame_data(current_frame, data);
@@ -70,16 +52,18 @@ void point_cloud_window::create_points_from_depth_image()
 		for(int image_y = 0; image_y < image_height; image_y++)
 		{
 			int depth_index = image_width * image_y + image_x;
-			float x = (float)image_x, y = (float)image_y, z = (float)data[depth_index] / 1000.0f;
+			float z = (float)data[depth_index] / 1000.0f;
 			if(z < 32.0f && z > 0.001f)
 			{
-				calculate_xyz_from_depth(x, y, z);
+				//calculate_xy_from_depth(z, &x, &y);
+
+				glm::vec3 point;
+				camera->transform2dto3d((float)image_x, (float)image_y, z, &point);
 				current_point++;
-				painter->draw_point(x, y, z, point_cloud_color, 1.0f);
+				painter->draw_point(point, point_cloud_color, 1.0f);
 			}
 		}
 	}
-	tracker.new_frame(painter->get_vertices(), painter->get_vertex_index());
 }
 
 void point_cloud_window::open_skv_depth(std::string filename)
@@ -92,7 +76,26 @@ void point_cloud_window::open_skv_depth(std::string filename)
 		std::tie(vendor_name, camera_model) = skv_file.get_device_info();
 
 		auto stream = skv_file.get_stream_by_name("depth_0");
+		assert(stream.get_type() == skv_stream_type_image);
+		assert(stream.get_image_type() == skv_image_type_int16);
+		if(!(stream.has_pinhole_model() && stream.has_distortion_model()))
+		{
+			std::cout << "Pinhole and/or distortion models missing in the skv file.";
+			std::cout << " They are needed for depth 3d points calculation. " << std::endl;
+			return;
+		}
+
 		frames_count = stream.get_frame_count();
+		std::tuple<uint32_t, uint32_t> depth_resolution = stream.get_resolution();
+		image_width = std::get<0>(depth_resolution);
+		image_height = std::get<1>(depth_resolution);
+		pinhole_model = stream.get_pinhole_model();
+		distortion_model = stream.get_distortion_model();
+		//initialize_brown_radial();
+
+		camera = new fisheye_camera(pinhole_model, distortion_model, image_width, image_height);
+		camera->build_lookup_table();
+
 		show_current_frame();
 	}
 	// FIXME: Move exception catches to the appropriate place
@@ -133,19 +136,27 @@ void point_cloud_window::show_current_frame()
 	if(frames_count > 0)
 	{
 		create_points_from_depth_image();
-		show_joints();
+		//tracker.new_frame(painter->get_vertices(), painter->get_vertex_index());
+		//show_joints(true);
 	}
 }
 
-void point_cloud_window::show_joints()
+void point_cloud_window::show_joints(bool draw_forces)
 {
-	for(auto const &joint : joints)
+	for(unsigned int joint_index = 0; joint_index < joints.size(); ++joint_index)
 	{
+		auto const &joint = joints[joint_index];
 		auto joint_name = std::get<2>(joint);
 		auto joint_position = std::get<0>(joint);
 		auto joint_color = std::get<1>(joint);
-		painter->draw_point(joint_position.x, joint_position.y, joint_position.z,
-							joint_color, 10.0f);
+		painter->draw_point(joint_position, joint_color, 10.0f);
+		if(draw_forces)
+		{
+			auto force = tracker.get_force_k()[joint_index];
+			glm::vec3 vector_end = joint_position + (force / glm::vec3(1000, 1000, 1000));
+			//painter->draw_line(joint_position, vector_end, joint_color, 2.0f);
+			std::cout << "Force for joint " << joint_name << " (" << vector_end.x << ", " << vector_end.y << ", " << vector_end.z << ")" << std::endl;
+		}
 	}
 }
 
@@ -208,7 +219,7 @@ void point_cloud_window::plot_graph(std::string label, const float* data, const 
 		wimgui::vertex& vertex = painter->get_vertices()[value_index];
 		highlight_point(vertex);
 	}
-	else if (value_index > -1)
+	else if(value_index > -1)
 	{
 		wimgui::vertex& vertex = painter->get_vertices()[value_index];
 		unhighlight_point(vertex);
