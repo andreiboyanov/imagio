@@ -48,9 +48,13 @@ const std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> joints = {
 class point_cloud_window : public wimgui::paint_window
 {
 private:
-	softkinetic::skv::file skv_file;
-    unsigned int current_frame = 0;
-	unsigned int frames_count = 0;
+	skv_handle* skv_handle;
+	skv_device_info device_info;
+	uint32_t depth_id;
+	skv_image_stream_info depth_info;
+	uint32_t frames_count;
+
+	unsigned int current_frame = 0;
     int image_width = 320;
     int image_height = 240;
 	skv_pinhole_model pinhole_model;

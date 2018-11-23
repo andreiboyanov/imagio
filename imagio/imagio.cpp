@@ -91,9 +91,7 @@ public:
 	void draw() {
 		if(ImGui::Button("Open point cloud"))
 		{
-			//point_cloud->open_skv_depth("D:\\data\\robert\\frederik\\amazon_box.skv");
-			point_cloud->open_skv_depth("D:\\data\\robert\\frederik\\a4_andrei_00.skv");
-			//point_cloud->open_skv_depth("D:/data/robert/olivier/scenarii/B2.skv");
+			point_cloud->open_skv_depth("c:\\temp\\andrei_Test_1.skv");
         }
 		if(ImGui::Button(" << "))
 		{

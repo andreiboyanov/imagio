@@ -54,7 +54,7 @@ private:
 		    vec4(-delta, +delta, +delta, 1.0),  // bul - 6
 		    vec4(-delta, -delta, +delta, 1.0),  // bbl - 7
 		    vec4(-delta, +delta, -delta, 1.0),  // ful - 8
-		    vec4(-delta, -delta, -delta, 1.0)  // fbl - 9
+		    vec4(-delta, -delta, -delta, 1.0)   // fbl - 9
 		);
 		const vec4 cube_primitive_2[6] = vec4[6](
 		    vec4(-delta, -delta, +delta, 1.0),  // bbl - 1
@@ -62,7 +62,7 @@ private:
 		    vec4(+delta, -delta, +delta, 1.0),  // bbr - 3
 		    vec4(+delta, -delta, -delta, 1.0),  // fbr - 4
 		    vec4(+delta, +delta, -delta, 1.0),  // fur - 5
-		    vec4(-delta, -delta, -delta, 1.0)  // fbl - 6
+		    vec4(-delta, -delta, -delta, 1.0)   // fbl - 6
 		);
 
 		void main()

@@ -41,10 +41,12 @@ void point_cloud_window::create_points_from_depth_image()
 {
 	painter->init_scene();
 
-	auto stream = skv_file.get_stream_by_name("depth_0");
-	size_t byte_count = stream.get_frame_byte_count(current_frame);
+	skv_error_code error_code;
+	size_t byte_count = 0;
+	error_code = skv_get_frame_byte_count(skv_handle, depth_id, current_frame, &byte_count, nullptr);
+	
 	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
-	stream.get_frame_data(current_frame, data);
+	error_code = skv_get_frame_data(skv_handle, depth_id, current_frame, data.data(), nullptr);
 
 	int current_point = 0;
 	for(int image_x = 0; image_x < image_width; image_x++)
@@ -70,27 +72,43 @@ void point_cloud_window::open_skv_depth(std::string filename)
 {
 	try
 	{
-		skv_file = softkinetic::skv::open_file(filename);
+		skv_error_code error_code = skv_open_file(&skv_handle, filename.c_str(), skv_read_only, nullptr);
+		if(error_code)
+		{
+			std::cout << "Could not open the skv file." << std::endl;
+			return;
+		}
 
-		std::string vendor_name, camera_model;
-		std::tie(vendor_name, camera_model) = skv_file.get_device_info();
+		error_code = skv_get_device_info(skv_handle, &device_info, nullptr);
+		error_code = skv_get_stream_id(skv_handle, "depth_0", &depth_id, nullptr);
 
-		auto stream = skv_file.get_stream_by_name("depth_0");
-		assert(stream.get_type() == skv_stream_type_image);
-		assert(stream.get_image_type() == skv_image_type_int16);
-		if(!(stream.has_pinhole_model() && stream.has_distortion_model()))
+		skv_stream_type depth_stream_type;
+		error_code = skv_get_stream_type(skv_handle, depth_id, &depth_stream_type, nullptr);
+		assert(depth_stream_type == skv_stream_type_image);
+
+		error_code = skv_get_image_stream_info(skv_handle, depth_id, &depth_info, nullptr);
+		assert(depth_info.type == skv_image_type_int16);
+
+
+		bool has_pinhole_model = false;
+		error_code = skv_has_pinhole_model(skv_handle, depth_id, &has_pinhole_model, nullptr);
+
+		bool has_distortion_model = false;
+		error_code = skv_has_distortion_model(skv_handle, depth_id, &has_distortion_model, nullptr);
+
+		if(!(has_pinhole_model && has_distortion_model))
 		{
 			std::cout << "Pinhole and/or distortion models missing in the skv file.";
 			std::cout << " They are needed for depth 3d points calculation. " << std::endl;
 			return;
 		}
 
-		frames_count = stream.get_frame_count();
-		std::tuple<uint32_t, uint32_t> depth_resolution = stream.get_resolution();
-		image_width = std::get<0>(depth_resolution);
-		image_height = std::get<1>(depth_resolution);
-		pinhole_model = stream.get_pinhole_model();
-		distortion_model = stream.get_distortion_model();
+		error_code = skv_get_stream_frame_count(skv_handle, depth_id, &frames_count, nullptr);
+		
+		image_width = depth_info.width;
+		image_height = depth_info.height;
+		error_code = skv_get_pinhole_model(skv_handle, depth_id, &pinhole_model, nullptr);
+		error_code = skv_get_distortion_model(skv_handle, depth_id, &distortion_model, nullptr);
 		//initialize_brown_radial();
 
 		camera = new fisheye_camera(pinhole_model, distortion_model, image_width, image_height);
@@ -99,17 +117,9 @@ void point_cloud_window::open_skv_depth(std::string filename)
 		show_current_frame();
 	}
 	// FIXME: Move exception catches to the appropriate place
-	catch(softkinetic::skv::file_error& e)
+	catch(softkinetic::skv::skv_exception& e)
 	{
 		std::cout << "File error: " << e.get_message() << std::endl;
-	}
-	catch(softkinetic::skv::stream_error& e)
-	{
-		std::cout << "Stream error in stream " << e.get_stream_id() << ": " << e.get_message() << std::endl;
-	}
-	catch(softkinetic::skv::custom_buffer_error& e)
-	{
-		std::cout << "Custom buffer error in buffer " << e.get_custom_buffer_name() << ": " << e.get_message() << std::endl;
 	}
 }
 
