@@ -65,7 +65,7 @@ private:
 public:
 	void init_view();
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-	painter3d(wimgui::window* _window, ImTextureID _texture_id) {
+	painter3d(wimgui::window* _window, GLuint _texture_id) {
 		window = _window;
 		texture_id = (GLuint)_texture_id;
 		init_view();
@@ -73,7 +73,7 @@ public:
 	GLuint get_texture_id() { return texture_id;  }
 	void draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
 	void draw_point(Vector3f& poition, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
-	void draw_text(char* text, Vector3f& position, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
+	void draw_text(const char* text, Vector3f& position, ImColor& color, bool translate=true, bool rotate=true, bool scale=true);
 	ImVec2 window_coordinates(float x, float y, float z, bool translate=true, bool rotate=true, bool scale=true);
 	ImVec2 window_coordinates(Vector3f& point, bool translate=true, bool rotate=true, bool scale=true);
 	Vector3f view_coordinates(float x, float y, float z, bool translate=true, bool rotate=true, bool scale=true);
@@ -101,9 +101,9 @@ protected:
 struct point : public object3d
 {
 public:
-	float size;
 	Vector3f position3d;
 	ImVec2 position;
+	float size;
 	ImColor color;
 	point(painter3d* _painter, Vector3f& _position3d, float _size, ImColor _color,
 		bool _translate=true, bool _rotate=true)

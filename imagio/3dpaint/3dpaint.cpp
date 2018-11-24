@@ -34,7 +34,7 @@ void painter3d::draw_line(Vector3f& from, Vector3f& to, ImColor& color, bool tra
 	draw_list->AddLine(from_point, to_point, color);
 }
 
-void painter3d::draw_text(char* text, Vector3f& position, ImColor& color, bool translate, bool rotate, bool scale)
+void painter3d::draw_text(const char* text, Vector3f& position, ImColor& color, bool translate, bool rotate, bool scale)
 {
 	ImGui::SetCursorScreenPos(window_coordinates(position, translate, rotate, scale));
 	ImGui::PushStyleColor(ImGuiCol_Text, color);

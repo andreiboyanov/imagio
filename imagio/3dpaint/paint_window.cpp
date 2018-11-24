@@ -5,7 +5,7 @@ namespace wimgui
 
 paint_window::paint_window(const char* _title) : window(_title)
 {
-	painter = new wimgui::painter3d(this, (ImTextureID)0x99);
+	painter = new wimgui::painter3d(this, (GLuint)0x99);
 	show_title(true);
 	show_border(true);
 	allow_resize(true);
@@ -17,7 +17,7 @@ paint_window::paint_window(const char* _title) : window(_title)
 
 void paint_window::draw()
 {
-	ImTextureID texture_id = (ImTextureID)0x99;
+    //	GLuint texture_id = (GLuint)0x99;
 	// ImGui::Image((ImTextureID)painter->get_texture_id(), get_content_rectangle().GetSize());
 	if (ImGui::IsMouseDragging(1, 1.0f))
 	{
