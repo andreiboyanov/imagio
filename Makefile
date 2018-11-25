@@ -17,14 +17,14 @@ RCEXTRA               =
 DEFINES               =
 INCLUDE_PATH          = -isystem/usr/local/include -isystemimagio/libs/glfw/include \
                         -isystemimagio/libs/gl3w -isystem/usr/include/eigen3 \
-                        -isystemimagio/wimgui
+                        -isystemimagio/wimgui -isystemimagio/libs/glm/dist/include/
 DLL_PATH              =
 DLL_IMPORTS           =
-LIBRARY_PATH          =
+LIBRARY_PATH          = 
 LIBRARIES             = -lglut -lGL -lGLEW -lGLU -lglfw -lX11 -ldl \
 						-lXxf86vm -lXrandr -lpthread -lXi -lm -lrt \
 						-lXcursor -lXinerama -lboost_filesystem -lboost_system \
-						-lskv -ljsoncpp
+						-ljsoncpp
 
 
 ### imagio.exe sources and settings
@@ -41,13 +41,14 @@ imagio_exe_CPP_SRCS   = imagio/imagio.cpp \
 							imagio/wimgui/dock.cpp \
 							imagio/wimgui/workspace.cpp \
 							imagio/3dpaint/3dpaint.cpp \
-							imagio/3dpaint/paint_window.cpp
+							imagio/3dpaint/paint_window.cpp\
+							imagio/point_cloud/point_cloud_window.cpp
 imagio_exe_RC_SRCS    = # imagio/imagio.rc
 imagio_exe_LDFLAGS    = 
 imagio_exe_ARFLAGS    =
 imagio_exe_DLL_PATH   =
 imagio_exe_DLLS       =
-imagio_exe_LIBRARY_PATH =
+imagio_exe_LIBRARY_PATH = $(LIBRARY_PATH)
 imagio_exe_LIBRARIES  = 
 
 imagio_exe_OBJS       = $(imagio_exe_C_SRCS:.c=.c.o) $(imagio_exe_CPP_SRCS:.cpp=.cpp.o)

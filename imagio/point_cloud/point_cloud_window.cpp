@@ -4,125 +4,6 @@
 namespace imagio
 {
 
-int point_cloud_window::get_k_key(float value)
-{
-	int key = int(std::round(value * 1000.0f));
-	return key;
-}
-
-void point_cloud_window::initialize_brown_radial()
-{
-	k_values.clear();
-	for(int i = 0; i < brown_radial_lut_size; i++)
-	{
-		float r2 = i * rad_step2_depth;
-		float pr2 = 1 + r2 * (distortion_model.k1 + r2 * (distortion_model.k2 + r2 * distortion_model.k3));
-		int k_key = get_k_key(r2 * pr2);
-		k_values[k_key] = 1 / pr2;
-	}
-}
-
-void point_cloud_window::calculate_xy_from_depth(float z, float* x, float* y)
-{
-	float x1 = (*x - pinhole_model.cx) / distortion_model.fx;
-	float y1 = (pinhole_model.cy - *y) / distortion_model.fy;
-	float r2 = x1 * x1 + y1 * y1;
-	int k_key = get_k_key(r2);
-	std::map<int, float>::iterator k_value = k_values.lower_bound(k_key);
-	if(k_value != k_values.begin())
-		--k_value;
-	float k = (k_value)->second;
-
-	*x = z * x1 * k;
-	*y = z * y1 * k;
-}
-
-void point_cloud_window::create_points_from_depth_image()
-{
-	painter->init_scene();
-
-	skv_error_code error_code;
-	size_t byte_count = 0;
-	error_code = skv_get_frame_byte_count(skv_handle, depth_id, current_frame, &byte_count, nullptr);
-	
-	std::vector<uint16_t> data(byte_count / sizeof(uint16_t));
-	error_code = skv_get_frame_data(skv_handle, depth_id, current_frame, data.data(), nullptr);
-
-	int current_point = 0;
-	for(int image_x = 0; image_x < image_width; image_x++)
-	{
-		for(int image_y = 0; image_y < image_height; image_y++)
-		{
-			int depth_index = image_width * image_y + image_x;
-			float z = (float)data[depth_index] / 1000.0f;
-			if(z < 32.0f && z > 0.001f)
-			{
-				//calculate_xy_from_depth(z, &x, &y);
-
-				glm::vec3 point;
-				camera->transform2dto3d((float)image_x, (float)image_y, z, &point);
-				current_point++;
-				painter->draw_point(point, point_cloud_color, 1.0f);
-			}
-		}
-	}
-}
-
-void point_cloud_window::open_skv_depth(std::string filename)
-{
-	try
-	{
-		skv_error_code error_code = skv_open_file(&skv_handle, filename.c_str(), skv_read_only, nullptr);
-		if(error_code)
-		{
-			std::cout << "Could not open the skv file." << std::endl;
-			return;
-		}
-
-		error_code = skv_get_device_info(skv_handle, &device_info, nullptr);
-		error_code = skv_get_stream_id(skv_handle, "depth_0", &depth_id, nullptr);
-
-		skv_stream_type depth_stream_type;
-		error_code = skv_get_stream_type(skv_handle, depth_id, &depth_stream_type, nullptr);
-		assert(depth_stream_type == skv_stream_type_image);
-
-		error_code = skv_get_image_stream_info(skv_handle, depth_id, &depth_info, nullptr);
-		assert(depth_info.type == skv_image_type_int16);
-
-
-		bool has_pinhole_model = false;
-		error_code = skv_has_pinhole_model(skv_handle, depth_id, &has_pinhole_model, nullptr);
-
-		bool has_distortion_model = false;
-		error_code = skv_has_distortion_model(skv_handle, depth_id, &has_distortion_model, nullptr);
-
-		if(!(has_pinhole_model && has_distortion_model))
-		{
-			std::cout << "Pinhole and/or distortion models missing in the skv file.";
-			std::cout << " They are needed for depth 3d points calculation. " << std::endl;
-			return;
-		}
-
-		error_code = skv_get_stream_frame_count(skv_handle, depth_id, &frames_count, nullptr);
-		
-		image_width = depth_info.width;
-		image_height = depth_info.height;
-		error_code = skv_get_pinhole_model(skv_handle, depth_id, &pinhole_model, nullptr);
-		error_code = skv_get_distortion_model(skv_handle, depth_id, &distortion_model, nullptr);
-		//initialize_brown_radial();
-
-		camera = new fisheye_camera(pinhole_model, distortion_model, image_width, image_height);
-		camera->build_lookup_table();
-
-		show_current_frame();
-	}
-	// FIXME: Move exception catches to the appropriate place
-	catch(softkinetic::skv::skv_exception& e)
-	{
-		std::cout << "File error: " << e.get_message() << std::endl;
-	}
-}
-
 void point_cloud_window::move_forward()
 {
 	if(current_frame < frames_count - 1)
@@ -145,7 +26,6 @@ void point_cloud_window::show_current_frame()
 {
 	if(frames_count > 0)
 	{
-		create_points_from_depth_image();
 		//tracker.new_frame(painter->get_vertices(), painter->get_vertex_index());
 		//show_joints(true);
 	}
@@ -210,13 +90,13 @@ void point_cloud_window::plot_graph(std::string label, const float* data, const 
 	if(-1 == end_index) end_index = values_count - 1;
 	int items_count = end_index - start_index + 1;
 
-	ImGuiWindow* window = get_imgui_window();
+	ImGuiWindow* imgui_window = get_imgui_window();
 	const ImGuiStyle& style = GImGui->Style;
 	const ImVec2 label_size = ImGui::CalcTextSize(label.c_str(), NULL, true);
 	float graph_size_x = ImGui::CalcItemWidth();
 	float graph_size_y = label_size.y + (style.FramePadding.y * 2);
 
-	const ImRect graph_frame(window->DC.CursorPos, window->DC.CursorPos + ImVec2(graph_size_x, graph_size_y));
+	const ImRect graph_frame(imgui_window->DC.CursorPos, imgui_window->DC.CursorPos + ImVec2(graph_size_x, graph_size_y));
 	const ImRect graph_inner_box(graph_frame.Min + style.FramePadding, graph_frame.Max - style.FramePadding);
 	ImGui::RenderFrame(graph_inner_box.Min, graph_inner_box.Max, ImGui::GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
 

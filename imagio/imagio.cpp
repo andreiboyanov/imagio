@@ -89,10 +89,6 @@ public:
 	}
 
 	void draw() {
-		if(ImGui::Button("Open point cloud"))
-		{
-			point_cloud->open_skv_depth("c:\\temp\\andrei_Test_1.skv");
-        }
 		if(ImGui::Button(" << "))
 		{
 			point_cloud->move_backward();
