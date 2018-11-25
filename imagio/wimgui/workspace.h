@@ -31,6 +31,9 @@ public:
 	void draw_workspace();
 	bool check_undocking(window* _window);
 	bool check_docking(window* _window);
+	virtual void init_draw() {}
+	virtual void finish_draw() {}
+
 };
 
 

@@ -4,6 +4,7 @@
 #define WIMGUI_DOCK_H
 
 #include <list>
+#include <algorithm>
 #include "../imgui/imgui.h"
 #include "window.h"
 #include "workspace.h"

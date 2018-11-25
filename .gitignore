@@ -44,3 +44,4 @@ imgui.ini
 *.db
 *.opendb
 .hg/
+.idea
