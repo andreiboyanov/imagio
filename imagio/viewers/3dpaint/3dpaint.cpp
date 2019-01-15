@@ -108,10 +108,16 @@ void render_3dpaint(const ImDrawList* parent_list, const ImDrawCmd* draw_command
 	gltool::state state; state.save_current_state();
 	state.activate_imgui_defaults();
 
-	ImVec2 viewport_position = ImVec2(canvas.Min.x,
-									  ImGui::GetIO().DisplaySize.y - canvas.Max.y);
-	glViewport((GLsizei)viewport_position.x, (GLsizei)viewport_position.y,
-		(GLsizei)canvas.GetWidth(), (GLsizei)canvas.GetHeight());
+	ImVec2 viewport_position = ImVec2(
+		canvas.Min.x,
+		ImGui::GetIO().DisplaySize.y - canvas.Max.y
+	);
+	glViewport(
+		(GLsizei)viewport_position.x,
+		(GLsizei)viewport_position.y,
+		(GLsizei)canvas.GetWidth(), 
+		(GLsizei)canvas.GetHeight()
+	);
 
 	gltool::program program = *painter->get_program();
 	program.use();
