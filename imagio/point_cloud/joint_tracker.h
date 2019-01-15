@@ -18,7 +18,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "../3dpaint/3dpaint.h"
+#include "../viewers/3d/painter3d.h"
 
 namespace imagio
 {

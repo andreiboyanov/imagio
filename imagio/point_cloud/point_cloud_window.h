@@ -9,7 +9,7 @@
 
 #pragma warning(push, 0)       
 #pragma warning(pop)
-#include "../3dpaint/paint_window.h"
+#include "../viewers/3d/view3d.h"
 #include "../imgui/imgui.h"
 #include "../point_cloud/joint_tracker.h"
 
@@ -42,7 +42,7 @@ const std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> joints = {
 	{{-0.112991482, -0.777440131, 1.60227287},		color_000,		"right_foot"},
 };
 
-class point_cloud_window : public wimgui::paint_window
+class point_cloud_window : public wimgui::view3d
 {
 private:
 	uint32_t frames_count;
@@ -54,7 +54,7 @@ private:
 	joint_tracker tracker;
 
 public:
-	point_cloud_window(const char* _title) : paint_window(_title), tracker(joints) {}
+	point_cloud_window(const char* _title) : view3d(_title), tracker(joints) {}
     void move_forward();
     void move_backward();
     void show_current_frame();

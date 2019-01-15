@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef IMAGIO_GLTOOL_H
 #define IMAGIO_GLTOOL_H
 

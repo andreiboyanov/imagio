@@ -38,8 +38,8 @@ void point_cloud_window::show_joints(bool draw_forces)
 		auto const &joint = joints[joint_index];
 		auto joint_name = std::get<2>(joint);
 		auto joint_position = std::get<0>(joint);
-		auto joint_color = std::get<1>(joint);
-		painter->draw_point(joint_position, joint_color, 10.0f);
+		// auto joint_color = std::get<1>(joint);
+		// painter->draw_point(joint_position, joint_color, 10.0f);
 		if(draw_forces)
 		{
 			auto force = tracker.get_force_k()[joint_index];
@@ -52,7 +52,7 @@ void point_cloud_window::show_joints(bool draw_forces)
 
 void point_cloud_window::draw()
 {
-	paint_window::draw();
+	// view3d::draw();
 	//std::vector<std::vector<float>>& distances = tracker.get_distance();
 	std::vector<std::vector<float>>& alpha_kn = tracker.get_alpha_kn();
 	if(alpha_kn.size() >= joints.size())
@@ -106,13 +106,13 @@ void point_cloud_window::plot_graph(std::string label, const float* data, const 
 		const float t = ImClamp((GImGui->IO.MousePos.x - graph_inner_box.Min.x) / (graph_inner_box.Max.x - graph_inner_box.Min.x), 0.0f, 0.9999f);
 		value_index = start_index + (int)(t * items_count - 1) % items_count;
 
-		wimgui::vertex& vertex = painter->get_vertices()[value_index];
-		highlight_point(vertex);
+		// wimgui::vertex& vertex = painter->get_vertices()[value_index];
+		// highlight_point(vertex);
 	}
 	else if(value_index > -1)
 	{
-		wimgui::vertex& vertex = painter->get_vertices()[value_index];
-		unhighlight_point(vertex);
+		// wimgui::vertex& vertex = painter->get_vertices()[value_index];
+		// unhighlight_point(vertex);
 	}
 	ImGui::PlotLines(label.c_str(), &data[start_index], items_count);
 }

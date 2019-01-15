@@ -40,8 +40,8 @@ imagio_exe_CPP_SRCS   = imagio/imagio.cpp \
 							imagio/wimgui/window.cpp \
 							imagio/wimgui/dock.cpp \
 							imagio/wimgui/workspace.cpp \
-							imagio/viewers/3dpaint/3dpaint.cpp \
-							imagio/viewers/3dpaint/paint_window.cpp\
+							imagio/viewers/3d/painter3d.cpp \
+							imagio/viewers/3d/view3d.cpp\
 							imagio/point_cloud/point_cloud_window.cpp
 imagio_exe_RC_SRCS    = # imagio/imagio.rc
 imagio_exe_LDFLAGS    = 
