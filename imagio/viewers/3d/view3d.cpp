@@ -26,7 +26,10 @@ view3d::view3d(const char* _title) : window(_title)
 
 void view3d::gl_paint()
 {
-
+	for (auto& painter: painters)
+	{
+		painter->gl_paint(*this);
+	}
 }
 
 void view3d::draw()
@@ -171,6 +174,16 @@ void view3d::set_translation(float x, float y, float z)
 	if(x > 0) {}
 	if(y > 0) {}
 	if(z > 0) {}
+}
+
+void view3d::add_painter(painter3d *painter)
+{
+	painters.push_back(painter);
+}
+
+void view3d::remove_painter(painter3d *painter)
+{
+
 }
 
 }

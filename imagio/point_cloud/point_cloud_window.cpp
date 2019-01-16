@@ -52,7 +52,7 @@ void point_cloud_window::show_joints(bool draw_forces)
 
 void point_cloud_window::draw()
 {
-	// view3d::draw();
+	view3d::draw();
 	//std::vector<std::vector<float>>& distances = tracker.get_distance();
 	std::vector<std::vector<float>>& alpha_kn = tracker.get_alpha_kn();
 	if(alpha_kn.size() >= joints.size())

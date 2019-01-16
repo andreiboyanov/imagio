@@ -14,8 +14,12 @@
 
 namespace wimgui {
 
+class painter3d;
+
 class view3d : public window
 {
+private:
+	std::vector<painter3d*> painters;
 protected:
 	ImColor cross_line_color = ImColor(0.5f, 0.5f, 0.5f);
 	ImColor x_axis_color = ImColor(1.0f, 0.0f, 0.0f);
@@ -52,6 +56,8 @@ public:
 	void rotate(float x, float y);
 	void rotate(float x, float y, float z);
 	void draw_zero_cross();
+	void add_painter(painter3d *painter);
+	void remove_painter(painter3d *painter);
 };
 
 }
