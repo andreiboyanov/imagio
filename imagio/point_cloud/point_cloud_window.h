@@ -59,9 +59,15 @@ public:
 	point_cloud_window(const char* _title) : view3d(_title), tracker(joints)
 	{
 		add_painter(&points);
-		for (float x = 0.0f; x < 1000.0f; x += 1.0f)
+		for (float x = 0.0f; x <= 1.0f; x += 0.1f)
 		{
-			points.draw_point((float)x, 0.0f, 0.0f, point_cloud_color, 5.0f);
+			for (float y = 0.0f; y <= 1.0f; y += 0.1f)
+			{
+				for (float z = 0.0f; z <= 1.0f; z += 0.1f)
+				{
+					points.draw_point(x, y, z, point_cloud_color);
+				}
+			}
 		}
 	}
     void move_forward();

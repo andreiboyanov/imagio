@@ -57,13 +57,14 @@ void view3d::draw()
 		stop_rotating();
 	}
 
+	ImGui::GetWindowDrawList()->AddCallback(render_3dpaint, this);
+
 	float mouse_wheel = ImGui::GetIO().MouseWheel;
 	if(mouse_wheel)
 	{
 		ImGui::Text("%f", mouse_wheel);
 		scale(mouse_wheel);
 	}
-	ImGui::GetWindowDrawList()->AddCallback(render_3dpaint, this);
 }
 
 void view3d::center()
