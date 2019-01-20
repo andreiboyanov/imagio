@@ -39,7 +39,7 @@ void view3d::draw()
 		ImGui::Text("Draging");
 		ImVec2 delta = ImGui::GetMouseDragDelta(1, 1.0f);
 		ImGui::Text("(%.2f, %.2f)", delta.x, delta.y);
-		move(delta.x, delta.y);
+		move(delta.x, -delta.y);
 	}
 	if (ImGui::IsMouseReleased(1))
 	{
@@ -105,14 +105,18 @@ void view3d::view_back()
 
 void view3d::init_scene()
 {
-	// FIXME: Check if the projection correction is OK
 	projection_matrix = glm::ortho(-4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f, -2.0f, 2.0f);
 }
 
 void view3d::move(float x, float y)
 {
-	if(x > 0) {}
-	if(y > 0) {}
+	ImRect canvas = get_content_rectangle();
+	glm::vec4 view_port(canvas.Min.x, canvas.Min.y, canvas.Max.x, canvas.Max.y);
+	glm::vec3 projected_translation = (
+		glm::unProject(glm::vec3(x, y, 0.0f), camera_matrix, projection_matrix, view_port) -
+		glm::unProject(glm::vec3(0.0f), camera_matrix, projection_matrix, view_port)
+	);
+	camera_matrix = glm::translate(temp_camera_matrix, projected_translation);
 }
 
 void view3d::move(float x, float y, float z)
@@ -124,13 +128,11 @@ void view3d::move(float x, float y, float z)
 
 void view3d::stop_moving()
 {
+	temp_camera_matrix = camera_matrix;
 }
 
 void view3d::rotate(float x, float y)
 {
-	if(x > 0) {}
-	if(y > 0) {}
-
 	glm::mat4 x_rotation, y_rotation;
 	glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
 	glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
