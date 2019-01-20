@@ -134,7 +134,7 @@ void painter3d::gl_paint(view3d& view)
 	);
 
 	transformation_matrix = view.get_view_matrix() * model_matrix; 
-	program.set_uniform("model_matrix", glm::value_ptr(transformation_matrix));
+	program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
 
 	unsigned int vertices_count = get_vertex_index();
 	unsigned int count = GL_MAX_ELEMENTS_VERTICES;
