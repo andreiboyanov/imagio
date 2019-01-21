@@ -10,7 +10,7 @@
 #pragma warning(push, 0)       
 #pragma warning(pop)
 #include "../viewers/3d/view3d.h"
-#include "../viewers/3d/painter3d.h"
+#include "../viewers/3d/pointcloud_painter.h"
 #include "../imgui/imgui.h"
 #include "../point_cloud/joint_tracker.h"
 
@@ -53,7 +53,7 @@ private:
 	ImColor point_cloud_color = ImColor(1.0f, 0.0f, 0.5f, 0.5f);
 
 	joint_tracker tracker;
-	wimgui::painter3d points;
+	wimgui::pointcloud_painter points;
 
 public:
 	point_cloud_window(const char* _title) : view3d(_title), tracker(joints)
