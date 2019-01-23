@@ -45,7 +45,11 @@ private:
 		
 		void main()
 		{
-		   out_color = fragment_color;
+			vec2 coord = gl_PointCoord - vec2(0.5);
+			if(length(coord) > 0.5) {
+    			discard;
+			}
+			out_color = fragment_color;
 		}
 	)gsls");
 	GLuint program_id;
