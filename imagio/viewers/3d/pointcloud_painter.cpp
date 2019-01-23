@@ -5,7 +5,7 @@
 namespace wimgui
 {
 
-void pointcloud_painter::draw_point(float x, float y, float z, ImColor& color, float vertex_size)
+void pointcloud_painter::draw_point(float x, float y, float z, const ImColor& color, float vertex_size)
 {
 	if(vertex_index + sizeof(vertex) > get_max_bytes()) { return; }
 	vertices[vertex_index].position_x = x;
