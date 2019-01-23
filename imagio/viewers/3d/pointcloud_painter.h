@@ -22,7 +22,7 @@
 #include <GL/gl3w.h>
 
 #include "painter3d.h"
-#include "gltool/gltool.h"
+#include "gltool/gl_pointcloud.h"
 #include "painter3d.h"
 
 
