@@ -65,7 +65,7 @@ public:
 			{
 				for (float z = 0.0f; z <= 1.0f; z += 0.1f)
 				{
-					points.draw_point(x, y, z, color_111);
+					points.draw_point(x, y, z, color_111, 15.0f);
 				}
 			}
 		}

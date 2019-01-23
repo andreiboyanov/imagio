@@ -22,7 +22,6 @@
 #include <GL/gl3w.h>
 
 #include "view3d.h"
-#include "gltool/gltool.h"
 
 
 #undef min
