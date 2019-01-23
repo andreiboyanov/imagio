@@ -63,6 +63,15 @@
     <ClCompile Include="point_cloud\joint_tracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="viewers\3d\painter3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewers\3d\view3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewers\3d\gltool\gltool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -122,6 +131,15 @@
     <ClInclude Include="point_cloud\camera_model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="viewers\3d\painter3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewers\3d\view3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewers\3d\gltool\gltool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imagio.rc">
@@ -133,5 +151,8 @@
     <None Include="3dpaint\gltool\gltool" />
     <None Include="3dpaint\gltool\glsl_shaders\fragment.shader" />
     <None Include="3dpaint\gltool\glsl_shaders\vertex.shader" />
+    <None Include="viewers\3d\gltool\build.sh" />
+    <None Include="viewers\3d\gltool\gltool" />
+    <None Include="imgui.ini" />
   </ItemGroup>
 </Project>

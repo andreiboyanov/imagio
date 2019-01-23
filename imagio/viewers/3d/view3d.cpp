@@ -186,7 +186,7 @@ void view3d::add_painter(painter3d *painter)
 
 void view3d::remove_painter(painter3d *painter)
 {
-
+	if(painter) {}
 }
 
 }
