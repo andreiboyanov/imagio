@@ -21,8 +21,8 @@ private:
 		#version 330 core
 		
 		layout(location=0) in vec3 position;
-		layout(location=1) in vec3 color;
-		layout(location=2) in float size;
+		// layout(location=1) in vec3 color;
+		// layout(location=2) in float size;
 
         out vec4 fragment_color;
 
@@ -31,8 +31,8 @@ private:
 		void main()
 		{
 			gl_Position = view_matrix * vec4(position, 1.0);
-			gl_PointSize = size;
-			fragment_color = vec4(color, 1.0);
+			gl_PointSize = 5.0f;
+			fragment_color = vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	)glsl");
 

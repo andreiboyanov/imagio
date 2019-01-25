@@ -43,17 +43,20 @@ const std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> joints = {
 	{{-0.112991482, -0.777440131, 1.60227287},		color_000,		"right_foot"},
 };
 
+
 class point_cloud_window : public wimgui::view3d
 {
 private:
+
 	uint32_t frames_count;
 
 	unsigned int current_frame = 0;
 	std::map<int, float> k_values;
 	ImColor point_cloud_color = ImColor(1.0f, 0.0f, 0.5f, 0.5f);
-
 	joint_tracker tracker;
 	wimgui::pointcloud_painter points;
+	wimgui::vertex_array_type point_cloud;
+	std::shared_ptr<wimgui::vertex_array_type> point_cloud_pointer;
 
 public:
 	point_cloud_window(const char* _title) : view3d(_title), tracker(joints)
@@ -65,10 +68,12 @@ public:
 			{
 				for (float z = 0.0f; z <= 1.0f; z += 0.1f)
 				{
-					points.draw_point(x, y, z, color_111, 5.0f);
+					point_cloud.push_back({ x, y, z });
 				}
 			}
 		}
+		point_cloud_pointer = std::make_shared<wimgui::vertex_array_type>(point_cloud);
+		points.set_data(point_cloud_pointer);
 	}
     void move_forward();
     void move_backward();
@@ -79,8 +84,6 @@ public:
 	virtual void draw();
 
 protected:
-	void initialize_brown_radial();
-	int get_k_key(float value);
 	void plot_graph(std::string label, const float* data, const unsigned int values_count, int start_index=-1, int end_index=-1);
 	void highlight_point(wimgui::vertex& vertex);
 	void unhighlight_point(wimgui::vertex& vertex);
