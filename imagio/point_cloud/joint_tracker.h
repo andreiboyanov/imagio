@@ -36,7 +36,7 @@ private:
 	const float depth_occlude_tol = 0.03f;
 
 	std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> joints;
-	wimgui::vertex* points = nullptr;
+	// wimgui::vertex* points = nullptr;
 	unsigned int points_count = 0;
 
 	std::vector<std::vector<float>> alpha_kn;
@@ -45,7 +45,7 @@ private:
 	std::vector<float> visibility_k;
 public:
 	joint_tracker(std::vector<std::tuple<glm::vec3, const ImColor&, std::string>> initial_joints) : joints(initial_joints) {};
-	void new_frame(wimgui::vertex* vertices, unsigned int vertices_count);
+	// void new_frame(wimgui::vertex* vertices, unsigned int vertices_count);
 	void calculate_visibility_k();
 	void calculate_alpha_kn();
 	void calculate_force_k();
