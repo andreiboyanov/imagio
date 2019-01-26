@@ -3,7 +3,7 @@
 
 #include "imgui/imgui.h"
 #include "imgui_opengl3/imgui_impl_glfw_gl3.h"
-#include <stdio.h>
+#include <iostream>
 #include <algorithm>
 
 #include <GL/gl3w.h>
@@ -29,14 +29,16 @@ int main(int, char**)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #if __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
 	const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-	GLFWwindow* window = glfwCreateWindow(std::min(1280, mode->width),
-                                          std::min(720, mode->height),
-                                          "Imagio all-rounder", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(
+		std::min(1280, mode->width),
+        std::min(720, mode->height),
+        "Imagio", NULL, NULL
+	);
 	glfwMakeContextCurrent(window);
 	gl3wInit();
 
