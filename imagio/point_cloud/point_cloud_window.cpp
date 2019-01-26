@@ -73,15 +73,15 @@ void point_cloud_window::draw()
 }
 
 
-void point_cloud_window::highlight_point(wimgui::vertex& vertex)
-{
-	vertex.size = 14.0f;
-}
+// void point_cloud_window::highlight_point(wimgui::vertex& vertex)
+// {
+// 	vertex.size = 14.0f;
+// }
 
-void point_cloud_window::unhighlight_point(wimgui::vertex& vertex)
-{
-	vertex.size = 1.0f;
-}
+// void point_cloud_window::unhighlight_point(wimgui::vertex& vertex)
+// {
+// 	vertex.size = 1.0f;
+// }
 
 
 void point_cloud_window::plot_graph(std::string label, const float* data, const unsigned int values_count, int start_index, int end_index)

@@ -41,7 +41,7 @@ void pointcloud_painter::gl_paint(view3d& view)
 		//program.enable_attribute_array(color_attribute);
 		//program.enable_attribute_array(size_attribute);
 		program.set_attribute_float_pointer(
-			position_attribute, 3, sizeof(vertex),
+			position_attribute, 3, sizeof(float),
 			(GLvoid *)0
 		);
 		//program.set_attribute_float_pointer(
@@ -58,16 +58,17 @@ void pointcloud_painter::gl_paint(view3d& view)
 
 		unsigned int vertices_count = vertices->size();
 		unsigned int count = GL_MAX_ELEMENTS_VERTICES;
+		float *float_pointer = &(*vertices)[0].x;
 		glBufferData(
 			GL_ARRAY_BUFFER,
 			vertices_count * sizeof(float) * 3,
-			vertices->data(),
+			float_pointer,
 			GL_STREAM_DRAW
 		);
 		for(unsigned int start = 0; start < vertices_count; start += count)
 		{
 			if(start + count > vertices_count) count = vertices_count - start;
-			glDrawArrays(GL_POINTS, start, count);
+			glDrawArrays(GL_POINTS, start, count * 3);
 		}
 
 		program.disable_attribute_array(position_attribute);

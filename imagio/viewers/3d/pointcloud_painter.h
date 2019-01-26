@@ -30,18 +30,7 @@
 namespace wimgui
 {
 
-typedef std::vector<std::vector<float>> vertex_array_type;
-
-struct vertex
-{
-    float position_x;
-    float position_y;
-    float position_z;
-    float color_r;
-    float color_g;
-    float color_b;
-    float size;
-};
+typedef std::vector<glm::vec3> vertex_array_type;
 
 
 class pointcloud_painter: public painter3d
@@ -60,7 +49,6 @@ public:
 	}
 	void init_painter();
 	unsigned int get_max_vertices() { return MAX_VERTICES; }
-	unsigned int get_max_bytes() { return MAX_VERTICES * sizeof(vertex); }
 	GLuint get_vertex_buffer() { return vertex_buffer; }
 	GLuint get_vertex_array() { return vertex_array; }
 	gltool::program* get_program() { return &program; }
