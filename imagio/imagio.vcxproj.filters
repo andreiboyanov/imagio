@@ -48,19 +48,16 @@
     <ClCompile Include="imgui\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="3dpaint\3dpaint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="3dpaint\paint_window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="3dpaint\gltool\gltool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="point_cloud\point_cloud_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="point_cloud\joint_tracker.cpp">
+    <ClCompile Include="viewers\3d\painter3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewers\3d\view3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewers\3d\pointcloud_painter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,10 +113,22 @@
     <ClInclude Include="point_cloud\point_cloud_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="point_cloud\joint_tracker.h">
+    <ClInclude Include="point_cloud\camera_model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="point_cloud\camera_model.h">
+    <ClInclude Include="viewers\3d\painter3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewers\3d\view3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewers\3d\gltool\gltool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewers\3d\gltool\gl_pointcloud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewers\3d\pointcloud_painter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -133,5 +142,6 @@
     <None Include="3dpaint\gltool\gltool" />
     <None Include="3dpaint\gltool\glsl_shaders\fragment.shader" />
     <None Include="3dpaint\gltool\glsl_shaders\vertex.shader" />
+    <None Include="imgui.ini" />
   </ItemGroup>
 </Project>

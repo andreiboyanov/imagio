@@ -92,9 +92,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="3dpaint\3dpaint.cpp" />
-    <ClCompile Include="3dpaint\paint_window.cpp" />
-    <ClCompile Include="3dpaint\gltool\gltool.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -102,8 +99,10 @@
     <ClCompile Include="libs\gl3w\GL\gl3w.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="imagio.cpp" />
-    <ClCompile Include="point_cloud\joint_tracker.cpp" />
     <ClCompile Include="point_cloud\point_cloud_window.cpp" />
+    <ClCompile Include="viewers\3d\painter3d.cpp" />
+    <ClCompile Include="viewers\3d\pointcloud_painter.cpp" />
+    <ClCompile Include="viewers\3d\view3d.cpp" />
     <ClCompile Include="wimgui\dock.cpp" />
     <ClCompile Include="wimgui\workspace.cpp" />
     <ClCompile Include="wimgui\window.cpp" />
@@ -122,9 +121,13 @@
     <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="imgui_opengl3\imgui_impl_glfw_gl3.h" />
     <ClInclude Include="point_cloud\camera_model.h" />
-    <ClInclude Include="point_cloud\joint_tracker.h" />
     <ClInclude Include="point_cloud\point_cloud_window.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="viewers\3d\gltool\gltool.h" />
+    <ClInclude Include="viewers\3d\gltool\gl_pointcloud.h" />
+    <ClInclude Include="viewers\3d\painter3d.h" />
+    <ClInclude Include="viewers\3d\pointcloud_painter.h" />
+    <ClInclude Include="viewers\3d\view3d.h" />
     <ClInclude Include="wimgui\dock.h" />
     <ClInclude Include="wimgui\workspace.h" />
     <ClInclude Include="wimgui\window.h" />
@@ -137,6 +140,7 @@
     <None Include="3dpaint\gltool\glsl_shaders\vertex.shader" />
     <None Include="3dpaint\gltool\build.sh" />
     <None Include="3dpaint\gltool\gltool" />
+    <None Include="imgui.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

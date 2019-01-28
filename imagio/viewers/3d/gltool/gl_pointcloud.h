@@ -1,7 +1,10 @@
-#ifndef IMAGIO_GLTOOL_H
-#define IMAGIO_GLTOOL_H
+#pragma once
+
+#ifndef IMAGIO_GL_POINTCLOUD_H
+#define IMAGIO_GL_POINTCLOUD_H
 
 #include <GL/gl3w.h>
+#include <GL/gl.h>
 
 #include <stddef.h>
 #include <string>
@@ -18,69 +21,18 @@ private:
 		#version 330 core
 		
 		layout(location=0) in vec3 position;
-		layout(location=1) in vec3 color;
-		layout(location=2) in float size;
+		// layout(location=1) in vec3 color;
+		// layout(location=2) in float size;
 
-        out vec4 geometry_color;
+        out vec4 fragment_color;
 
 		uniform mat4 view_matrix;
 		
 		void main()
 		{
 			gl_Position = view_matrix * vec4(position, 1.0);
-			gl_PointSize = size;
-			geometry_color = vec4(color, 1.0);
-		}
-	)glsl");
-
-	GLuint geometry_shader_id;
-	std::string geometry_shader = std::string(R"glsl(
-		#version 330 core
-		layout (points) in;
-		layout (triangle_strip, max_vertices = 15) out;
-
-		in vec4 geometry_color[];
-		out vec4 fragment_color;
-
-		uniform mat4 view_matrix;
-
-		const float delta = 0.005;
-		const vec4 cube_primitive_1[9] = vec4[9](
-		    vec4(-delta, -delta, -delta, 1.0),  // fbl - 1
-		    vec4(-delta, +delta, -delta, 1.0),  // ful - 2
-		    vec4(+delta, +delta, -delta, 1.0),  // fur - 3
-		    vec4(+delta, +delta, +delta, 1.0),  // bur - 4
-		    vec4(+delta, -delta, +delta, 1.0),  // bbr - 5
-		    vec4(-delta, +delta, +delta, 1.0),  // bul - 6
-		    vec4(-delta, -delta, +delta, 1.0),  // bbl - 7
-		    vec4(-delta, +delta, -delta, 1.0),  // ful - 8
-		    vec4(-delta, -delta, -delta, 1.0)   // fbl - 9
-		);
-		const vec4 cube_primitive_2[6] = vec4[6](
-		    vec4(-delta, -delta, +delta, 1.0),  // bbl - 1
-		    vec4(-delta, -delta, -delta, 1.0),  // fbl - 2
-		    vec4(+delta, -delta, +delta, 1.0),  // bbr - 3
-		    vec4(+delta, -delta, -delta, 1.0),  // fbr - 4
-		    vec4(+delta, +delta, -delta, 1.0),  // fur - 5
-		    vec4(-delta, -delta, -delta, 1.0)   // fbl - 6
-		);
-
-		void main()
-		{    
-			fragment_color = geometry_color[0];
-		    vec4 position = gl_in[0].gl_Position;
-		    for(int i = 0; i < 9; i++)
-		    {
-		        gl_Position = position + view_matrix * cube_primitive_1[i];
-		        EmitVertex();   
-		    }
-		    EndPrimitive();
-		    for(int i = 0; i < 6; i++)
-		    {
-		        gl_Position = position + view_matrix * cube_primitive_2[i];
-		        EmitVertex();   
-		    }
-		    EndPrimitive();
+			gl_PointSize = 5.0f;
+			fragment_color = vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	)glsl");
 
@@ -93,7 +45,11 @@ private:
 		
 		void main()
 		{
-		   out_color = fragment_color;
+			vec2 coord = gl_PointCoord - vec2(0.5);
+			if(length(coord) > 0.5) {
+    			discard;
+			}
+			out_color = fragment_color;
 		}
 	)gsls");
 	GLuint program_id;
@@ -133,19 +89,6 @@ public:
 			printf("%s\n", &error_message[0]);
 		}
 
-		geometry_shader_id = glCreateShader(GL_GEOMETRY_SHADER);
-		const char * geometry_shader_pointer = geometry_shader.c_str();
-		glShaderSource(geometry_shader_id, 1, &geometry_shader_pointer, NULL);
-		glCompileShader(geometry_shader_id);
-		glGetShaderiv(geometry_shader_id, GL_COMPILE_STATUS, &compilation_result);
-		glGetShaderiv(geometry_shader_id, GL_INFO_LOG_LENGTH, &compilation_result_length);
-		if(compilation_result_length > 0)
-		{
-			std::vector<char> error_message(compilation_result_length + 1);
-			glGetShaderInfoLog(geometry_shader_id, compilation_result_length, NULL, &error_message[0]);
-			printf("%s\n", &error_message[0]);
-		}
-
 		fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 		const char * fragment_shader_pointer = fragment_shader.c_str();
 		glShaderSource(fragment_shader_id, 1, &fragment_shader_pointer, NULL);
@@ -161,7 +104,6 @@ public:
 
 		program_id = glCreateProgram();
 		glAttachShader(program_id, vertex_shader_id);
-		glAttachShader(program_id, geometry_shader_id);
 		glAttachShader(program_id, fragment_shader_id);
 		glLinkProgram(program_id);
 
@@ -175,11 +117,9 @@ public:
 		}
 
 		glDetachShader(program_id, vertex_shader_id);
-		glDetachShader(program_id, geometry_shader_id);
 		glDetachShader(program_id, fragment_shader_id);
 
 		glDeleteShader(vertex_shader_id);
-		glDeleteShader(geometry_shader_id);
 		glDeleteShader(fragment_shader_id);
 
 		return program_id;
@@ -298,6 +238,9 @@ public:
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_SCISSOR_TEST);
 		glActiveTexture(GL_TEXTURE0);
+		glEnable(GL_ALPHA);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 };
 
