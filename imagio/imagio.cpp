@@ -225,7 +225,7 @@ void draw_main_menu() {
 			if (ImGui::BeginMenu("Colors"))
 			{
 				for (int i = 0; i < ImGuiCol_COUNT; i++)
-					ImGui::MenuItem(ImGui::GetStyleColName((ImGuiCol)i));
+					ImGui::MenuItem(ImGui::GetStyleColorName((ImGuiCol)i));
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Disabled", false)) // Disabled

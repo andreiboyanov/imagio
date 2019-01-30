@@ -73,7 +73,7 @@ public:
 	inline bool is_moving()
     {
 	    ImGuiWindow* imgui_window = get_imgui_window();
-	    return (GImGui->MovedWindow == imgui_window);
+	    return (GImGui->MovingWindow == imgui_window);
     }
 	bool is_resizing();
 	void draw_vertical_text(const char* text, ImVec2 _position);

@@ -33,10 +33,15 @@ void window::show_title(bool _show) {
 }
 
 void window::show_border(bool _show) {
+	// FIXME: what is the equivalent if ImGuiWindowFlags_ShowBorders in the new API?
 	if (_show)
-		flags |= ImGuiWindowFlags_ShowBorders;
+	{
+		// flags |= ImGuiWindowFlags_ShowBorders;
+	}
 	else
-		flags &= ~ImGuiWindowFlags_ShowBorders;
+	{
+		// flags &= ~ImGuiWindowFlags_ShowBorders;
+	}
 }
 
 void window::allow_resize(bool allow) {
@@ -249,8 +254,8 @@ void window::draw_imgui()
 					ImVec2 mouse_position = GImGui->IO.MousePos;
 					if (!imgui_window->Rect().Contains(mouse_position))
 					{
-						imgui_window->PosFloat.x = mouse_position.x - size.x / 2;
-						imgui_window->PosFloat.y = mouse_position.y - size.y / 2;
+						imgui_window->Pos.x = mouse_position.x - size.x / 2;
+						imgui_window->Pos.y = mouse_position.y - size.y / 2;
 					}
 					set_position(imgui_position.x, imgui_position.y);
 				}
@@ -328,7 +333,7 @@ bool window::is_resizing()
 	const ImGuiID resize_id = imgui_window->GetID("#CHECK");
 	bool hovered, held;
 	ImGui::ButtonBehavior(resize_rectangle, resize_id, &hovered, &held,
-		ImGuiButtonFlags_FlattenChilds);
+		ImGuiButtonFlags_FlattenChildren);
 	return held;
 }
 
@@ -378,7 +383,7 @@ void window::draw_vertical_text(const char *text, ImVec2 _position)
 			ImVec2(glyph->U1, glyph->V1),
 			ImVec2(glyph->U0, glyph->V1),
 			text_color);
-		_position.y -= glyph->XAdvance;
+		_position.y -= glyph->AdvanceX;
 	}
 }
 

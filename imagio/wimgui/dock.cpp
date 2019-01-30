@@ -98,7 +98,7 @@ void docker::draw()
 	ImGui::ButtonBehavior(border,
 		get_imgui_window()->GetID("#RESIZE"),
 		&(border_hovered), &(border_held),
-		ImGuiButtonFlags_FlattenChilds);
+		ImGuiButtonFlags_FlattenChildren);
 
 	if (border_hovered)
 	{
@@ -344,7 +344,7 @@ void dock_vertical_painter::draw_window_collapsed(window* _window)
 	bool clicked = ImGui::ButtonBehavior(rectangle,
 		_window->get_imgui_window()->GetID("#TABTITLE"),
 		&hovered, &held,
-		ImGuiButtonFlags_FlattenChilds);
+		ImGuiButtonFlags_FlattenChildren);
 	if (clicked)
 	{
 		make_space(_window);
@@ -547,7 +547,7 @@ void dock_horizontal_painter::draw_window_collapsed(window* _window)
 	bool clicked = ImGui::ButtonBehavior(rectangle,
 		_window->get_imgui_window()->GetID("#TABTITLE"),
 		&hovered, &held,
-		ImGuiButtonFlags_FlattenChilds);
+		ImGuiButtonFlags_FlattenChildren);
 	if (clicked)
 	{
 		make_space(_window);

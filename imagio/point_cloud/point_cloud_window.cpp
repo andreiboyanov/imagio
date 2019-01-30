@@ -100,20 +100,6 @@ void point_cloud_window::plot_graph(std::string label, const float* data, const 
 	const ImRect graph_inner_box(graph_frame.Min + style.FramePadding, graph_frame.Max - style.FramePadding);
 	ImGui::RenderFrame(graph_inner_box.Min, graph_inner_box.Max, ImGui::GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
 
-	static int value_index = -1;
-	if(ImGui::IsHovered(graph_inner_box, 0))
-	{
-		const float t = ImClamp((GImGui->IO.MousePos.x - graph_inner_box.Min.x) / (graph_inner_box.Max.x - graph_inner_box.Min.x), 0.0f, 0.9999f);
-		value_index = start_index + (int)(t * items_count - 1) % items_count;
-
-		// wimgui::vertex& vertex = painter->get_vertices()[value_index];
-		// highlight_point(vertex);
-	}
-	else if(value_index > -1)
-	{
-		// wimgui::vertex& vertex = painter->get_vertices()[value_index];
-		// unhighlight_point(vertex);
-	}
 	ImGui::PlotLines(label.c_str(), &data[start_index], items_count);
 }
 
