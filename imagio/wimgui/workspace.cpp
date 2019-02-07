@@ -28,6 +28,7 @@ workspace::~workspace() {}
 
 void workspace::add_window(window *_window)
 {
+	_window->set_dockable(false);
 	windows.push_back(_window);
 }
 
@@ -88,7 +89,7 @@ void workspace::draw_workspace()
 	{
 		if (!check_undocking(_window))
 			check_docking(_window);
-		//_window->draw_imgui();
+		_window->draw_imgui();
 	}
 }
 
