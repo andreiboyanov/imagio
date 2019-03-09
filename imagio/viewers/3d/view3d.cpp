@@ -21,7 +21,6 @@ view3d::view3d(const char* _title) : window(_title)
 	show_scrollbar(true);
 	allow_collapse(true);
 	show_menu(false);
-	init_scene();
 }
 
 void view3d::gl_paint()
@@ -34,6 +33,10 @@ void view3d::gl_paint()
 
 void view3d::draw()
 {
+	init_scene();
+
+	ImGui::Text("3d view");
+
 	if (ImGui::IsMouseDragging(1, 1.0f))
 	{
 		ImGui::Text("Draging");
@@ -105,7 +108,12 @@ void view3d::view_back()
 
 void view3d::init_scene()
 {
-	projection_matrix = glm::ortho(-4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f, -2.0f, 2.0f);
+	// projection_matrix = glm::ortho(-4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f, -2.0f, 2.0f);
+	ImRect canvas = get_content_rectangle();
+	float window_ratio = canvas.GetWidth() / canvas.GetHeight();
+	projection_matrix = glm::ortho(
+		-window_ratio, window_ratio, -1.0f, 1.0f, -2.0f, 2.0f
+	);
 }
 
 void view3d::move(float x, float y)
@@ -134,8 +142,8 @@ void view3d::stop_moving()
 void view3d::rotate(float x, float y)
 {
 	glm::mat4 x_rotation, y_rotation;
-	glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
-	glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
+	const glm::vec3 x_axis(1.0f, 0.0f, 0.0f);
+	const glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 	x_rotation = glm::rotate(x_rotation, radians(x), y_axis);
 	y_rotation = glm::rotate(y_rotation, radians(y), x_axis);
 	camera_matrix = temp_camera_matrix * x_rotation * y_rotation;
