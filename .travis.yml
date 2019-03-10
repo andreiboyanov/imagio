@@ -1,2 +1,3 @@
+# Simple initial build config to start testing the travis integration
 before_install:
     - make
