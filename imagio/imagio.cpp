@@ -136,50 +136,26 @@ static std::vector<wimgui::workspace> workspaces =
 	wimgui::workspace("Layout 1"),
 	wimgui::workspace("Layout 2")
 };
-static wimgui::workspace* active_workspace = &workspaces[1];
+static wimgui::workspace* active_workspace = &workspaces[0];
 
-point_cloud_window* window1;
+point_cloud_window *point_cloud_viewer;
 window_two window2("Second window");
 window_three window3("ImGui Metrics");
 window_four window4("Fourth window");
 window_five* window5;
 
-// wimgui::docker dock_left("##DOCK LEFT", wimgui::dock_left);
-// wimgui::docker dock_bottom("##DOCK BOTTOM", wimgui::dock_bottom);
-// wimgui::docker dock_top("##DOCK TOP", wimgui::dock_top);
-// wimgui::docker dock_right("##DOCK RIGHT", wimgui::dock_right);
-// wimgui::docker dock_fill("##DOCK_FILL", wimgui::dock_fill);
-
-// wimgui::docker workspace2_dock_left("##W2_DOCK_LEFT", wimgui::dock_left);
-// wimgui::docker workspace2_dock_top("##W2_DOCK_TOP", wimgui::dock_top);
-// wimgui::docker workspace2_dock_fill("##W2_DOCK_FILL", wimgui::dock_fill);
-
 void init()
 {
-	window1 = new point_cloud_window("Point cloud");
-	window5 = new window_five("Control panel", window1);
-	// workspaces[0].add_dock(&dock_bottom);
-	// workspaces[0].add_dock(&dock_left);
-	// workspaces[0].add_dock(&dock_top);
-	// workspaces[0].add_dock(&dock_right);
-	// workspaces[0].add_dock(&dock_fill);
-
-	workspaces[0].add_window(window1);
+	point_cloud_viewer = new point_cloud_window("Point cloud");
+	window5 = new window_five("Control panel", point_cloud_viewer);
+	workspaces[0].add_window(point_cloud_viewer);
 	workspaces[0].add_window(&window2);
 	workspaces[0].add_window(&window3);
 	workspaces[0].add_window(&window4);
 	workspaces[0].add_window(window5);
 
 	workspaces[1].add_window(window5);
-	workspaces[1].add_window(window1);
-	// workspaces[0].add_window(window1, &dock_top);
-	// workspaces[0].add_window(&window2, &dock_bottom);
-	// workspaces[0].add_window(&window3, &dock_bottom);
-	// workspaces[0].add_window(&window4, &dock_right);
-	// workspaces[0].add_window(window5, &dock_left);
-
-	// workspaces[1].add_window(window5, &workspace2_dock_left);
-	// workspaces[1].add_window(window1, &workspace2_dock_fill);
+	workspaces[1].add_window(point_cloud_viewer);
 
 }
 
@@ -187,7 +163,6 @@ int draw()
 {
 	draw_main_menu();
 	active_workspace->draw_workspace();
-	// ImGui::ShowTestWindow();
 	return 0;
 }
 

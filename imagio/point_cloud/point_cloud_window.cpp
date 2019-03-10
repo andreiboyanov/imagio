@@ -26,8 +26,6 @@ void point_cloud_window::show_current_frame()
 {
 	if(frames_count > 0)
 	{
-		//tracker.new_frame(painter->get_vertices(), painter->get_vertex_index());
-		//show_joints(true);
 	}
 }
 
@@ -35,53 +33,13 @@ void point_cloud_window::show_joints(bool draw_forces)
 {
 	for(unsigned int joint_index = 0; joint_index < joints.size(); ++joint_index)
 	{
-		auto const &joint = joints[joint_index];
-		auto joint_name = std::get<2>(joint);
-		auto joint_position = std::get<0>(joint);
-		// auto joint_color = std::get<1>(joint);
-		// painter->draw_point(joint_position, joint_color, 10.0f);
-		if(draw_forces)
-		{
-			auto force = tracker.get_force_k()[joint_index];
-			glm::vec3 vector_end = joint_position + (force / glm::vec3(1000, 1000, 1000));
-			//painter->draw_line(joint_position, vector_end, joint_color, 2.0f);
-			std::cout << "Force for joint " << joint_name << " (" << vector_end.x << ", " << vector_end.y << ", " << vector_end.z << ")" << std::endl;
-		}
 	}
 }
 
 void point_cloud_window::draw()
 {
 	view3d::draw();
-	//std::vector<std::vector<float>>& distances = tracker.get_distance();
-	std::vector<std::vector<float>>& alpha_kn = tracker.get_alpha_kn();
-	if(alpha_kn.size() >= joints.size())
-	{
-		std::vector<unsigned int> joint_indices = { 0, 1, 2, 5, 6 };
-		for(auto& joint_index : joint_indices)
-		{
-			auto& joint = joints[joint_index];
-			//const float *joint_distance = &distances[joint_index][0];
-			const float *joint_alpha = &alpha_kn[joint_index][0];
-			int points_count = alpha_kn[joint_index].size();
-			//int start_index = (int)(points_count / 2) - 200;
-			//int end_index = (int)(points_count / 2) + 200;
-			plot_graph((std::get<2>(joint) + " alpha").c_str(), joint_alpha, points_count);
-			//ImGui::PlotLines((std::get<2>(joint) + " alpha").c_str(), joint_alpha, points_count);
-		}
-	}
 }
-
-
-// void point_cloud_window::highlight_point(wimgui::vertex& vertex)
-// {
-// 	vertex.size = 14.0f;
-// }
-
-// void point_cloud_window::unhighlight_point(wimgui::vertex& vertex)
-// {
-// 	vertex.size = 1.0f;
-// }
 
 
 void point_cloud_window::plot_graph(std::string label, const float* data, const unsigned int values_count, int start_index, int end_index)

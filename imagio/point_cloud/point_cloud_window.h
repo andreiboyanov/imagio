@@ -85,8 +85,6 @@ public:
 
 protected:
 	void plot_graph(std::string label, const float* data, const unsigned int values_count, int start_index=-1, int end_index=-1);
-	// void highlight_point(wimgui::vertex& vertex);
-	// void unhighlight_point(wimgui::vertex& vertex);
 };
 
 }
