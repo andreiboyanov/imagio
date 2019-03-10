@@ -42,6 +42,12 @@
         "string": "cpp"
     },
     "cSpell.words": [
-        "imgui"
+        "WIMGUI",
+        "g",
+        "gltool",
+        "imagio",
+        "imgui",
+        "lsizei",
+        "luint"
     ]
 }
