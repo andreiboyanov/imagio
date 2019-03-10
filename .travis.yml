@@ -5,7 +5,8 @@ compiler:
 addons:
   apt:
     packages:
-    - g++-8
+    - g++-6
 install:
 - "[ $CXX = g++ ] && export CXX=g++-6 || true"
 script:
+  - make
