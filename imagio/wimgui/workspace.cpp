@@ -16,8 +16,8 @@ workspace::workspace() : background_window(background_window_name)
 
 workspace::workspace(const char* _title) : background_window(_title)
 {
-	ImGuiStyle &style = ImGui::GetStyle();
-	style.WindowRounding = 0.0f;
+	// ImGuiStyle &style = ImGui::GetStyle();
+	// style.WindowRounding = 0.0f;
 }
 
 workspace::~workspace() {}
@@ -28,6 +28,7 @@ workspace::~workspace() {}
 
 void workspace::add_window(window *_window)
 {
+	_window->set_dockable(false);
 	windows.push_back(_window);
 }
 
@@ -36,7 +37,7 @@ void workspace::add_window(window *_window, docker *_dock)
 	windows.push_back(_window);
 	_dock->add_window(_window);
 	// if (std::find(docks.begin(), docks.end(), _dock) == std::end(docks))
-    // FIXME: fidn why std::find is not compiling
+    // FIXME: find why std::find is not compiling
     for(auto current_dock : docks)
 	{
         if(current_dock == _dock) return;
@@ -88,7 +89,7 @@ void workspace::draw_workspace()
 	{
 		if (!check_undocking(_window))
 			check_docking(_window);
-		//_window->draw_imgui();
+		_window->draw_imgui();
 	}
 }
 

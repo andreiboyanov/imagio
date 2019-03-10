@@ -32,10 +32,12 @@ LIBRARIES             = -lglut -lGL -lGLEW -lGLU -lglfw -lX11 -ldl \
 imagio_exe_MODULE     = imagio.exe
 imagio_exe_C_SRCS     = imagio/libs/gl3w/GL/gl3w.c
 imagio_exe_CPP_SRCS   = imagio/imagio.cpp \
-							imagio/imgui_opengl3/imgui_impl_glfw_gl3.cpp \
+							imagio/imgui_opengl3/imgui_impl_glfw.cpp \
+							imagio/imgui_opengl3/imgui_impl_opengl3.cpp \
 							imagio/main.cpp \
 							imagio/imgui/imgui_draw.cpp \
 							imagio/imgui/imgui.cpp \
+							imagio/imgui/imgui_widgets.cpp \
 							imagio/imgui/imgui_demo.cpp \
 							imagio/wimgui/window.cpp \
 							imagio/wimgui/dock.cpp \

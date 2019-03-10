@@ -40,5 +40,14 @@
         "typeinfo": "cpp",
         "utility": "cpp",
         "string": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "WIMGUI",
+        "g",
+        "gltool",
+        "imagio",
+        "imgui",
+        "lsizei",
+        "luint"
+    ]
 }

@@ -89,5 +89,4 @@ void pointcloud_painter::init_painter()
 	// model_matrix = glm::rotate(model_matrix, -30.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
-
 }
