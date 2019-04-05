@@ -39,29 +39,37 @@ def main(argv):
     output_folder = args.output_folder or os.path.dirname(args.input_file)
     mesh_name = os.path.splitext(os.path.basename(args.input_file))[0]
     with open(os.path.join(output_folder, mesh_name + ".h"), "w+") as h_file:
+        position_count = len(vertice_lines)
+        normal_count = len(normal_lines)
+        uv_mapping_count = len(uv_lines)
+        triangle_count = len(face_lines)
+        vertice_count = len(face_lines) * 3
+
         h_file.write("// Auto-generated file with definition of a {} mesh\n".format(mesh_name))
-        h_file.write("// Number of triangles: {}\n".format(len(face_lines)))
-        h_file.write("// Number of vertices: {}\n".format(len(vertice_lines)))
-        h_file.write("// Number of normals: {}\n".format(len(normal_lines)))
-        h_file.write("// Number of texture mappings: {}\n".format(len(uv_lines)))
+        h_file.write("// Positions: {}\n".format(position_count))
+        h_file.write("// Normals: {}\n".format(normal_count))
+        h_file.write("// Texture mappings: {}\n".format(uv_mapping_count))
+        h_file.write("// Triangles: {}\n".format(triangle_count)))
+        h_file.write("// Vertices: {}\n".format(vertice_count))
         h_file.write("\n")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
-        h_file.write("")
+        h_file.write("const int vertice_count;\n")
+        h_file.write("const float positions[{}];\n".format(position_count))
+        h_file.write("const float texture_mapping[{}];\n".format(uv_mapping_count)))
+        h_file.write("const float normals[{}];\n".format(normal_count))
     with open(os.path.join(output_folder, mesh_name + ".c"), "w+") as c_file:
-        pass
+        c_file.write("// Auto-generated file with definition of a {} mesh\n".format(mesh_name))
+        c_file.write('#include "{}.h"\n'.format(mesh_name))
+        c_file.write("\n")
+        c_file.write("const int vertice_count = {}\n".format(vertice_count))
+        c_file.write("const float cubePositions[{}] = \n".format(vertice_count * 3))
+        c_file.write("{\n")
+        for i in range(triangle_count):
+            pass
+        c_file.write("\n")
+        c_file.write("\n")
+        c_file.write("\n")
+        c_file.write("\n")
+        c_file.write("\n")
 
 
 if __name__ == "__main__":
