@@ -23,8 +23,7 @@ DLL_IMPORTS           =
 LIBRARY_PATH          = 
 LIBRARIES             = -lglut -lGL -lGLEW -lGLU -lglfw -lX11 -ldl \
 						-lXxf86vm -lXrandr -lpthread -lXi -lm -lrt \
-						-lXcursor -lXinerama -lboost_filesystem -lboost_system \
-						-ljsoncpp
+						-lXcursor -lXinerama
 
 
 ### imagio.exe sources and settings
