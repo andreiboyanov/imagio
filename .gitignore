@@ -45,3 +45,4 @@ imgui.ini
 *.opendb
 .hg/
 .idea
+.vscode
