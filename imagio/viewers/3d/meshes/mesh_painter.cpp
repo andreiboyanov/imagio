@@ -13,9 +13,9 @@ void mesh_painter::clear()
 void mesh_painter::gl_paint(view3d& view)
 {
 	ImRect canvas = view.get_content_rectangle();
-	gltool::state state;
-	state.save_current_state();
-	state.activate_imgui_defaults();
+	state gl_state;
+	gl_state.save_current_state();
+	gl_state.activate_imgui_defaults();
 
 	ImVec2 viewport_position = ImVec2(
 		canvas.Min.x,
@@ -42,17 +42,16 @@ void mesh_painter::gl_paint(view3d& view)
 	transformation_matrix = view.get_view_matrix() * model_matrix;
 	program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
 
-	float *float_pointer = &position.x;
 	glBufferData(
 		GL_ARRAY_BUFFER,
 		sizeof(float) * 3,
-		float_pointer,
+		imagio::meshes::cube::vertices,
 		GL_STREAM_DRAW
 	);
-	glDrawArrays(GL_POINTS, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::cube::vertice_count);
 
 	program.disable_attribute_array(position_attribute);
-	state.restore();
+	gl_state.restore();
 }
 
 void mesh_painter::init_painter()

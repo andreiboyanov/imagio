@@ -11,6 +11,7 @@
 #pragma warning(pop)
 #include "../viewers/3d/view3d.h"
 #include "../viewers/3d/pointcloud_painter.h"
+#include "../viewers/3d/meshes/mesh_painter.h"
 #include "../imgui/imgui.h"
 #include "../point_cloud/joint_tracker.h"
 
@@ -55,18 +56,20 @@ private:
 	ImColor point_cloud_color = ImColor(1.0f, 0.0f, 0.5f, 0.5f);
 	joint_tracker tracker;
 	wimgui::pointcloud_painter points;
+	wimgui::mesh_painter cube;
 	wimgui::vertex_array_type point_cloud;
 	std::shared_ptr<wimgui::vertex_array_type> point_cloud_pointer;
 
 public:
 	point_cloud_window(const char* _title) : view3d(_title), tracker(joints)
 	{
-		add_painter(&points);
-		for (float x = 0.0f; x <= 1.0f; x += 0.1f)
+		// add_painter(&points);
+		add_painter(&cube);
+		for (float x = -0.5f; x <= 0.5f; x += 0.1f)
 		{
-			for (float y = 0.0f; y <= 1.0f; y += 0.1f)
+			for (float y = -0.5f; y <= 0.5f; y += 0.1f)
 			{
-				for (float z = 0.0f; z <= 1.0f; z += 0.1f)
+				for (float z = -0.5f; z <= 0.5f; z += 0.1f)
 				{
 					point_cloud.push_back({ x, y, z });
 				}

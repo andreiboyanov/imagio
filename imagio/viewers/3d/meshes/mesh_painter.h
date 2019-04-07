@@ -22,8 +22,9 @@
 
 #include <GL/gl3w.h>
 
-#include "painter3d.h"
+#include "../painter3d.h"
 #include "gl_mesh.h"
+#include  "cube.h"
 
 
 namespace wimgui
