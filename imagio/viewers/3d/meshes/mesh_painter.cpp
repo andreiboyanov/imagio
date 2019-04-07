@@ -30,29 +30,15 @@ void mesh_painter::gl_paint(view3d& view)
 
 	program.use();
 	glBindVertexArray(get_vertex_array());
-	glBindBuffer(GL_ARRAY_BUFFER, get_vertex_buffer());
-
-	GLuint position_attribute = program.get_attribute_location("position");
-	program.enable_attribute_array(position_attribute);
-	program.set_attribute_float_pointer(
-		position_attribute, 3, sizeof(float),
-		(GLvoid *)0
-	);
-
 	transformation_matrix = view.get_view_matrix() * model_matrix;
 	program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
 
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		sizeof(float) * 3,
-		imagio::meshes::cube::vertices,
-		GL_STREAM_DRAW
-	);
 	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::cube::vertice_count);
+	glBindVertexArray(0);
 
-	program.disable_attribute_array(position_attribute);
 	gl_state.restore();
 }
+
 
 void mesh_painter::init_painter()
 {
@@ -61,6 +47,19 @@ void mesh_painter::init_painter()
 	glBindVertexArray(vertex_array);
 	glGenBuffers(1, &vertex_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		sizeof(float) * imagio::meshes::cube::vertice_count * 3,
+		imagio::meshes::cube::vertices,
+		GL_STREAM_DRAW
+	);
+
+	GLuint position_attribute = program.get_attribute_location("position");
+	program.set_attribute_float_pointer(position_attribute);
+	program.enable_attribute_array(position_attribute);
+
+	glBindVertexArray(0);
+
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	// model_matrix = glm::rotate(model_matrix, -30.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 }

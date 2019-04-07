@@ -63,7 +63,7 @@ private:
 public:
 	point_cloud_window(const char* _title) : view3d(_title), tracker(joints)
 	{
-		// add_painter(&points);
+		add_painter(&points);
 		add_painter(&cube);
 		for (float x = -0.5f; x <= 0.5f; x += 0.1f)
 		{

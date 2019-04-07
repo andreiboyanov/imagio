@@ -27,8 +27,9 @@ private:
 		void main()
 		{
 			gl_Position = view_matrix * vec4(position, 1.0);
+			// gl_Position = vec4(position, 1.0);
 			gl_PointSize = 5.0f;
-			fragment_color = vec4(1.0, 1.0, 1.0, 1.0);
+			fragment_color = vec4(0.0, 1.0, 1.0, 1.0);
 		}
 	)glsl");
 
@@ -41,10 +42,10 @@ private:
 		
 		void main()
 		{
-			vec2 coord = gl_PointCoord - vec2(0.5);
-			if(length(coord) > 0.5) {
-    			discard;
-			}
+			// vec2 coord = gl_PointCoord - vec2(0.5);
+			// if(length(coord) > 0.5) {
+    		// 	discard;
+			// }
 			out_color = fragment_color;
 		}
 	)gsls");
