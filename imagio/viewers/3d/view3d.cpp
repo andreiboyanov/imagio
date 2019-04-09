@@ -114,6 +114,7 @@ void view3d::init_scene()
 	projection_matrix = glm::ortho(
 		-window_ratio, window_ratio, -1.0f, 1.0f, -2.0f, 2.0f
 	);
+	// projection_matrix = glm::perspective(45.0f, window_ratio, 1.0f, -2.0f);
 }
 
 void view3d::move(float x, float y)

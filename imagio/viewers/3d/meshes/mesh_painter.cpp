@@ -43,6 +43,7 @@ void mesh_painter::gl_paint(view3d& view)
 void mesh_painter::init_painter()
 {
 	program.compile(); program.use();
+
 	glGenVertexArrays(1, &vertex_array);
 	glBindVertexArray(vertex_array);
 	glGenBuffers(1, &vertex_buffer);
@@ -51,17 +52,30 @@ void mesh_painter::init_painter()
 		GL_ARRAY_BUFFER,
 		sizeof(float) * imagio::meshes::cube::vertice_count * 3,
 		imagio::meshes::cube::vertices,
-		GL_STREAM_DRAW
+		GL_STATIC_DRAW
 	);
-
 	GLuint position_attribute = program.get_attribute_location("position");
-	program.set_attribute_float_pointer(position_attribute);
+	program.set_attribute_float_pointer(position_attribute, 3);
 	program.enable_attribute_array(position_attribute);
+
+	glGenVertexArrays(1, &normal_array);
+	glBindVertexArray(normal_array);
+	glGenBuffers(1, &normal_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		sizeof(float) * imagio::meshes::cube::vertice_count * 3,
+		imagio::meshes::cube::normals,
+		GL_STATIC_DRAW
+	);
+	GLuint normal_attribute = program.get_attribute_location("normal");
+	program.set_attribute_float_pointer(normal_attribute, 3);
+	program.enable_attribute_array(normal_attribute);
 
 	glBindVertexArray(0);
 
 	glEnable(GL_PROGRAM_POINT_SIZE);
-	// model_matrix = glm::rotate(model_matrix, -30.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	model_matrix = glm::scale(model_matrix, glm::vec3(0.3f));
 }
 
 }

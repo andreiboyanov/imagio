@@ -17,19 +17,23 @@ class mesh_program
 {
 private:
 	GLuint vertex_shader_id;
+	
 	std::string vertex_shader = std::string(R"glsl(
 		#version 330 core
 		
 		layout(location=0) in vec3 position;
+		layout(location=1) in vec3 normal;
         out vec4 fragment_color;
+        out vec3 fragment_position;
+        out vec3 fragment_normal;
 		uniform mat4 view_matrix;
 
 		void main()
 		{
 			gl_Position = view_matrix * vec4(position, 1.0);
-			// gl_Position = vec4(position, 1.0);
-			gl_PointSize = 5.0f;
 			fragment_color = vec4(0.0, 1.0, 1.0, 1.0);
+			fragment_position = position;
+			fragment_normal = normal;
 		}
 	)glsl");
 
@@ -38,15 +42,33 @@ private:
 		#version 330 core
 
 		in vec4 fragment_color;
+		in vec3 fragment_position;
+		in vec3 fragment_normal;
+
+		uniform mat4 view_matrix;
+
 		out vec4 out_color;
-		
+
+		uniform struct Light {
+			vec3 position;
+			vec3 color;
+		};
+
+
 		void main()
 		{
-			// vec2 coord = gl_PointCoord - vec2(0.5);
-			// if(length(coord) > 0.5) {
-    		// 	discard;
-			// }
-			out_color = fragment_color;
+			vec4 p = vec4(0.0, 0.0, 0.0, 1.0);
+			Light light = Light(vec3(p.x, p.y, p.z), vec3(1.0, 1.0, 1.0));
+			float ambient_strength = 0.5;
+
+			vec3 ambient = ambient_strength * light.color;
+
+			vec3 normal = normalize(fragment_normal);
+			vec3 light_direction = normalize(light.position - fragment_position);
+			vec3 diffuse = max(dot(normal, light_direction), 0) * light.color;
+
+			// out_color = vec4((ambient + diffuse) * vec3(fragment_color), fragment_color[3]);
+			out_color = vec4(fragment_normal, 1.0);
 		}
 	)gsls");
 	GLuint program_id;

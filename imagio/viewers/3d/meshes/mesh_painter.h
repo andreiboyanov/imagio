@@ -38,6 +38,8 @@ class mesh_painter: public painter3d
 private:
 	GLuint vertex_buffer;
 	GLuint vertex_array;
+	GLuint normal_buffer;
+	GLuint normal_array;
 	mesh_program program;
 
 public:
