@@ -17,7 +17,8 @@ RCEXTRA               =
 DEFINES               =
 INCLUDE_PATH          = -isystem/usr/local/include -isystemimagio/libs/glfw/include \
                         -isystemimagio/libs/gl3w -isystem/usr/include/eigen3 \
-                        -isystemimagio/wimgui -isystemimagio/libs/glm/dist/include/
+                        -isystemimagio/wimgui -isystemimagio/libs/glm/dist/include \
+						-isystemimagio
 DLL_PATH              =
 DLL_IMPORTS           =
 LIBRARY_PATH          = 
@@ -44,7 +45,7 @@ imagio_exe_CPP_SRCS   = imagio/imagio.cpp \
 							imagio/viewers/3d/painter3d.cpp \
 							imagio/viewers/3d/pointcloud_painter.cpp \
 							imagio/viewers/3d/meshes/mesh_painter.cpp \
-							imagio/viewers/3d/view3d.cpp\
+							imagio/viewers/3d/view3d.cpp \
 							imagio/point_cloud/point_cloud_window.cpp
 imagio_exe_RC_SRCS    = # imagio/imagio.rc
 imagio_exe_LDFLAGS    = 
@@ -54,8 +55,7 @@ imagio_exe_DLLS       =
 imagio_exe_LIBRARY_PATH = $(LIBRARY_PATH)
 imagio_exe_LIBRARIES  = 
 
-imagio_exe_OBJS       = $(imagio_exe_C_SRCS:.c=.c.o) $(imagio_exe_CPP_SRCS:.cpp=.cpp.o)
-
+imagio_exe_OBJS       = $(imagio_exe_C_SRCS:.c=.o) $(imagio_exe_CPP_SRCS:.cpp=.o)
 
 
 ### Global source lists
@@ -71,11 +71,17 @@ CC = gcc
 CXX = g++
 RC = wrc
 AR = ar
+DEFINCL = $(INCLUDE_PATH) $(DEFINES) $(OPTIONS)
 
 
 ### Generic targets
 
 all: $(SUBDIRS) $(DLLS:%=%.so) $(LIBS) $(EXES)
+
+DEPFILES := $(patsubst %.cpp,%.d,$(CPP_SRCS))
+-include $(DEPFILES)
+%.o: %.cpp Makefile
+	@$(CXX) $(CXXFLAGS) $(CPPEXTRA) $(DEFINCL) -MMD -MP -c $< -o $@
 
 ### Build rules
 
@@ -84,15 +90,13 @@ all: $(SUBDIRS) $(DLLS:%=%.so) $(LIBS) $(EXES)
 $(SUBDIRS): dummy
 	@cd $@ && $(MAKE)
 
-DEFINCL = $(INCLUDE_PATH) $(DEFINES) $(OPTIONS)
-
 imgui%.cpp.o: imgui%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(CPPEXTRA) $(CPPEXTRA_IMGUI) $(DEFINCL) $<
 
-%.cpp.o: %.cpp
+%.o: %.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(CPPEXTRA) $(DEFINCL) $<
 
-%.c.o: %.c
+%.o: %.c
 	$(CC) -o $@ -c $(CFLAGS) $(CEXTRA) $(DEFINCL) $<
 
 .rc.res:
@@ -104,7 +108,7 @@ CLEAN_FILES     = y.tab.c y.tab.h lex.yy.c core *.orig *.rej \
                   \\\#*\\\# *~ *% .\\\#*
 
 clean:: $(SUBDIRS:%=%/__clean__) $(EXTRASUBDIRS:%=%/__clean__)
-	$(RM) $(CLEAN_FILES) $(RC_SRCS:.rc=.res) $(C_SRCS:.c=.c.o) $(CPP_SRCS:.cpp=.cpp.o)
+	$(RM) ./.depend $(CLEAN_FILES) $(RC_SRCS:.rc=.res) $(C_SRCS:.c=.o) $(CPP_SRCS:.cpp=.o)
 	$(RM) $(DLLS:%=%.so) $(LIBS) $(EXES) $(EXES:%=%.so)
 
 $(SUBDIRS:%=%/__clean__): dummy
