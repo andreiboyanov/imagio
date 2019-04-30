@@ -6,10 +6,10 @@
 #include <stddef.h>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "../imgui/imgui.h"
-#include "../imgui/imgui_internal.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 
-#include "../wimgui/window.h"
+#include "wimgui/window.h"
 #include "painter3d.h"
 
 namespace wimgui {

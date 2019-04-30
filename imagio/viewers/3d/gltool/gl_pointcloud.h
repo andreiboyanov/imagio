@@ -65,7 +65,7 @@ public:
 		vertex_shader = new_vertex_shader;
 	}
 
-	std::string get_framgent_shader_code() { return fragment_shader; }
+	std::string get_fragment_shader_code() { return fragment_shader; }
 	void set_fragment_shader_code(const char * new_fragment_shader)
 	{
 		fragment_shader = new_fragment_shader;
