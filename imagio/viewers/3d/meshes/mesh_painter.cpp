@@ -33,7 +33,7 @@ void mesh_painter::gl_paint(view3d& view)
 	transformation_matrix = view.get_view_matrix() * model_matrix;
 	program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
 
-	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::cube::vertice_count);
+	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::juan2_01::vertice_count * 3);
 	glBindVertexArray(0);
 
 	gl_state.restore();
@@ -50,22 +50,20 @@ void mesh_painter::init_painter()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		sizeof(float) * imagio::meshes::cube::vertice_count * 3,
-		imagio::meshes::cube::vertices,
+		sizeof(float) * imagio::meshes::juan2_01::vertice_count * 3,
+		imagio::meshes::juan2_01::vertices,
 		GL_STATIC_DRAW
 	);
 	GLuint position_attribute = program.get_attribute_location("position");
 	program.set_attribute_float_pointer(position_attribute, 3);
 	program.enable_attribute_array(position_attribute);
 
-	glGenVertexArrays(1, &normal_array);
-	glBindVertexArray(normal_array);
 	glGenBuffers(1, &normal_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		sizeof(float) * imagio::meshes::cube::vertice_count * 3,
-		imagio::meshes::cube::normals,
+		sizeof(float) * imagio::meshes::juan2_01::vertice_count * 3,
+		imagio::meshes::juan2_01::normals,
 		GL_STATIC_DRAW
 	);
 	GLuint normal_attribute = program.get_attribute_location("normal");
@@ -75,6 +73,10 @@ void mesh_painter::init_painter()
 	glBindVertexArray(0);
 
 	glEnable(GL_PROGRAM_POINT_SIZE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CCW);
+	glCullFace(GL_BACK);
 	model_matrix = glm::scale(model_matrix, glm::vec3(0.3f));
 }
 

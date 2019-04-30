@@ -24,7 +24,7 @@
 
 #include "../painter3d.h"
 #include "gl_mesh.h"
-#include  "cube.h"
+#include  "juan2_01.h"
 
 
 namespace wimgui
@@ -39,7 +39,6 @@ private:
 	GLuint vertex_buffer;
 	GLuint vertex_array;
 	GLuint normal_buffer;
-	GLuint normal_array;
 	mesh_program program;
 
 public:

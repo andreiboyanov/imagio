@@ -23,17 +23,19 @@ private:
 		
 		layout(location=0) in vec3 position;
 		layout(location=1) in vec3 normal;
+
         out vec4 fragment_color;
         out vec3 fragment_position;
         out vec3 fragment_normal;
+
 		uniform mat4 view_matrix;
 
 		void main()
 		{
 			gl_Position = view_matrix * vec4(position, 1.0);
-			fragment_color = vec4(0.0, 1.0, 1.0, 1.0);
-			fragment_position = position;
-			fragment_normal = normal;
+			fragment_color = vec4(0.3, 0.3, 0.3, 1.0);
+			fragment_position = vec3(gl_Position);
+			fragment_normal = vec3(view_matrix * vec4(normal, 1.0));
 		}
 	)glsl");
 
@@ -57,18 +59,21 @@ private:
 
 		void main()
 		{
-			vec4 p = vec4(0.0, 0.0, 0.0, 1.0);
-			Light light = Light(vec3(p.x, p.y, p.z), vec3(1.0, 1.0, 1.0));
+			if (gl_FrontFacing == false) {
+				return;
+			}
+			Light light = Light(vec3(0.0, 0.0, -2.0), vec3(1.0, 1.0, 1.0));
 			float ambient_strength = 0.5;
 
 			vec3 ambient = ambient_strength * light.color;
 
 			vec3 normal = normalize(fragment_normal);
 			vec3 light_direction = normalize(light.position - fragment_position);
-			vec3 diffuse = max(dot(normal, light_direction), 0) * light.color;
+			float diff = max(dot(normal, light_direction), 0);
+			vec3 diffuse = diff * light.color;
 
-			// out_color = vec4((ambient + diffuse) * vec3(fragment_color), fragment_color[3]);
-			out_color = vec4(fragment_normal, 1.0);
+			out_color = vec4((ambient + diffuse) * vec3(fragment_color), fragment_color[3]);
+			// out_color = vec4(diffuse * vec3(fragment_color), fragment_color[3]);
 		}
 	)gsls");
 	GLuint program_id;
@@ -154,12 +159,12 @@ public:
 		return glGetAttribLocation(program_id, attribute_name);
 	}
 
-	void set_attribute_float_pointer(const char* attribute_name, int size=3, GLsizei stride = 0, const GLvoid* offset = 0)
+	void set_attribute_float_pointer(const char* attribute_name, int size=3, GLsizei stride=0, const GLvoid* offset=0)
 	{
 		set_attribute_float_pointer(get_attribute_location(attribute_name), size, stride, offset);
 	}
 
-	void set_attribute_float_pointer(GLuint attribute_position, int size=3, GLsizei stride = 0, const GLvoid* offset = 0)
+	void set_attribute_float_pointer(GLuint attribute_position, int size=3, GLsizei stride=0, const GLvoid* offset=0)
 	{
 		glVertexAttribPointer(attribute_position, size, GL_FLOAT, GL_FALSE, stride, offset);
 	}
