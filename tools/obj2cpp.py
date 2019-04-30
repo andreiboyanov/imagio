@@ -95,7 +95,7 @@ def main(argv):
         h_file.write("{\n")
         h_file.write("namespace meshes\n")
         h_file.write("{\n")
-        h_file.write("namespace cube\n")
+        h_file.write("namespace {}\n".format(mesh_name))
         h_file.write("{\n")
         h_file.write("const int vertice_count = {};\n".format(vertice_count))
         h_file.write("const float vertices[{}] = \n".format(vertice_count * 3))
