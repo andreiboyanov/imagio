@@ -13,7 +13,7 @@ void mesh_painter::clear()
 void mesh_painter::gl_paint(view3d& view)
 {
 	ImRect canvas = view.get_content_rectangle();
-	state gl_state;
+	gl_program::state gl_state;
 	gl_state.save_current_state();
 	gl_state.activate_imgui_defaults();
 
