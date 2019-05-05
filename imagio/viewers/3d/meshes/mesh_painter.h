@@ -42,18 +42,17 @@ private:
 	mesh_program program;
 
 public:
-	mesh_painter()
+	mesh_painter() 
 	{
 		init_painter();
 	}
-	// FIXME: Move the repeated code to the parent class
-	void init_painter();
 	GLuint get_vertex_buffer() { return vertex_buffer; }
 	GLuint get_vertex_array() { return vertex_array; }
 	mesh_program* get_program() { return &program; }
 	virtual void clear() override;
 	virtual void gl_paint(view3d& view) override;
 	virtual void draw() override {};
+	void init_painter();
 };
 
 }

@@ -22,6 +22,7 @@
 #include <GL/gl3w.h>
 
 #include "view3d.h"
+#include "gltool/gl_program.h"
 
 
 #undef min
@@ -38,12 +39,16 @@ class view3d;
 class painter3d
 {
 protected:
+	wimgui::gl_program::gl_program program;
 	glm::mat4 temp_model_matrix, model_matrix, transformation_matrix;
 
 	void stop_rotating();
 	void stop_moving();
 
 public:
+	painter3d()
+	{
+	}
 	void move(float x, float y);
 	void move(float x, float y, float z);
 	void scale(float wheel);
@@ -54,6 +59,7 @@ public:
 	virtual void clear() = 0;
 	virtual void draw() = 0;
 	virtual void gl_paint(view3d& view) = 0;
+	wimgui::gl_program::gl_program* get_program() { return &program; }
 };
 
 }
