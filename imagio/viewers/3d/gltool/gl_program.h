@@ -46,7 +46,7 @@ public:
 				void main()
 				{
 					gl_Position = view_matrix * vec4(position, 1.0);
-					fragment_color = vec4(0.3, 0.3, 0.3, 1.0);
+					fragment_color = vec4(1.0, 0.0, 0.0, 1.0);
 					fragment_position = vec3(gl_Position);
 					fragment_normal = vec3(view_matrix * vec4(normal, 1.0));
 				}
