@@ -35,9 +35,10 @@ typedef std::vector<glm::vec3> vertex_array_type;
 class gizmo_painter: public painter3d
 {
 private:
-	GLuint line_buffer;
 	GLuint line_array;
+	GLuint line_buffer;
 	GLuint line_normal_buffer;
+	GLuint line_color_buffer;
 	const int line_count = 3;
 	const int vertices_per_line = 2;
 	const float lines[18] = 
@@ -58,6 +59,23 @@ private:
 		0.0, -1.0, 0.0,
 		1.0,  0.0, 0.0,
 	};
+	const float line_colors[24] = 
+	{
+		1.0, 0.0, 0.0, 1.0,
+		1.0, 0.0, 0.0, 1.0,
+		0.0, 1.0, 0.0, 1.0,
+		0.0, 1.0, 0.0, 1.0,
+		0.0, 0.0, 1.0, 1.0,
+		0.0, 0.0, 1.0, 1.0,
+	};
+	void bind_mesh_data(
+		gl_program::gl_program& program,
+		int vertice_count,
+		GLuint* vertex_buffer_ptr,
+		float* vertices_ptr,
+		GLuint* normal_buffer_ptr,
+		float* normals_ptr
+	);
 
 
 public:

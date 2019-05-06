@@ -39,7 +39,8 @@ class view3d;
 class painter3d
 {
 protected:
-	wimgui::gl_program::gl_program program;
+	wimgui::gl_program::gl_program lines_program;
+	wimgui::gl_program::gl_program cones_program;
 	glm::mat4 temp_model_matrix, model_matrix, transformation_matrix;
 
 	void stop_rotating();
@@ -59,7 +60,6 @@ public:
 	virtual void clear() = 0;
 	virtual void draw() = 0;
 	virtual void gl_paint(view3d& view) = 0;
-	wimgui::gl_program::gl_program* get_program() { return &program; }
 };
 
 }
