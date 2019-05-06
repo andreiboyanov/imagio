@@ -94,16 +94,34 @@ public:
 
 	GLuint get_id() { return program_id; }
 
+	std::string load_shader(std::string& path)
+	{
+		std::ifstream input_stream(path);
+		std::string result(
+			(std::istreambuf_iterator<char>(input_stream)),
+            std::istreambuf_iterator<char>()
+		);
+		return result;
+	}
+
 	std::string get_vertex_shader_code() { return vertex_shader; }
 	void set_vertex_shader_code(const std::string& new_vertex_shader)
 	{
 		vertex_shader = new_vertex_shader;
+	}
+	void load_vertex_shader(std::string& path)
+	{
+		vertex_shader = load_shader(path);
 	}
 
 	std::string get_fragment_shader_code() { return fragment_shader; }
 	void set_fragment_shader_code(const std::string& new_fragment_shader)
 	{
 		fragment_shader = new_fragment_shader;
+	}
+	void load_fragment_shader(std::string& path)
+	{
+		vertex_shader = load_shader(path);
 	}
 
 	GLuint compile()
