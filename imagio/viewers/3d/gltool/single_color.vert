@@ -2,13 +2,13 @@
 
 layout(location=0) in vec3 position;
 layout(location=1) in vec3 normal;
-layout(location=2) in vec4 color;
 
 out vec4 fragment_color;
 out vec3 fragment_position;
 out vec3 fragment_normal;
 
 uniform mat4 view_matrix;
+uniform vec4 color;
 
 void main()
 {

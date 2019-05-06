@@ -24,6 +24,9 @@
 
 #include "painter3d.h"
 #include "viewers/3d/gltool/gl_program.h"
+#include "meshes/x_cone.h"
+#include "meshes/y_cone.h"
+#include "meshes/z_cone.h"
 
 
 namespace wimgui
@@ -68,18 +71,33 @@ private:
 		0.0, 0.0, 1.0, 1.0,
 		0.0, 0.0, 1.0, 1.0,
 	};
+
+	GLuint cones_array;
+	GLuint x_cone_buffer;
+	GLuint x_cone_normal_buffer;
+	glm::vec4 x_color;
+	GLuint y_cone_buffer;
+	GLuint y_cone_normal_buffer;
+	glm::vec4 y_color;
+	GLuint z_cone_buffer;
+	GLuint z_cone_normal_buffer;
+	glm::vec4 z_color;
+
 	void bind_mesh_data(
 		gl_program::gl_program& program,
 		int vertice_count,
 		GLuint* vertex_buffer_ptr,
-		float* vertices_ptr,
+		float const* vertices_ptr,
 		GLuint* normal_buffer_ptr,
-		float* normals_ptr
+		float const* normals_ptr
 	);
 
 
 public:
-	gizmo_painter()
+	gizmo_painter() :
+		x_color(1.0f, 0.0f, 0.0f, 1.0f),
+		y_color(0.0f, 1.0f, 0.0f, 1.0f),
+		z_color(0.0f, 0.0f, 1.0f, 1.0f)
 	{
 		init_painter();
 	}

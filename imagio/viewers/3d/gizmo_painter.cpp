@@ -37,6 +37,26 @@ void gizmo_painter::gl_paint(view3d& view)
 	glDrawArrays(GL_LINES, 0, line_count * vertices_per_line * 3);
 	glBindVertexArray(0);
 
+	cones_program.use();
+	glBindVertexArray(cones_array);
+	transformation_matrix = view.get_view_matrix() * model_matrix;
+	cones_program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
+
+	glBindBuffer(GL_ARRAY_BUFFER, x_cone_buffer);
+	cones_program.set_uniform("color", glm::value_ptr(x_color));
+	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::x_cone::vertice_count * 3);
+
+	glBindBuffer(GL_ARRAY_BUFFER, y_cone_buffer);
+	cones_program.set_uniform("color", glm::value_ptr(y_color));
+	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::y_cone::vertice_count * 3);
+
+	glBindBuffer(GL_ARRAY_BUFFER, z_cone_buffer);
+	cones_program.set_uniform("color", glm::value_ptr(z_color));
+	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::z_cone::vertice_count * 3);
+
+	glBindVertexArray(0);
+
+
 	gl_state.restore();
 }
 
@@ -87,6 +107,40 @@ void gizmo_painter::init_painter()
 
 	glBindVertexArray(0);
 
+
+	std::string cones_vertex_shader_path("imagio/viewers/3d/gltool/single_color.vert");
+	cones_program.load_vertex_shader(vertex_shader_path);
+	cones_program.compile(); cones_program.use();
+
+	glGenVertexArrays(1, &cones_array);
+	glBindVertexArray(cones_array);
+	bind_mesh_data(
+		cones_program,
+		imagio::meshes::x_cone::vertice_count,
+		&x_cone_buffer,
+		imagio::meshes::x_cone::vertices,
+		&x_cone_normal_buffer,
+		imagio::meshes::x_cone::normals
+	);
+	bind_mesh_data(
+		cones_program,
+		imagio::meshes::y_cone::vertice_count,
+		&y_cone_buffer,
+		imagio::meshes::y_cone::vertices,
+		&y_cone_normal_buffer,
+		imagio::meshes::y_cone::normals
+	);
+	bind_mesh_data(
+		cones_program,
+		imagio::meshes::z_cone::vertice_count,
+		&z_cone_buffer,
+		imagio::meshes::z_cone::vertices,
+		&z_cone_normal_buffer,
+		imagio::meshes::z_cone::normals
+	);
+
+	glBindVertexArray(0);
+
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -96,16 +150,16 @@ void gizmo_painter::init_painter()
 	model_matrix = glm::scale(model_matrix, glm::vec3(0.1f));
 }
 
-void bind_mesh_data(
+void gizmo_painter::bind_mesh_data(
 	gl_program::gl_program& program,
 	int vertice_count,
 	GLuint* vertex_buffer_ptr,
-	float* vertices_ptr,
+	float const* vertices_ptr,
 	GLuint* normal_buffer_ptr,
-	float* normals_ptr
+	float const* normals_ptr
 )
 {
-		glGenBuffers(1, vertex_buffer_ptr);
+	glGenBuffers(1, vertex_buffer_ptr);
 	glBindBuffer(GL_ARRAY_BUFFER, *vertex_buffer_ptr);
 	glBufferData(
 		GL_ARRAY_BUFFER,
