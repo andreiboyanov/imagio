@@ -31,7 +31,7 @@ void mesh_painter::gl_paint(view3d& view)
 	program.use();
 	glBindVertexArray(get_vertex_array());
 	transformation_matrix = view.get_view_matrix() * model_matrix;
-	program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
+	program.set_uniform("view_matrix", transformation_matrix);
 
 	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::cone::vertice_count * 3);
 	glBindVertexArray(0);

@@ -198,19 +198,29 @@ public:
 		glVertexAttribPointer(attribute_position, size, GL_FLOAT, GL_FALSE, stride, offset);
 	}
 
-	GLuint get_uniform_location(const char* attribute_name)
+	GLuint get_uniform_location(const char* uniform_name)
 	{
-		return glGetUniformLocation(program_id, attribute_name);
+		return glGetUniformLocation(program_id, uniform_name);
 	}
 
-	void set_uniform(const char* attribute_name, const GLfloat* value)
+	void set_uniform(const char* uniform_name, glm::mat4& value)
 	{
-		set_uniform(get_uniform_location(attribute_name), value);
+		set_uniform(get_uniform_location(uniform_name), value);
 	}
 
-	void set_uniform(GLuint attribute_position, const GLfloat* value)
+	void set_uniform(GLuint uniform_location, glm::mat4& value)
 	{
-		glUniformMatrix4fv(attribute_position, 1, GL_FALSE, value);
+		glUniformMatrix4fv(uniform_location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void set_uniform(const char* uniform_name, glm::vec4& value)
+	{
+		set_uniform(get_uniform_location(uniform_name), value);
+	}
+
+	void set_uniform(GLuint uniform_location, glm::vec4& value)
+	{
+		glUniform4fv(uniform_location, 1, glm::value_ptr(value));
 	}
 
 	void enable_attribute_array(GLuint attribute_position)
