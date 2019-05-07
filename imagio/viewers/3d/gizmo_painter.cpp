@@ -31,27 +31,25 @@ void gizmo_painter::gl_paint(view3d& view)
 	lines_program.use();
 	glBindVertexArray(line_array);
 	transformation_matrix = view.get_view_matrix() * model_matrix;
-	lines_program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
+	lines_program.set_uniform("view_matrix", transformation_matrix);
 
 	glLineWidth(5.0f);
 	glDrawArrays(GL_LINES, 0, line_count * vertices_per_line * 3);
 	glBindVertexArray(0);
 
 	cones_program.use();
-	glBindVertexArray(cones_array);
+	glBindVertexArray(x_cone_array);
 	transformation_matrix = view.get_view_matrix() * model_matrix;
-	cones_program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
-
-	glBindBuffer(GL_ARRAY_BUFFER, x_cone_buffer);
-	cones_program.set_uniform("color", glm::value_ptr(x_color));
+	cones_program.set_uniform("view_matrix", transformation_matrix);
+	cones_program.set_uniform("color", x_color);
 	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::x_cone::vertice_count * 3);
 
-	glBindBuffer(GL_ARRAY_BUFFER, y_cone_buffer);
-	cones_program.set_uniform("color", glm::value_ptr(y_color));
+	glBindVertexArray(y_cone_array);
+	cones_program.set_uniform("color", y_color);
 	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::y_cone::vertice_count * 3);
 
-	glBindBuffer(GL_ARRAY_BUFFER, z_cone_buffer);
-	cones_program.set_uniform("color", glm::value_ptr(z_color));
+	glBindVertexArray(z_cone_array);
+	cones_program.set_uniform("color", z_color);
 	glDrawArrays(GL_TRIANGLES, 0, imagio::meshes::z_cone::vertice_count * 3);
 
 	glBindVertexArray(0);
@@ -109,37 +107,36 @@ void gizmo_painter::init_painter()
 
 
 	std::string cones_vertex_shader_path("imagio/viewers/3d/gltool/single_color.vert");
-	cones_program.load_vertex_shader(vertex_shader_path);
+	cones_program.load_vertex_shader(cones_vertex_shader_path);
 	cones_program.compile(); cones_program.use();
 
-	glGenVertexArrays(1, &cones_array);
-	glBindVertexArray(cones_array);
-	bind_mesh_data(
+	generate_mesh_data(
 		cones_program,
+		&x_cone_array,
 		imagio::meshes::x_cone::vertice_count,
 		&x_cone_buffer,
 		imagio::meshes::x_cone::vertices,
 		&x_cone_normal_buffer,
 		imagio::meshes::x_cone::normals
 	);
-	bind_mesh_data(
+	generate_mesh_data(
 		cones_program,
+		&y_cone_array,
 		imagio::meshes::y_cone::vertice_count,
 		&y_cone_buffer,
 		imagio::meshes::y_cone::vertices,
 		&y_cone_normal_buffer,
 		imagio::meshes::y_cone::normals
 	);
-	bind_mesh_data(
+	generate_mesh_data(
 		cones_program,
+		&z_cone_array,
 		imagio::meshes::z_cone::vertice_count,
 		&z_cone_buffer,
 		imagio::meshes::z_cone::vertices,
 		&z_cone_normal_buffer,
 		imagio::meshes::z_cone::normals
 	);
-
-	glBindVertexArray(0);
 
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
@@ -150,8 +147,9 @@ void gizmo_painter::init_painter()
 	model_matrix = glm::scale(model_matrix, glm::vec3(0.1f));
 }
 
-void gizmo_painter::bind_mesh_data(
+void gizmo_painter::generate_mesh_data(
 	gl_program::gl_program& program,
+	GLuint* vertex_array_ptr,
 	int vertice_count,
 	GLuint* vertex_buffer_ptr,
 	float const* vertices_ptr,
@@ -159,6 +157,9 @@ void gizmo_painter::bind_mesh_data(
 	float const* normals_ptr
 )
 {
+	glGenVertexArrays(1, vertex_array_ptr);
+	glBindVertexArray(*vertex_array_ptr);
+
 	glGenBuffers(1, vertex_buffer_ptr);
 	glBindBuffer(GL_ARRAY_BUFFER, *vertex_buffer_ptr);
 	glBufferData(
@@ -182,6 +183,8 @@ void gizmo_painter::bind_mesh_data(
 	GLuint normal_attribute = program.get_attribute_location("normal");
 	program.set_attribute_float_pointer(normal_attribute, 3);
 	program.enable_attribute_array(normal_attribute);
+
+	glBindVertexArray(0);
 
 }
 

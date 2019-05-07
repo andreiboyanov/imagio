@@ -72,19 +72,22 @@ private:
 		0.0, 0.0, 1.0, 1.0,
 	};
 
-	GLuint cones_array;
+	GLuint x_cone_array;
 	GLuint x_cone_buffer;
 	GLuint x_cone_normal_buffer;
 	glm::vec4 x_color;
+	GLuint y_cone_array;
 	GLuint y_cone_buffer;
 	GLuint y_cone_normal_buffer;
 	glm::vec4 y_color;
+	GLuint z_cone_array;
 	GLuint z_cone_buffer;
 	GLuint z_cone_normal_buffer;
 	glm::vec4 z_color;
 
-	void bind_mesh_data(
+void generate_mesh_data(
 		gl_program::gl_program& program,
+		GLuint* vertex_array_ptr,
 		int vertice_count,
 		GLuint* vertex_buffer_ptr,
 		float const* vertices_ptr,
