@@ -147,7 +147,7 @@ void view3d::rotate(float x, float y)
 	const glm::vec3 y_axis(0.0f, 1.0f, 0.0f);
 	x_rotation = glm::rotate(x_rotation, radians(x), y_axis);
 	y_rotation = glm::rotate(y_rotation, radians(y), x_axis);
-	camera_matrix = temp_camera_matrix * x_rotation * y_rotation;
+	camera_matrix = x_rotation * y_rotation * temp_camera_matrix;
 }
 
 void view3d::rotate(float x, float y, float z)
