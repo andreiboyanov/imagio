@@ -13,6 +13,14 @@
             "options": {
                 "cwd": "/bin"
             }
+        },
+        {
+            "type": "shell",
+            "label": "make imagio",
+            "command": "make",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
         }
     ],
     "version": "2.0.0"
