@@ -31,8 +31,8 @@ private:
 		void main()
 		{
 			gl_Position = view_matrix * vec4(position, 1.0);
-			gl_PointSize = 5.0f;
-			fragment_color = vec4(1.0, 1.0, 1.0, 1.0);
+			gl_PointSize = 1.0f;
+			fragment_color = vec4(0.1, 0.8, 0.6, 0.5);
 		}
 	)glsl");
 

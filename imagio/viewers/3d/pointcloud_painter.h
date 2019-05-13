@@ -55,7 +55,7 @@ public:
 	virtual void clear() override;
 	virtual void gl_paint(view3d& view) override;
 	virtual void draw() override {};
-	void set_data(std::shared_ptr<vertex_array_type> point_cloud_pointer) { vertex_pointer = point_cloud_pointer;  }
+	void set_data(std::shared_ptr<vertex_array_type> point_cloud_pointer);
 };
 
 }

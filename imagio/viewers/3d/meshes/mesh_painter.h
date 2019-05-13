@@ -24,7 +24,7 @@
 
 #include "../painter3d.h"
 #include "gl_mesh.h"
-#include  "cone.h"
+#include  "boat.h"
 
 
 namespace wimgui

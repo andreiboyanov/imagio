@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <iostream>
 #include <map>
+#include <math.h>
 
 #pragma warning(push, 0)       
 #pragma warning(pop)
@@ -66,15 +67,15 @@ public:
 	point_cloud_window(const char* _title) : view3d(_title), tracker(joints)
 	{
 		add_painter(&mesh);
-		add_painter(&gizmo);
 		add_painter(&points);
-		for (float x = -0.5f; x <= 0.5f; x += 0.1f)
+		add_painter(&gizmo);
+		for (float y = 0.0f; y <= 0.2f; y += 0.01f)
 		{
-			for (float y = -0.5f; y <= 0.5f; y += 0.1f)
+			for (float x = 0.0f; x <= 1.0f; x += 0.01f)
 			{
-				for (float z = -0.5f; z <= 0.5f; z += 0.1f)
+				for (float z = 0.0f; z <= 1.0f; z += 0.1f)
 				{
-					point_cloud.push_back({ x, y, z });
+					point_cloud.push_back({x, y + sin(3.14 * x * 5) / 15.0f, z});
 				}
 			}
 		}

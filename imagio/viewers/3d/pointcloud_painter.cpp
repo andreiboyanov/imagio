@@ -18,6 +18,7 @@ void pointcloud_painter::gl_paint(view3d& view)
 		gltool::state state;
 		state.save_current_state();
 		state.activate_imgui_defaults();
+		glEnable(GL_BLEND);
 
 		ImVec2 viewport_position = ImVec2(
 			canvas.Min.x,
@@ -40,10 +41,7 @@ void pointcloud_painter::gl_paint(view3d& view)
 		program.enable_attribute_array(position_attribute);
 		//program.enable_attribute_array(color_attribute);
 		//program.enable_attribute_array(size_attribute);
-		program.set_attribute_float_pointer(
-			position_attribute, 3, sizeof(float),
-			(GLvoid *)0
-		);
+		program.set_attribute_float_pointer(position_attribute, 3);
 		//program.set_attribute_float_pointer(
 		//	color_attribute, 3, sizeof(vertex),
 		//	(GLvoid *)(3 * sizeof(float))
@@ -53,9 +51,6 @@ void pointcloud_painter::gl_paint(view3d& view)
 		//	(GLvoid *)(6 * sizeof(float))
 		//);
 
-		transformation_matrix = view.get_view_matrix() * model_matrix;
-		program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
-
 		unsigned int vertices_count = vertices->size();
 		unsigned int count = GL_MAX_ELEMENTS_VERTICES;
 		float *float_pointer = &(*vertices)[0].x;
@@ -63,12 +58,16 @@ void pointcloud_painter::gl_paint(view3d& view)
 			GL_ARRAY_BUFFER,
 			vertices_count * sizeof(float) * 3,
 			float_pointer,
-			GL_STREAM_DRAW
+			GL_STATIC_DRAW
 		);
+
+		transformation_matrix = view.get_view_matrix() * model_matrix;
+		program.set_uniform("view_matrix", glm::value_ptr(transformation_matrix));
+
 		for(unsigned int start = 0; start < vertices_count; start += count)
 		{
 			if(start + count > vertices_count) count = vertices_count - start;
-			glDrawArrays(GL_POINTS, start, count * 3);
+			glDrawArrays(GL_POINTS, start, count);
 		}
 
 		program.disable_attribute_array(position_attribute);
@@ -89,4 +88,8 @@ void pointcloud_painter::init_painter()
 	// model_matrix = glm::rotate(model_matrix, -30.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
+void pointcloud_painter::set_data(std::shared_ptr<vertex_array_type> point_cloud_pointer)
+{
+	vertex_pointer = point_cloud_pointer;
+}
 }

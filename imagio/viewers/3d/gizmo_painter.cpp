@@ -144,7 +144,7 @@ void gizmo_painter::init_painter()
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
 
-	model_matrix = glm::scale(model_matrix, glm::vec3(0.1f));
+	// model_matrix = glm::scale(model_matrix, glm::vec3(0.1f));
 }
 
 void gizmo_painter::generate_mesh_data(
