@@ -10,7 +10,7 @@ EXES                  = imagio.exe
 
 WARNINGS			  = -Wall -Wshadow -Wpointer-arith \
 						-Wwrite-strings -Wno-unknown-pragmas -Werror
-CEXTRA                = $(WARNINGS) -Wbad-function-cast
+CEXTRA                = $(WARNINGS) -Wbad-function-cast 
 CPPEXTRA              = -std=c++11 $(WARNINGS) -ggdb -g3
 CPPEXTRA_IMGUI        = -Wno-class-memaccess -Wno-misleading-indentation
 RCEXTRA               =
